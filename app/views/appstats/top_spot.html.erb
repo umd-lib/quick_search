@@ -1,0 +1,14 @@
+<% title("#{@page_title} | ") %>
+<%= render partial: 'datatables' %>
+<div class="row">
+    <%= render partial: "menu" %>
+    <div class="large-9 columns">
+        <%= render partial: "date_range" %>
+    </div>
+    <div class="large-9 columns">
+        <p>Displays top 100 in each category</p>
+        <% @top_spot_reporting.each do |report| %>
+            <%= render partial: 'top_spot_report_table', locals: { report: report } %>
+        <% end %>
+    </div>
+</div>

@@ -1,0 +1,12 @@
+<%= stylesheet_link_tag('//cdn.datatables.net/1.10.0/css/jquery.dataTables.css') %>
+<%= stylesheet_link_tag('//cdn.datatables.net/plug-ins/28e7751dbec/integration/foundation/dataTables.foundation.css') %>
+<%= javascript_include_tag('//cdn.datatables.net/1.10.0/js/jquery.dataTables.js') %>
+<%= javascript_include_tag('//cdn.datatables.net/plug-ins/28e7751dbec/integration/foundation/dataTables.foundation.js') %>
+<script>
+    $(document).ready (function() {
+        $('.datatable').dataTable({
+          "paging":   false,
+          "filter": false
+        });  
+    })
+</script>

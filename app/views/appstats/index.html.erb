@@ -1,0 +1,31 @@
+<% title("#{@page_title} | ") %>
+<%= render partial: 'datatables' %>
+<div class="row">
+    <%= render partial: 'menu' %>
+    <div class="medium-8 columns">
+        <%= render partial: 'date_range' %>
+        <h2>General Statistics</h2>
+        <table>
+            <tr>
+                <td>Total Searches</td>
+                <td><%= number_with_delimiter(@searches_count) %></td>
+            </tr>
+            <tr>
+                <td>Total Clicks</td>
+                <td><%= number_with_delimiter(@clicks_count) %></td>
+            </tr>
+            <tr>
+                <td>Searches per Day</td>
+                <td><%= number_with_delimiter(@searches_count / @days_in_sample) %></td>
+            </tr>
+            <tr>
+                <td>Clicks per Day</td>
+                <td><%= number_with_delimiter(@clicks_count / @days_in_sample) %></td>
+            </tr>
+            <tr>
+                <td>Click/Search</td>
+                <td><%= number_to_percentage(@click_serve_ratio, precision: 2) %></td>
+            </tr>
+        </table>
+    </div>
+</div>

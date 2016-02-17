@@ -1,0 +1,248 @@
+@mixin text-badge {
+    padding: 1px 5px 2px 5px;
+    border-radius: 2px;
+    color: #FFF;
+}
+
+//element overrides
+#content {
+  #main-content {
+    #quicksearch {
+
+        .twitter-typeahead {
+                    width: 100%;
+
+            img {
+                max-width: 79.578125px;
+            }
+            .space-container {
+                max-width: 438.3125px;
+            }
+
+            .bestbet-container {
+                padding: 0;
+            }
+
+        }
+
+        h3 {
+            padding-top: 0;
+            font-weight: normal;
+        }
+
+        ol, ul {
+            margin-left: 0;
+        }
+
+        li {
+            list-style-type: none;
+        }
+
+        em {
+            font-style: normal;
+            font-weight: bold;
+        }
+
+        #website {
+            margin-bottom: 2.5em;
+        }
+
+        // class overrides
+
+        .prefix.button {
+            height: 2.3rem
+        }
+
+        @media only screen and (max-width: 766px) {
+            .prefix.button {
+                height: 2.76rem
+            }
+        }
+
+        input[type="text"] {
+            -webkit-appearance: none;
+            border-radius: 0;
+            font-size: 1rem;
+        }
+
+        input[type="search"] {
+            margin: 0;
+        }
+
+        // custom classes
+
+        .about {
+            float: right;
+        }
+
+        .result-types {
+            margin: 10px 0 0 0;
+            li {
+                margin: 0 20px 0 0;
+            }
+        }
+
+        .trying_again {
+            padding-bottom: 20px;
+        }
+
+        .clear-search-box {
+            display: none;
+        }
+
+        .title {
+            font-size: 1.25em;
+            margin-bottom:0;
+            margin-top: 1em;
+        }
+
+        .result {
+            p {
+                margin-bottom: 0;
+            }
+        }
+
+        .see-all-results {
+            margin-bottom: 2.5em;
+            margin-top: 2em;
+            font-weight: bold;
+        }
+
+        .search-error-message {
+            margin-top: 1em
+        }
+
+        .with-thumbnail {
+            margin-bottom: 0.9em;
+        }
+
+        .no-thumbnail {
+            margin-bottom: 0.9em;
+        }
+
+        .link {
+            display: none;
+            word-break: break-word;
+        }
+
+        .query {
+            font-weight: bold;
+            word-break: break-word;
+        }
+
+        .display-link {
+            word-break: break-all;
+        }
+
+        .highlight {
+            @include text-badge;
+            background: #edb802;
+            @media only screen and (max-width: 640px) {
+                display: none;
+            }
+        }
+
+        .result-types-highlight {
+            @media only screen and (max-width: 640px) {
+                display: none;
+            }
+        }
+
+        .available {
+            color: #090;
+        }
+
+        .unavailable {
+            color: #C00;
+        }
+
+        .section-description {
+            text-transform: none;
+            margin-top: 1em;
+        }
+
+        .side-bar {
+            span.total {
+                display: none;
+            }
+        }
+
+        .thumbnail {
+            border: 1px solid #555555;
+        }
+
+        .citation {
+            .publisher {
+                font-style: italic;
+            }
+        }
+
+        .date {
+            font-weight: normal;
+        }
+
+        .search-error-rescue {
+            display: none;
+        }
+
+        .website {
+            .link {
+                display: block;
+                color: #006621;
+            }
+        }
+
+        .summon {
+            .description {
+                display: none;
+            }
+        }
+
+
+        .faq {
+            .total {
+                display: none;
+            }
+        }
+
+
+        .related-topics {
+            ul {
+                column-count: 2;
+                -moz-column-count: 2; /* Firefox */
+                -webkit-column-count: 2; /* Safari and Chrome */  
+            }
+        }
+
+        .journals-databases, .faq {
+            h3 {
+                font-size: 1.1em;
+            }
+            li {
+                margin-bottom: 0;
+            }
+        }
+
+        .appstats-show {
+            .total {
+                font-weight: bold;
+            }
+        }
+    }
+  }
+}
+
+
+// hide google analytics debug
+
+#quicksearch-ga-debug {
+    display: none;
+}
+
+// .hidden {
+//     display: none;
+// }
+
+.feedback-form {
+    display: none;
+}

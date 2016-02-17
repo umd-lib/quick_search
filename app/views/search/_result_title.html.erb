@@ -1,0 +1,4 @@
+<%= link_to link do %>
+    <%= truncate(strip_tags(title.html_safe), :length => 100, separator: ' ') %>
+<% end %>
+<span class='date'><%= date %></span>

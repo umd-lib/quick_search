@@ -1,0 +1,45 @@
+<% unless result["mobile_link"] %>
+    <h3 class='title'>
+        <%= render partial: "search/result_title", locals: { link: result['link'], title: result['title'], date: result['date'] } %>
+    </h3>
+<% else %>
+    <h3 class='title show-for-medium-up'>
+        <%= render partial: "search/result_title", locals: { link: result['link'], title: result['title'], date: result['date'] } %>
+    </h3>
+    <h3 class='title show-for-small-only'>
+        <%= render partial: "search/result_title", locals: { link: result['mobile_link'], title: result['title'], date: result['date'] } %>
+    </h3>
+<% end %>
+<p class='link'><%= result["link"] %></p>
+<% if result.description %>
+<p class='description'><%= result["description"].html_safe %></p>
+<% end %>
+<% if result["author"]%>
+    <% author = result["author"].html_safe %>
+<% end %>
+<p class='author'><%=  truncate(author, length: 80, separator: '; ') %></p>
+<% if result.citation %>
+<p class="citation">
+<%= render partial: '/search/citation', locals: {:result => result} %>
+</p>
+<% end %>
+<p class='format'><%= result["format"] %>
+
+<% if result['fulltext'] %>
+<%= link_to result["link"], {:class => ''} do %>
+    Full&nbsp;Text&nbsp;Online&nbsp;<i class='fa fa-cloud-download'></i>
+<% end %>
+<% end %>
+</p>
+<p>
+<% if result['availability'] %>
+    <% if result["availability"] == "Available" %>
+        <span class='availability available' title='Available'><i class='fa fa-check'></i></span>
+    <% else %>
+        <span class='availability unavailable' title='Not Available'><i class='fa fa-times'></i></span>
+    <% end %>
+<% end %>
+<% if result['location'] %>
+    <span class='location'><%= result['location'] %></span>
+<% end %>
+</p>

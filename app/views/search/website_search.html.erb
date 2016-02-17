@@ -1,0 +1,56 @@
+<% title %>
+<%= render partial: 'layouts/page_title', locals: { page_title: @page_title } %>
+<%= render partial: 'layouts/search_form' %>
+<div id="quicksearch-ga-debug">
+    <ol></ol>
+</div>
+
+
+
+<div class="row">
+    <div class="small-12 medium-4 medium-push-8 columns faq module">
+    <% if @faq.is_a? StandardError %>
+        <div class="search-error silent-search-error" data-quicksearch-search-endpoint="faq"></div>
+    <% else %>
+        <% unless @faq.results.blank? %>
+            <%= render_module(@faq, 'faq') %>
+        <% end %>
+    <% end %>
+    </div>
+    <div class="small-12 medium-8 medium-pull-4 columns website module">
+        <!-- NOTE: We're not bothering to make a second request for
+        a spelling suggestion if Summon times out in this view. -->
+        <% unless page > 1 %>
+            <% unless @summon.is_a? StandardError %>
+                <% unless @best_bets.is_a? StandardError %>
+                    <% if @best_bets.results.blank? %>
+                        <% unless @summon.spelling_suggestion.blank? %>
+                            <%= render partial: 'layouts/spelling_suggestion', locals: { spelling_suggestion: @summon.spelling_suggestion} %>
+                        <% end %>
+                    <% end %>
+                <% end %>
+            <% end %>
+        <% end %>
+
+        <div class="row">
+            <div class="small-12 columns">
+            <% unless page > 1 %>
+                <% if @best_bets.is_a? StandardError %>
+                    <div class="search-error silent-search-error" data-quicksearch-search-endpoint="best_bets"></div>
+                <% else %>
+                    <% unless @best_bets.results.blank? %>
+                        <%= render partial: 'layouts/best_bets', locals: { best_bets: get_best_bets_data(@best_bets), ga_tracking_classes: ''} %>
+                    <% end %>
+                <% end %>
+            <% end %>
+            </div>
+        </div>
+        <%= render_module(@website, 'website', 'search/module_with_paging') %>
+    </div>
+</div>
+
+<div class="row">
+    <div class="small-12 columns more-options panel">
+        <%= render partial: 'layouts/more_options' %>
+    </div>
+</div>

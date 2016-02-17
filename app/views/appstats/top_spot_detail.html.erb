@@ -1,0 +1,35 @@
+<% title("#{@page_title} | ") %>
+<%= render partial: 'datatables' %>
+<div class="row">
+    <%= render partial: "menu" %>
+    <div class="medium-9 columns">
+        <%= render partial: 'date_range' %>
+        <table class='datatable'>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Query</th>
+                    <th>Serve Count</th>
+                    <th>Click Count</th>
+                    <th>Click/Serve %</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% count = 0 %>
+                <% @top_spot_detail.each do |key, action| %>
+                <% count += 1 %>
+                <tr>
+                    <td><%= count %></td>
+                    <td><%= key %></td>
+                    <td><%= action[0] %></td>
+                    <td><%= action[1] %></td>
+                    <td><%= number_to_percentage(action[2], precision: 2) %></td>
+                </tr>
+                <% end %> 
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- FIXME: Should this be used to report Module Click details as well? -->
+<!-- Remove reference to Best Bet here. Make more generic. -->
+

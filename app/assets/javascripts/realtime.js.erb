@@ -1,0 +1,12 @@
+var realtime_host = "<%= APP_CONFIG['realtime_url'] %>";
+
+var socket = io.connect(realtime_host);
+socket.emit('subscribe', {room: 'quicksearch-<%= Rails.env %>'});
+
+socket.on('update', function(data){
+  console.log(data);
+  if ('q' in data) {
+    var item = '<li>' + data.q + "</li>";
+    $('#realtime_searches ul').prepend(item);
+  }
+});

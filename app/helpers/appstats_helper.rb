@@ -1,0 +1,2 @@
+module AppstatsHelper
+end

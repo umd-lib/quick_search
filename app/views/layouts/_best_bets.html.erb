@@ -1,0 +1,18 @@
+<% unless best_bets.blank? %>
+    <% if best_bets[:link].is_a?(String) %>
+        <div id="best-bets" class="row quicksearch-ga-serve-tracking quicksearch-ga-click-tracking">
+            <div class="small-12 columns best_bets module">
+                <h3 class='title'>
+                    <%= link_to (best_bets[:link]),
+                        :data => { :quicksearch_ga_action => best_bets[:id], 
+                          :quicksearch_ga_category => best_bets[:best_bets_type] } do  %>
+                            <i class='fa fa-angle-double-right'></i> 
+                            <%= best_bets[:title] %>
+                    <% end %>
+                     <span class='highlight'>Best&nbsp;Bet</span>
+                </h3>
+                <p><%= best_bets[:description] %></p>
+            </div>
+        </div>
+    <% end %>
+<% end %>

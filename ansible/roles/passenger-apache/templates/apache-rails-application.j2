@@ -1,0 +1,15 @@
+<VirtualHost *:80>
+   ServerName {{project_name}}.dev
+   # Be sure to point to 'public'!
+   DocumentRoot /opt/rails/{{project_name}}/current/public
+   <Directory /opt/rails/{{project_name}}/current/public>
+      RackEnv development
+      PassengerRuby /usr/local/rvm/gems/ruby-2.1.7/wrappers/ruby
+      # Relax Apache security settings
+      AllowOverride all
+      Options FollowSymLinks
+      Require all granted
+      # MultiViews must be turned off
+      Options -MultiViews
+   </Directory>
+</VirtualHost>

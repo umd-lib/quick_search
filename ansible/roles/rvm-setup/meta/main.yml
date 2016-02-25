@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: rvm_io.rvm1-ruby
+    rvm1_rubies: "{{rubies}}"
+    rvm1_rvm_check_for_updates: False

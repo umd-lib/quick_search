@@ -1,0 +1,31 @@
+---
+- hosts: quicksearch
+  gather_facts: yes
+  vars:
+    project_name: quicksearch
+  roles:
+    - role: basic-setup
+      sudo: yes
+    - role: rvm-setup
+      sudo: yes
+      rubies:
+        - ruby-2.1.7
+      users:
+        - vagrant
+    - role: quicksearch
+    - role: passenger-apache
+      sudo: yes
+    - role: dev-open-firewall
+      sudo: yes
+      ports:
+        - 443
+        - 80
+        - 3000
+    - role: dev-link-opt-rails
+      sudo: yes
+    - role: dev-bundle
+    - role: dev-db-migrate
+      environments:
+        - development
+
+

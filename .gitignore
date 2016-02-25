@@ -21,6 +21,7 @@ config/database.yml
 config/quicksearch_config.yml
 config/deploy*
 config/newrelic.yml
+.vagrant
 
 # temporarily ignore vcr cassettes
 test/vcr_cassettes/*

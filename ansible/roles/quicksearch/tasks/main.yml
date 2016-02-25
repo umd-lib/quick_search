@@ -1,0 +1,33 @@
+---
+- name: install prereqs
+  yum:
+    pkg: "{{item}}"
+    state: present
+    update_cache: yes
+  sudo: yes
+  with_items:
+    - mysql-devel
+    - qtwebkit-devel
+
+- name: link qmake
+  file:
+    src: /usr/lib64/qt4/bin/qmake
+    dest: /usr/bin/qmake
+    state: link
+  sudo: yes
+
+- name: add quicksearch_config
+  template:
+    src: quicksearch_config.yml.j2
+    dest: /vagrant/config/quicksearch_config.yml
+
+- name: add database config
+  template:
+    src: database.yml.j2
+    dest: /vagrant/config/database.yml
+
+- name: add secret_token
+  template:
+    src: secret_token.rb.j2
+    dest: /vagrant/config/initializers/secret_token.rb
+

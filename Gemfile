@@ -13,11 +13,11 @@ gem 'newrelic_rpm'
 gem 'modernizr-rails'
 
 # QuickSearch theme
-gem 'quicksearch_generic_theme', path: '/vagrant/quicksearch_generic_theme'
+gem 'quicksearch_generic_theme', git: 'git@github.ncsu.edu:kdbeswic/quicksearch_generic_theme.git'
 
 # QuickSearch searchers
-gem 'quicksearch_wikipedia_searcher', path: '../searchers/quicksearch_wikipedia_searcher'
-gem 'quicksearch_open_library_searcher', path: '../searchers/quicksearch_open_library_searcher'
+gem 'quicksearch_wikipedia_searcher', git: 'git@github.ncsu.edu:kdbeswic/quicksearch_wikipedia_searcher.git'
+gem 'quicksearch_open_library_searcher', git: 'git@github.ncsu.edu:kdbeswic/quicksearch_open_library_searcher.git'
 
 gem 'rack-ssl-enforcer'
 

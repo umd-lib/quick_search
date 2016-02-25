@@ -1,0 +1,7 @@
+---
+- name: rake db:migrate
+  become_user: vagrant
+  shell: bash -lc 'RAILS_ENV={{item}} bundle exec rake db:migrate'
+  args:
+    chdir: /vagrant
+  with_items: "{{environments}}"

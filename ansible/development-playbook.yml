@@ -21,8 +21,17 @@
         - 443
         - 80
         - 3000
+        - 8983
     - role: dev-link-opt-rails
       sudo: yes
+    - role: java
+      version: 1.8.0
+      sudo: yes
+    - role: solr
+      version: 5.4.1
+      confdir: /vagrant/solr_conf
+      cores:
+        - "bestbets"
     - role: dev-bundle
     - role: dev-db-migrate
       environments:

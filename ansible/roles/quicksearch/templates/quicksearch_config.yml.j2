@@ -1,7 +1,7 @@
 defaults: &defaults
   theme: 'quicksearch_generic_theme'
-  searchers: [best_bets,wikipedia,open_library]
-  found_types: [wikipedia,open_library]
+  searchers: [best_bets,arxiv,open_library,wikipedia,placeholder]
+  found_types: [arxiv,open_library,wikipedia,placeholder,placeholder,placeholder,placeholder]
   per_page: 3
   max_per_page: 50
   http_timeout: 1
@@ -37,10 +37,10 @@ defaults: &defaults
       landing_page: "http://search.lib.ncsu.edu"
       query: "http://search.lib.ncsu.edu/?q="
 
-  doi_loaded_link: "http://js8lb8ft5y.search.serialssolutions.com/criteriarefiner/?SS_doi="
+  doi_loaded_link: "http://my_link_resolver_here.com?doi="
 
   best_bets:
-    solr_url: "http://www.lib.ncsu.edu:8780/apache-solr-3.5.0/bestbets/select?"
+    solr_url: "http://localhost:8983/solr/bestbets/select?"
 
 development:
   <<: *defaults

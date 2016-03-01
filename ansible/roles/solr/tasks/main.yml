@@ -3,6 +3,7 @@
   yum:
     pkg: lsof
     state: latest
+  sudo: yes
 - name: download solr
   get_url:
     url: http://mirror.symnds.com/software/Apache/lucene/solr/{{version}}/solr-{{version}}.tgz
@@ -15,29 +16,35 @@
     src: ~/solr-{{version}}.tgz
     dest: ~/.
 - name: install solr service
-  shell: bin/install_solr_service.sh ~/solr-{{version}}.tgz -f chdir=~/solr-{{version}}
+  shell: bin/install_solr_service.sh /home/vagrant/solr-{{version}}.tgz -f chdir=/home/vagrant/solr-{{version}}
+  sudo: yes
 - name: move solr files to /home/solr
-  shell: mv ~/solr-{{version}} /home/solr/.
+  shell: mv /home/vagrant/solr-{{version}} /home/solr/.
   args:
     creates: /home/solr/solr-{{version}}
+  sudo: yes
 - name: solr should own solr binaries
   file:
     path: /home/solr/solr-{{version}}
     owner: solr
     recurse: yes
+  sudo: yes
 - name: create core
+  become: yes
   become_user: solr
   shell: bin/solr create -c "{{item}}" -d "{{confdir}}"
   args:
-    chdir: ~/solr-{{version}}
+    chdir: /home/solr/solr-{{version}}
   with_items: "{{cores}}"
 - name: remove conf directory
+  become: yes
   become_user: solr
   file:
     path: /var/solr/data/{{item}}/conf
     state: absent
   with_items: "{{cores}}"
 - name: symlink confdir
+  become: yes
   become_user: solr
   file:
     src: /vagrant/solr_conf

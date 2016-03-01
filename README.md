@@ -2,6 +2,15 @@
 
 QuickSearch is a customized federated search tool designed to connect people to a variety of library resources, services, and tools. QuickSearch is designed to complement and increase use of existing dedicated library resource discovery tools, such as the catalog, electronic resource search, and subject guides/portals, by directing people to them via an intuitive search interface. The aim of QuickSearch is to provide people with a quick and easy way to find the information they need.
 
+## Features
+
+- Single search with bento-box style results
+- Modular
+  - swap out searcher modules and themes easily
+  - choose from a variety of existing searchers or create your own
+- Best Bets
+- Search analytics
+
 ## Disclaimer
 
 This code has been extracted from the code we have been running in

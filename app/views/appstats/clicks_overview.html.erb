@@ -17,14 +17,4 @@
             </tr>
         </table>
     </div>
-    <div class="medium-9 columns">
-        <h2>Typeahead Clicks</h2>
-        <%= render partial: 'click_count_table', locals: { :clicks => @typeahead_clicks, :total_clicks => @typeahead_clicks_total} %>
-        <table>
-            <tr>
-                <td>Typeahead Clicks/Search</td>
-                <td><%= number_to_percentage((@typeahead_clicks_total / @searches_count.to_f)*100, precision: 2) %></td>
-            </tr>
-        </table>
-    </div>
 </div>

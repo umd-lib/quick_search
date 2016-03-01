@@ -1,6 +1,13 @@
 GIT
+  remote: git@github.ncsu.edu:kdbeswic/quicksearch_arxiv_searcher.git
+  revision: 7c5272f212b474fe6f115279f5e1874420ea2ff3
+  specs:
+    quicksearch_arxiv_searcher (0.0.1)
+      nokogiri
+
+GIT
   remote: git@github.ncsu.edu:kdbeswic/quicksearch_generic_theme.git
-  revision: a9d9633e8476c8f6e5412ac954e8515db0103e7b
+  revision: 987747fc8b862871a542cbe7e69ac8896c8ff099
   specs:
     quicksearch_generic_theme (0.0.1)
       compass
@@ -12,9 +19,15 @@ GIT
 
 GIT
   remote: git@github.ncsu.edu:kdbeswic/quicksearch_open_library_searcher.git
-  revision: ae0eacde01a7c9024f7e700cfaa09ddf7da7dbde
+  revision: 09f61591bcda6581bfe6aafc8b1489d06967bbd5
   specs:
     quicksearch_open_library_searcher (0.0.1)
+
+GIT
+  remote: git@github.ncsu.edu:kdbeswic/quicksearch_placeholder_searcher.git
+  revision: 756410ead58ee221e420b5a2ce7fbbde6ec40a04
+  specs:
+    quicksearch_placeholder_searcher (0.0.1)
 
 GIT
   remote: git@github.ncsu.edu:kdbeswic/quicksearch_wikipedia_searcher.git
@@ -279,8 +292,10 @@ DEPENDENCIES
   newrelic_rpm
   nokogiri
   pry-rails
+  quicksearch_arxiv_searcher!
   quicksearch_generic_theme!
   quicksearch_open_library_searcher!
+  quicksearch_placeholder_searcher!
   quicksearch_wikipedia_searcher!
   rack-ssl-enforcer
   rails (= 4.1.13)

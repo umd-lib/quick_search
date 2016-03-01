@@ -18,6 +18,8 @@ gem 'quicksearch_generic_theme', git: 'git@github.ncsu.edu:kdbeswic/quicksearch_
 # QuickSearch searchers
 gem 'quicksearch_wikipedia_searcher', git: 'git@github.ncsu.edu:kdbeswic/quicksearch_wikipedia_searcher.git'
 gem 'quicksearch_open_library_searcher', git: 'git@github.ncsu.edu:kdbeswic/quicksearch_open_library_searcher.git'
+gem 'quicksearch_arxiv_searcher', git: 'git@github.ncsu.edu:kdbeswic/quicksearch_arxiv_searcher.git'
+gem 'quicksearch_placeholder_searcher', git: 'git@github.ncsu.edu:kdbeswic/quicksearch_placeholder_searcher.git'
 
 gem 'rack-ssl-enforcer'
 

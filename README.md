@@ -2,6 +2,8 @@
 
 QuickSearch is a customized federated search tool designed to connect people to a variety of library resources, services, and tools. QuickSearch is designed to complement and increase use of existing dedicated library resource discovery tools, such as the catalog, electronic resource search, and subject guides/portals, by directing people to them via an intuitive search interface. The aim of QuickSearch is to provide people with a quick and easy way to find the information they need.
 
+For more information about the QuickSearch project, see: http://www.lib.ncsu.edu/reports/quicksearch
+
 ## Features
 
 - Single search with bento-box style results
@@ -120,6 +122,15 @@ our production codebase:
 
 To report bugs, or request features, please use GitHub issues. We also
 welcome pull requests!
+
+## Authors
+
+Here are the people who have contributed code to this implementation of
+QuickSearch (listed in alphabetical order)
+
+- Kevin Beswick
+- Cory Lown
+- Jason Ronallo
 
 ## License
 

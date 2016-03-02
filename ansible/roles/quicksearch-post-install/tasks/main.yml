@@ -1,0 +1,6 @@
+---
+- name: index best bets
+  become_user: vagrant
+  shell: bash -lc "bundle exec rake best_bets:update_index"
+  args:
+    chdir: /vagrant

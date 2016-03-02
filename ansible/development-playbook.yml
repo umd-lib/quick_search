@@ -36,5 +36,6 @@
     - role: dev-db-migrate
       environments:
         - development
+    - role: quicksearch-post-install
 
 

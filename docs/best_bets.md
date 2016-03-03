@@ -4,7 +4,7 @@ QuickSearch includes a feature called “Best Bets”, which are high value, pro
 
 To update Best Bets:
 
-- In the QuickSearch development environment edit the Best Bets file at <quicksearch_source_directory>/config/best_bets.yml
+- In the QuickSearch development environment edit the Best Bets file at [quicksearch_source_directory]/config/best_bets.yml
 - Be sure to list each keyword you want to match the Best Bet. These are matched exactly for shorter queries.
 - Run the following rake task from the command line:
 

@@ -6,10 +6,6 @@ Quicksearch::Application.routes.draw do
   get 'log_event' => 'search#log_event'
   get 'log_search' => 'search#log_search'
 
-  get 'website' => 'search#website'
-  get 'website/xhr_search' => 'search#xhr_search', :defaults => { :format => 'html' }
-  get 'website/log_search' => 'search#log_search'
-
   get 'opensearch' => 'opensearch#opensearch', :defaults => { :format => 'xml' }
 
   get 'about' => 'pages#about'

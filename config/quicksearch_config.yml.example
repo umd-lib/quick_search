@@ -1,0 +1,69 @@
+# This is an example QuickSearch config file
+
+defaults: &defaults
+  # Theme name
+  theme: 'quicksearch_generic_theme'
+  # Searchers that QuickSearch will use
+  searchers: [best_bets,arxiv,open_library,wikipedia,placeholder]
+  # Searchers listed in the "result type guide" bar that lists result types that were found
+  found_types: [arxiv,open_library,wikipedia,placeholder,placeholder,placeholder,placeholder]
+  per_page: 3
+  max_per_page: 50
+  # Timeout for server side searcher requests (in seconds)
+  http_timeout: 1
+  # Timeout for client side searcher request (in seconds)
+  xhr_http_timeout: 15
+  # Google Analytics tracking ID
+  google_analytics_tracking_id: "my_tracking_id"
+
+  # Username/password for QuickSearch stats view
+  user: "stats"
+  password: "stats"
+
+  # Regular expression for on-campus IP address detection (if needed for any reason)
+  on_campus:
+    - !ruby/regexp '/^192\.(1|168)\.\d*\.\d*$/'
+
+  # Common searches that appear on the index page of QuickSearch as example searches
+  common_searches: ["web of science", "google scholar", "refworks", "harvard business review", "pubmed", "ieee"]
+
+  # Loaded searches - these appear at the bottom of the results page as additional places to try the current search
+  loaded_searches:
+    - name: "Google Scholar"
+      landing_page: "http://scholar.google.com/"
+      query: "https://scholar.google.com/scholar?hl=en&q="
+    - name: "WorldCat"
+      landing_page: "https://www.worldcat.org"
+      query: "https://www.worldcat.org/search?qt=worldcat_org_all&q="
+    - name: "Google"
+      landing_page: "https://www.google.com/"
+      query: "https://www.google.com/#q="
+
+  # QuickSearch automatically resolves queries that look like DOIs. You can set an alternate resolver here
+  doi_loaded_link: "http://doi.org/"
+
+  # Location of BestBets solr index
+  best_bets:
+    solr_url: "http://localhost:8983/solr/bestbets/select?"
+
+  # QuickSearch supports realtime viewing of queries (behind authentication). Set the path of a websockets
+  # server here to enable this functionality
+  realtime_url: "http://path_to_websockets_server"
+
+development:
+  <<: *defaults
+#  realtime_url: http://path_to_websockets_server
+
+test:
+  <<: *defaults
+
+staging:
+  <<: *defaults
+#  realtime_url: http://path_to_websockets_server
+#  google_analytics_tracking_id: ""
+
+
+production:
+  <<: *defaults
+#  realtime_url: http://path_to_websockets_server
+  # Add or override config options here

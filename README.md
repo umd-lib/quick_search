@@ -2,7 +2,10 @@
 
 QuickSearch is a customized federated search tool designed to connect people to a variety of library resources, services, and tools. QuickSearch is designed to complement and increase use of existing dedicated library resource discovery tools, such as the catalog, electronic resource search, and subject guides/portals, by directing people to them via an intuitive search interface. The aim of QuickSearch is to provide people with a quick and easy way to find the information they need.
 
-For more information about NCSU Libraries' implementation of QuickSearch and the history of the project, see: http://www.lib.ncsu.edu/reports/quicksearch
+For more information about NCSU Libraries' QuickSearch and the history of the project, see: http://www.lib.ncsu.edu/reports/quicksearch
+
+For NCSU Libraries' implementation of QuickSearch, see:
+http://search.lib.ncsu.edu
 
 ## Features
 
@@ -96,32 +99,37 @@ Start the server:
 
 QuickSearch will be available at http://localhost:3000/
 
+## Documentation
+
+Find more in-depth documentation about QuickSearch in the [docs
+directory](docs/README.md)
+
 ## Customizing QuickSearch
 
 QuickSearch is built in a modular way, and is easy to modify or extend.
 For more in-depth documentation about this, see:
 
-- Customizing QuickSearch Searchers
-- Customizing QuickSearch Themes
+- [Customizing QuickSearch Searchers](docs/customizing_searchers.md)
+- [Customizing QuickSearch Themes](docs/customizing_themes.md)
 
 ### Searchers
 
 Here are a list of searchers that have been created for QuickSearch so
 far. Feel free to submit a pull request to add to this list.
 
-|Searcher    |Repository URL                                                      |
-|------------|--------------------------------------------------------------------|
-|Summon      |http://github.ncsu.edu/kdbeswic/quicksearch_summon_searcher         |
-|arXiv       |http://github.ncsu.edu/kdbeswic/quicksearch_arxiv_searcher          |
-|Wikipedia   |http://github.ncsu.edu/kdbeswic/quicksearch_wikipedia_searcher      |
-|OpenLibrary |http://github.ncsu.edu/kdbeswic/quicksearch_open_library_searcher   |
+|Searcher                |Repository URL                                                        |
+|------------------------|----------------------------------------------------------------------|
+|NCSU Libraries' Catalog |http://github.com/NCSU-Libraries/quick_search-ncsu_catalog_searcher   |
+|arXiv                   |http://github.com/NCSU-Libraries/quick_search-arxiv_searcher          |
+|Wikipedia               |http://github.com/NCSU-Libraries/quick_search-wikipedia_searcher      |
+|OpenLibrary             |http://github.com/NCSU-Libraries/quick_search-open_library_searcher   |
 
 
 ### Themes
 
 |Theme          |Repository URL                                                      |
 |---------------|--------------------------------------------------------------------|
-|Generic Theme  |http://github.ncsu.edu/kdbeswic/quicksearch_generic_theme           |
+|Generic Theme  |http://github.com/NCSU-Libraries/quicksearch-generic_theme          |
 
 
 ## TODO
@@ -130,6 +138,7 @@ There are still some TODOs left in terms of extracting this code from
 our production codebase:
 
 - Fix tests
+- Improve documentation
 
 ## Bugs, Feature Requests, etc.
 

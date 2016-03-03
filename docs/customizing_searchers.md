@@ -24,8 +24,8 @@ This is where you would write actual searcher code. This file should contain a c
 
 A searcher is only required to have two methods implemented (if these are not implemented, you will get errors):
 
-- /search()/ which performs the actual search
-- /results()/ which returns the results from your search
+- _search()_ which performs the actual search
+- _results()_ which returns the results from your search
 
 You can define as many other methods as you need in your <MySearcherName>Searcher class.
 

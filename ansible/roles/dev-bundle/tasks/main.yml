@@ -1,11 +1,4 @@
 ---
-- name: add github.ncsu.edu to known_hosts
-  become_user: vagrant
-  lineinfile:
-    state: present
-    dest: ~/.ssh/known_hosts
-    create: yes
-    line: github.ncsu.edu,152.1.0.28 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBJhrR3+YjAB6GdFQ8IX8mOzMMca836FVB6oIHDCQj5z9WQapp3IV3eq9jI4hLrhd2lPbGh0DTRFBHQ0UMqGOpUg=
 - name: bundle install
   become_user: vagrant
   shell: bash -lc "bundle install --deployment"

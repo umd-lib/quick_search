@@ -32,6 +32,7 @@
       confdir: /vagrant/solr_conf
       cores:
         - "bestbets"
+    - role: github-com-known-host
     - role: dev-bundle
     - role: dev-db-migrate
       environments:

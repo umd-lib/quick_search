@@ -119,10 +119,12 @@ far. Feel free to submit a pull request to add to this list.
 
 |Searcher                |Repository URL                                                        |
 |------------------------|----------------------------------------------------------------------|
-|NCSU Libraries' Catalog |http://github.com/NCSU-Libraries/quick_search-ncsu_catalog_searcher   |
 |arXiv                   |http://github.com/NCSU-Libraries/quick_search-arxiv_searcher          |
 |Wikipedia               |http://github.com/NCSU-Libraries/quick_search-wikipedia_searcher      |
 |OpenLibrary             |http://github.com/NCSU-Libraries/quick_search-open_library_searcher   |
+|Summon                  |Coming soon                                                           |
+|NCSU Libraries' Catalog |Coming soon                                                           |
+
 
 
 ### Themes

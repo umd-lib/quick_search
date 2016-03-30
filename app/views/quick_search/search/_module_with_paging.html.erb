@@ -1,0 +1,14 @@
+<div id="<%= service_name.dasherize %>" class="module-contents">
+    <% if searcher.is_a? StandardError %>
+        <%= render partial: '/quick_search/search/search_error', locals: { service_name: service_name, page: page, template: 'with_paging' } %>
+    <% elsif searcher.results.blank? %>
+        <%= render partial: '/quick_search/search/no_results', locals: { :service_name => service_name } %>
+    <% else %>
+        <% total = number_with_delimiter(searcher.total) %>
+        <p>Page <%= page %> of <%= total %> <%= t("#{service_name}_search.short_display_name")  %> results</p>
+        <ol>
+            <%= render partial: '/quick_search/search/result', collection: searcher.results %>
+        </ol>
+        <%= paginate searcher.paging, :params => { :controller => 'search', :action => service_name } %>
+    <% end %>
+</div>

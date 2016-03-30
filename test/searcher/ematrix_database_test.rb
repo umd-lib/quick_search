@@ -3,7 +3,7 @@ require 'test_helper'
 class EmatrixDatabaseSearcherTest < ActiveSupport::TestCase
 
   setup do
-    @database = Quicksearch::EmatrixDatabaseSearcher.new(HTTPClient.new, 'chemistry', 3)
+    @database = QuickSearch::EmatrixDatabaseSearcher.new(HTTPClient.new, 'chemistry', 3)
   end
 
   test "should have http client, query, and per_page" do

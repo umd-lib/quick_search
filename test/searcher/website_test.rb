@@ -3,7 +3,7 @@ require 'test_helper'
 class WebsiteSearcherTest < ActiveSupport::TestCase
 
   setup do
-    @website = Quicksearch::WebsiteSearcher.new(HTTPClient.new, 'printing', 3)
+    @website = QuickSearch::WebsiteSearcher.new(HTTPClient.new, 'printing', 3)
   end
 
   test "should have http client, query, and per_page" do
@@ -25,7 +25,7 @@ class WebsiteSearcherTest < ActiveSupport::TestCase
 
   # # FIXME: this test should be moved to a result set object
   # vcr_test "should have raw search results", "searches", cassette: 'printing' do
-  #   summon = Quicksearch::SummonSearcher.new(HTTPClient.new, 'printing', 3)
+  #   summon = QuickSearch::SummonSearcher.new(HTTPClient.new, 'printing', 3)
   #   summon.search
   #   results = summon.results
   #   assert results.first.description.include?('Although we live in the digital age')

@@ -3,9 +3,9 @@ require 'test_helper'
 class BestBetsSearcherTest < ActiveSupport::TestCase
 
   setup do
-    @best_bets = Quicksearch::BestBetsSearcher.new(HTTPClient.new, 'printing', 1)
-    @best_bets_journal = Quicksearch::BestBetsSearcher.new(HTTPClient.new, 'journal of cell science', 1)
-    @best_bets_database = Quicksearch::BestBetsSearcher.new(HTTPClient.new, 'encyclopedia of life sciences', 1)
+    @best_bets = QuickSearch::BestBetsSearcher.new(HTTPClient.new, 'printing', 1)
+    @best_bets_journal = QuickSearch::BestBetsSearcher.new(HTTPClient.new, 'journal of cell science', 1)
+    @best_bets_database = QuickSearch::BestBetsSearcher.new(HTTPClient.new, 'encyclopedia of life sciences', 1)
   end
 
   test "should have http client, query, and per_page" do

@@ -3,7 +3,7 @@ require 'test_helper'
 class FaqSearcherTest < ActiveSupport::TestCase
 
   setup do
-    @faq = Quicksearch::FaqSearcher.new(HTTPClient.new, 'printing', 3)
+    @faq = QuickSearch::FaqSearcher.new(HTTPClient.new, 'printing', 3)
   end
 
   test "should have http client, query, and per_page" do

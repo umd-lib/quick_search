@@ -3,7 +3,7 @@ require 'test_helper'
 class SmartSubjectsSearcherTest < ActiveSupport::TestCase
 
   setup do
-    @subjects = Quicksearch::SmartSubjectsSearcher.new(HTTPClient.new, 'chemistry', 3)
+    @subjects = QuickSearch::SmartSubjectsSearcher.new(HTTPClient.new, 'chemistry', 3)
   end
 
   test "should have http client, query, and per_page" do

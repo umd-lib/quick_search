@@ -1,0 +1,2 @@
+module QuickSearch::SearchHelper
+end

@@ -3,4 +3,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-Quicksearch::Application.load_tasks
+QuickSearch::Application.load_tasks

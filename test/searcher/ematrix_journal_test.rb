@@ -3,7 +3,7 @@ require 'test_helper'
 class EmatrixJournalSearcherTest < ActiveSupport::TestCase
 
   setup do
-    @journal = Quicksearch::EmatrixJournalSearcher.new(HTTPClient.new, 'chemistry', 3)
+    @journal = QuickSearch::EmatrixJournalSearcher.new(HTTPClient.new, 'chemistry', 3)
   end
 
   test "should have http client, query, and per_page" do

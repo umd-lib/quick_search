@@ -1,4 +1,4 @@
-Quicksearch::Application.routes.draw do
+QuickSearch::Engine.routes.draw do
 
   root 'search#index'
 

@@ -20,10 +20,10 @@ module QuickSearch
     end
 
     def website
-      additional_services = Array.new(APP_CONFIG['loaded_website_searches'])
+      additional_services = Array.new(QuickSearch::Engine::APP_CONFIG['loaded_website_searches'])
       loaded_searches(additional_services)
       @common_searches = common_website_searches
-      http_search('website', 'search/website_search')
+      http_search('website', 'quick_search/search/website_search')
     end
 
     # The following searches for individual sections of the page.
@@ -59,8 +59,8 @@ module QuickSearch
         searcher.search
 
         searcher_partials = {}
-        unless APP_CONFIG[endpoint].blank?
-          services = APP_CONFIG[endpoint]['services'].blank? ? [] : APP_CONFIG[endpoint]['services']
+        unless QuickSearch::Engine::APP_CONFIG[endpoint].blank?
+          services = QuickSearch::Engine::APP_CONFIG[endpoint]['services'].blank? ? [] : QuickSearch::Engine::APP_CONFIG[endpoint]['services']
         else
           services = []
         end
@@ -71,7 +71,7 @@ module QuickSearch
           format.html {
             services.each do |service|
               service_template = render_to_string(
-                :partial => "/search/#{template}",
+                :partial => "quick_search/search/#{template}",
                 :layout => false,
                 :locals => { module_display_name: t("#{endpoint}_search.display_name"),
                              searcher: searcher,
@@ -160,13 +160,13 @@ module QuickSearch
       if params[:per_page]
         per_page = params[:per_page].to_i
       elsif params[:template] == 'with_paging'
-        per_page = APP_CONFIG[endpoint]['with_paging']['per_page']
+        per_page = QuickSearch::Engine::APP_CONFIG[endpoint]['with_paging']['per_page']
       else
-        per_page = APP_CONFIG['per_page']
+        per_page = QuickSearch::Engine::APP_CONFIG['per_page']
       end
 
-      if per_page > APP_CONFIG['max_per_page']
-        per_page = APP_CONFIG['max_per_page']
+      if per_page > QuickSearch::Engine::APP_CONFIG['max_per_page']
+        per_page = QuickSearch::Engine::APP_CONFIG['max_per_page']
       end
 
       per_page
@@ -186,17 +186,17 @@ module QuickSearch
     helper_method :search_in_params?
 
     def common_searches
-      APP_CONFIG['common_searches']
+      QuickSearch::Engine::APP_CONFIG['common_searches']
     end
 
     def common_website_searches
-      APP_CONFIG['common_website_searches']
+      QuickSearch::Engine::APP_CONFIG['common_website_searches']
     end
 
     def loaded_searches(additional_services=[])
       @search_services_for_display = []
       @extracted_query = extracted_query(params_q_scrubbed)
-      search_services = additional_services + Array.new(APP_CONFIG['loaded_searches'])
+      search_services = additional_services + Array.new(QuickSearch::Engine::APP_CONFIG['loaded_searches'])
 
       search_services.each do |search_service|
         if search_in_params?
@@ -208,7 +208,7 @@ module QuickSearch
     end
 
     def realtime_message
-      if base_url = APP_CONFIG['realtime_url']
+      if base_url = QuickSearch::Engine::APP_CONFIG['realtime_url']
         begin
           client = HTTPClient.new
           body = {q: params_q_scrubbed}

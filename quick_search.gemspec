@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
   s.add_dependency "newrelic_rpm" #required?
   s.add_dependency "modernizr-rails"
   s.add_dependency "therubyracer"
+  s.add_dependency "httpclient"
 
 
 end

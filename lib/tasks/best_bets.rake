@@ -4,7 +4,7 @@ namespace :best_bets do
     best_bets_yaml = File.join Rails.root, "/config/best_bets.yml"
     best_bets = YAML.load_file(best_bets_yaml)['best_bets']
 
-    solr = RSolr.connect :url => APP_CONFIG['best_bets']['solr_url']
+    solr = RSolr.connect :url => QuickSearch::Engine::APP_CONFIG['best_bets']['solr_url']
 
     solr.delete_by_query('*:*') 
 

@@ -34,9 +34,9 @@ VCR.configure do |c|
   c.hook_into :webmock
   c.cassette_library_dir = 'test/vcr_cassettes'
   c.filter_sensitive_data('<AUTHORIZATION_CLIENT_KEY>') do |interaction|
-    APP_CONFIG['summon']['client_key']
+    QuickSearch::Engine::APP_CONFIG['summon']['client_key']
   end
   c.filter_sensitive_data('<AUTHORIZATION_SECRET_KEY>') do |interaction|
-    APP_CONFIG['summon']['secret_key']
+    QuickSearch::Engine::APP_CONFIG['summon']['secret_key']
   end
 end

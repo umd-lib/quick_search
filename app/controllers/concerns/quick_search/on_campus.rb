@@ -32,7 +32,7 @@ module QuickSearch::OnCampus
   end
 
   def ip_range_check(ip)
-    APP_CONFIG['on_campus'].each do |on_campus_ip_regex|
+    QuickSearch::Engine::APP_CONFIG['on_campus'].each do |on_campus_ip_regex|
       if on_campus_ip_regex === ip
         return true
       end

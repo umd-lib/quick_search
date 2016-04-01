@@ -14,9 +14,9 @@ module QuickSearch::SearcherConcern
       @found_types = [] # add the types that are found to a navigation bar
 
       if primary_searcher == 'defaults'
-        searchers = APP_CONFIG['searchers']
+        searchers = QuickSearch::Engine::APP_CONFIG['searchers']
       else
-        searchers = APP_CONFIG[primary_searcher]['with_paging']['searchers']
+        searchers = QuickSearch::Engine::APP_CONFIG[primary_searcher]['with_paging']['searchers']
       end
 
       searchers.shuffle.each do |search_method|
@@ -27,12 +27,12 @@ module QuickSearch::SearcherConcern
               http_client = HTTPClient.new
               update_searcher_timeout(http_client, search_method)
               # FIXME: Probably want to set paging and offset somewhere else.
-              # searcher = klass.new(http_client, params_q_scrubbed, APP_CONFIG['per_page'], 0, 1, on_campus?(request.remote_ip))
+              # searcher = klass.new(http_client, params_q_scrubbed, QuickSearch::Engine::APP_CONFIG['per_page'], 0, 1, on_campus?(request.remote_ip))
               if sm == primary_searcher
-                per_page = APP_CONFIG[primary_searcher]['with_paging']['per_page']
+                per_page = QuickSearch::Engine::APP_CONFIG[primary_searcher]['with_paging']['per_page']
                 searcher = klass.new(http_client, query, per_page, offset(page, per_page), page, on_campus?(ip), scope)
               else
-                searcher = klass.new(http_client, query, APP_CONFIG['per_page'], 0, 1, on_campus?(ip), scope)
+                searcher = klass.new(http_client, query, QuickSearch::Engine::APP_CONFIG['per_page'], 0, 1, on_campus?(ip), scope)
               end
               searcher.search
               unless searcher.is_a? StandardError or searcher.results.blank?
@@ -75,10 +75,10 @@ module QuickSearch::SearcherConcern
 
   def update_searcher_timeout(client, search_method, xhr=false)
     timeout_type = xhr ? 'xhr_http_timeout' : 'http_timeout'
-    timeout = APP_CONFIG[timeout_type]
+    timeout = QuickSearch::Engine::APP_CONFIG[timeout_type]
 
-    if APP_CONFIG.has_key? search_method and APP_CONFIG[search_method].has_key? timeout_type
-        timeout = APP_CONFIG[search_method][timeout_type]
+    if QuickSearch::Engine::APP_CONFIG.has_key? search_method and QuickSearch::Engine::APP_CONFIG[search_method].has_key? timeout_type
+        timeout = QuickSearch::Engine::APP_CONFIG[search_method][timeout_type]
     end
 
     client.receive_timeout = timeout

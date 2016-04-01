@@ -30,7 +30,7 @@ module QuickSearch::DoiTrap
   end
 
   def doi_loaded_link
-     APP_CONFIG['doi_loaded_link'] + CGI.escape(doi_regex.match(doi_query)[1])
+     QuickSearch::Engine::APP_CONFIG['doi_loaded_link'] + CGI.escape(doi_regex.match(doi_query)[1])
   end
 
   def doi_query

@@ -6,8 +6,8 @@ module QuickSearch::Auth
   SALT01 = SecureRandom.hex(512)
   SALT02 = SecureRandom.hex(512)
   REALM = "Please enter the username and password to access this page"
-  USERS = {"#{APP_CONFIG['user']}" => Digest::MD5.hexdigest(["#{APP_CONFIG['user']}",REALM,"#{APP_CONFIG['password']}"].join(":"))}
-  SALTY = SALT01 + Digest::MD5.hexdigest(["#{APP_CONFIG['user']}",REALM,"#{APP_CONFIG['password']}"].join(":")) + SALT02
+  USERS = {"#{QuickSearch::Engine::APP_CONFIG['user']}" => Digest::MD5.hexdigest(["#{QuickSearch::Engine::APP_CONFIG['user']}",REALM,"#{QuickSearch::Engine::APP_CONFIG['password']}"].join(":"))}
+  SALTY = SALT01 + Digest::MD5.hexdigest(["#{QuickSearch::Engine::APP_CONFIG['user']}",REALM,"#{QuickSearch::Engine::APP_CONFIG['password']}"].join(":")) + SALT02
 
   def auth
     authenticate_or_request_with_http_digest(REALM) do |username|

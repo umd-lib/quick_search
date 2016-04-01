@@ -42,7 +42,7 @@ module QuickSearch
     private
 
     def base_url
-      APP_CONFIG['website']['solr_base_url']
+      QuickSearch::Engine::APP_CONFIG['website']['solr_base_url']
     end
 
     def bq

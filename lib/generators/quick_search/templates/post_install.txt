@@ -1,0 +1,8 @@
+QuickSearch installation complete. To add searchers:
+
+1. Add searcher gems (see README for list of gems) to your project's Gemfile
+2. Add a theme gem to Gemfile (see README)
+3. Add the searchers/theme to quick_search_config.yml
+4. Add render_module calls to search results view for each searcher
+
+For more information, see README and other documentation at http://github.com/ncsu-libraries/quick_search/

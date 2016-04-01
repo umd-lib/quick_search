@@ -5,11 +5,11 @@
 There are several configuration files you need to set up after
 installing QuickSearch. Here are descriptions for each:
 
-### quicksearch_config.yml
+### quick_search_config.yml
 
 This is QuickSearch's main configuration file where you configure
 searchers, themes, and set other QuickSearch options. See the
-/config/quicksearch_config.yml.example for a sample configuration file.
+/config/quick_search_config.yml.example for a sample configuration file.
 
 ### database.yml
 
@@ -30,7 +30,7 @@ information, see the [Rails Documentation](http://guides.rubyonrails.org/v4.1/se
 QuickSearch themes are implemented as Rails Gem Engines. To change which theme that QuickSearch uses, there are four steps to follow:
 
 - Add the theme gem into your Gemfile
-- Change the “theme” key in quicksearch_config.yml to your theme’s name
+- Change the “theme” key in quick_search_config.yml to your theme’s name
 - Run “rake assets:clobber” to clear the Rails cache (otherwise you may get odd results)
 - Restart the QuickSearch server
 
@@ -55,7 +55,7 @@ There are a number of searchers that have already been written for QuickSearch, 
 To include a searcher in QuickSearch, follow these steps:
 
 - Include your searcher gem in the QuickSearch Gemfile
-- Add the searcher name to the “searchers” section in “config/quicksearch_config.yml”
+- Add the searcher name to the “searchers” section in “config/quick_search_config.yml”
 - In your theme, you will need to specify where the searcher is rendered. To do this, edit your “app/views/search/index.html.erb” file, and include this where you’d like the searcher to be rendered: “render_module(@your_searcher, ‘your_searcher’)”
 
 Normally, searchers require some configuration options to be set -

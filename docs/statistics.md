@@ -4,4 +4,4 @@ QuickSearch collects usage statistics in a MySQL database for searches and click
 
 	  http://path.to.quicksearch/appstats
 
-QuickSearch can also use Google Analytics to collect usage statistics. To use this feature, specify your Google Analytics tracking ID in the config/quicksearch_config.yml file under the key “google_analytics_tracking_id”
+QuickSearch can also use Google Analytics to collect usage statistics. To use this feature, specify your Google Analytics tracking ID in the config/quick_search_config.yml file under the key “google_analytics_tracking_id”

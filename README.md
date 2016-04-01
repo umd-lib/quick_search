@@ -81,7 +81,7 @@ Clone the main repository:
 
 Create main configuration files, secret token:
 
-- quick_search/config/quicksearch_config.yml
+- quick_search/config/quick_search_config.yml
 - quick_search/config/database.yml
 - quick_search/config/initializers/secret_token.rb
 

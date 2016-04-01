@@ -18,7 +18,7 @@ pickle-email-*.html
 .project
 config/initializers/secret_token.rb
 config/database.yml
-config/quicksearch_config.yml
+config/quick_search_config.yml
 config/deploy*
 config/newrelic.yml
 .vagrant

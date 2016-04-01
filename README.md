@@ -75,23 +75,27 @@ development.
 
 #### Instructions
 
-Clone the main repository:
+Create a new Rails app, cd into the directory:
 
-    git clone https://github.com/ncsu-libraries/quick_search
+    rails new my_app
 
-Create main configuration files, secret token:
+    ...
 
-- quick_search/config/quick_search_config.yml
-- quick_search/config/database.yml
-- quick_search/config/initializers/secret_token.rb
+    cd my_app
 
-In your working copy of quicksearch, install dependencies:
+Add quick_search_core gem to your Gemfile:
 
-    bundle install
+    gem 'quick_search_core'
 
-The application also logs searches and clicks to a database, so you'll need to run migrations to get a local database setup:
+> For development, use: gem 'quick_search_core', :git => 'git://github.com/NCSU-Libraries/quick_search.git'
 
-    rake db:migrate
+Run 'bundle install'
+
+Run the QuickSearch installation generator:
+
+    bundle exec rails generate quick_search:install
+
+Configure QuickSearch (see [Configuring QuickSearch](docs/configuration.md))
 
 Start the server:
 

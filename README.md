@@ -40,26 +40,25 @@ configure a server for a QuickSearch production envrionment.
 
 #### Instructions
 
-Clone this repository
+##### Clone this repository
 
     git clone git@github.com:ncsu-libraries/quick_search
 
-Change into the cloned directory
+##### Change into the cloned directory
 
     cd quick_search
 
-Run
+##### Run
 
     vagrant up
 
-Note: sometimes the provisioning process will hang at the "dev-bundle |
+> Note: sometimes the provisioning process will hang at the "dev-bundle |
 bundle install" step. If this happens, press Ctrl+C to kill the process,
 then run the following command to continue the provisioning process:
 
     vagrant provision
 
-Once this completes, you'll have a running instance of QuickSearch
-available at http://localhost:8888/
+#####Once this completes, you'll have a running instance of QuickSearch available at http://localhost:8888/
 
 ### Manual Installation
 
@@ -75,7 +74,7 @@ development.
 
 #### Instructions
 
-Create a new Rails app, cd into the directory:
+##### Create a new Rails app, cd into the directory:
 
     rails new my_app
 
@@ -83,25 +82,25 @@ Create a new Rails app, cd into the directory:
 
     cd my_app
 
-Add quick_search_core gem to your Gemfile:
+##### Add quick_search_core gem to your Gemfile:
 
     gem 'quick_search_core'
 
 > For development, use: gem 'quick_search_core', :git => 'git://github.com/NCSU-Libraries/quick_search.git'
 
-Run 'bundle install'
+##### Run 'bundle install'
 
-Run the QuickSearch installation generator:
+##### Run the QuickSearch installation generator:
 
     bundle exec rails generate quick_search:install
 
-Configure QuickSearch (see [Configuring QuickSearch](docs/configuration.md))
+##### Configure QuickSearch (see [Configuring QuickSearch](docs/configuration.md))
 
-Start the server:
+##### Start the server:
 
     bundle exec rails s
 
-QuickSearch will be available at http://localhost:3000/
+##### QuickSearch will be available at http://localhost:3000/
 
 ## Documentation
 

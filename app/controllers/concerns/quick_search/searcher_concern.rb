@@ -4,6 +4,7 @@ module QuickSearch::SearcherConcern
   include QuickSearch::OnCampus
   include QuickSearch::QueryParser
   include QuickSearch::EncodeUtf8
+  include QuickSearch::SearcherConfig
   require 'benchmark_logger'
 
   private
@@ -13,10 +14,17 @@ module QuickSearch::SearcherConcern
       search_threads = []
       @found_types = [] # add the types that are found to a navigation bar
 
+      primary_searcher_config = ''
+
       if primary_searcher == 'defaults'
         searchers = QuickSearch::Engine::APP_CONFIG['searchers']
       else
-        searchers = QuickSearch::Engine::APP_CONFIG[primary_searcher]['with_paging']['searchers']
+        searcher_config = searcher_config(primary_searcher)
+        if searcher_config.has_key? 'with_paging'
+          searchers = searcher_config['with_paging']['searchers']
+        else
+          searchers = [primary_searcher]
+        end
       end
 
       searchers.shuffle.each do |search_method|
@@ -29,7 +37,11 @@ module QuickSearch::SearcherConcern
               # FIXME: Probably want to set paging and offset somewhere else.
               # searcher = klass.new(http_client, params_q_scrubbed, QuickSearch::Engine::APP_CONFIG['per_page'], 0, 1, on_campus?(request.remote_ip))
               if sm == primary_searcher
-                per_page = QuickSearch::Engine::APP_CONFIG[primary_searcher]['with_paging']['per_page']
+                if primary_searcher_config.has_key? 'with_paging'
+                  per_page = primary_searcher_config['with_paging']['per_page']
+                else
+                  per_page = 10
+                end
                 searcher = klass.new(http_client, query, per_page, offset(page, per_page), page, on_campus?(ip), scope)
               else
                 searcher = klass.new(http_client, query, QuickSearch::Engine::APP_CONFIG['per_page'], 0, 1, on_campus?(ip), scope)

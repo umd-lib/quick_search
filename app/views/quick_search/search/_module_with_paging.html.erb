@@ -9,6 +9,6 @@
         <ol>
             <%= render partial: '/quick_search/search/result', collection: searcher.results %>
         </ol>
-        <%= paginate searcher.paging, :params => { :controller => 'search', :action => service_name } %>
+        <%= paginate searcher.paging, :params => { :controller => 'search', :action => 'single_searcher', :searcher_name => service_name, :endpoint => nil, :template => nil, :format => nil }, :views_prefix => 'quick_search' %>
     <% end %>
 </div>

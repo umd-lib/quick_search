@@ -6,6 +6,7 @@ module QuickSearch
     include QuickSearch::QueryParser
     include QuickSearch::EncodeUtf8
     include QuickSearch::QueryFilter
+    include QuickSearch::SearcherConfig
 
     require 'benchmark_logger'
 
@@ -19,11 +20,20 @@ module QuickSearch
       http_search
     end
 
-    def website
-      additional_services = Array.new(QuickSearch::Engine::APP_CONFIG['loaded_website_searches'])
+    # TODO: throw error if required files not in place
+    def single_searcher
+      searcher_name = params[:searcher_name]
+
+      searcher_cfg = searcher_config(searcher_name)
+      if searcher_cfg.has_key? 'loaded_searches'
+        additional_services = Array.new(searcher_cfg['loaded_searches'])
+      else
+        additional_services = []
+      end
       loaded_searches(additional_services)
-      @common_searches = common_website_searches
-      http_search('website', 'quick_search/search/website_search')
+      @common_searches = searcher_cfg['common_searches'] || []
+      #TODO: maybe a default template for single-searcher searches?
+      http_search(searcher_name, "quick_search/search/#{searcher_name}_search")
     end
 
     # The following searches for individual sections of the page.
@@ -59,8 +69,9 @@ module QuickSearch
         searcher.search
 
         searcher_partials = {}
-        unless QuickSearch::Engine::APP_CONFIG[endpoint].blank?
-          services = QuickSearch::Engine::APP_CONFIG[endpoint]['services'].blank? ? [] : QuickSearch::Engine::APP_CONFIG[endpoint]['services']
+        searcher_cfg = searcher_config(endpoint)
+        unless searcher_cfg.blank?
+          services = searcher_cfg['services'].blank? ? [] : searcher_cfg['services']
         else
           services = []
         end
@@ -157,10 +168,15 @@ module QuickSearch
     helper_method :page
 
     def per_page(endpoint)
+      searcher_cfg = searcher_config(endpoint)
       if params[:per_page]
         per_page = params[:per_page].to_i
       elsif params[:template] == 'with_paging'
-        per_page = QuickSearch::Engine::APP_CONFIG[endpoint]['with_paging']['per_page']
+        if searcher_cfg.has_key? 'with_paging'
+          per_page = searcher_cfg['with_paging']['per_page']
+        else
+          per_page = 10
+        end
       else
         per_page = QuickSearch::Engine::APP_CONFIG['per_page']
       end
@@ -187,10 +203,6 @@ module QuickSearch
 
     def common_searches
       QuickSearch::Engine::APP_CONFIG['common_searches']
-    end
-
-    def common_website_searches
-      QuickSearch::Engine::APP_CONFIG['common_website_searches']
     end
 
     def loaded_searches(additional_services=[])

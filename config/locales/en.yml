@@ -26,15 +26,5 @@ en:
     issue: 'Issue'
     page: 'p.'
     pages: 'pp.'
-  website_search:
-    display_name: "Our Website"
-    title_name: "Search Our Website"
-    short_display_name: "website"
-    search_form_placeholder: "Search for hours, policies, departments, and staff"
-    module_callout: "Search our website for library hours, policies, departments, and staff."
-    error_service_message: "searching our website"
-    no_results_service_message: "a different search on our website"
-    loaded_link: "website/?q="
-    no_results_link: "website/"
   best_bets_search:
     display_name: "Best Bet"

@@ -17,4 +17,4 @@
 //= require quick_search/xhr_search
 //= require quick_search/quicksearch
 //= require quick_search/appstats
-<%= '//= require ' + QuickSearch::Engine::APP_CONFIG['theme'] %>
+<%= require_asset(QuickSearch::Engine::APP_CONFIG['theme']) %>

@@ -25,7 +25,7 @@ module QuickSearch
       searcher_name = params[:searcher_name]
 
       searcher_cfg = searcher_config(searcher_name)
-      if searcher_cfg.has_key? 'loaded_searches'
+      if searcher_cfg and searcher_cfg.has_key? 'loaded_searches'
         additional_services = Array.new(searcher_cfg['loaded_searches'])
       else
         additional_services = []
@@ -172,7 +172,7 @@ module QuickSearch
       if params[:per_page]
         per_page = params[:per_page].to_i
       elsif params[:template] == 'with_paging'
-        if searcher_cfg.has_key? 'with_paging'
+        if searcher_cfg and searcher_cfg.has_key? 'with_paging'
           per_page = searcher_cfg['with_paging']['per_page']
         else
           per_page = 10

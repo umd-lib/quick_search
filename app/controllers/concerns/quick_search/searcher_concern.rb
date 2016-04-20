@@ -20,7 +20,7 @@ module QuickSearch::SearcherConcern
         searchers = QuickSearch::Engine::APP_CONFIG['searchers']
       else
         searcher_config = searcher_config(primary_searcher)
-        if searcher_config.has_key? 'with_paging'
+        if searcher_config and searcher_config.has_key? 'with_paging'
           searchers = searcher_config['with_paging']['searchers']
         else
           searchers = [primary_searcher]

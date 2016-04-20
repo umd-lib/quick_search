@@ -88,9 +88,9 @@ development.
 
 ##### Add quick_search_core gem to your Gemfile:
 
-    gem 'quick_search_core'
+    gem 'quick_search-core'
 
-> For development, use: gem 'quick_search_core', :git => 'git://github.com/NCSU-Libraries/quick_search.git'
+> For development, use: gem 'quick_search-core', :git => 'git://github.com/NCSU-Libraries/quick_search.git'
 
 ##### Run 'bundle install'
 

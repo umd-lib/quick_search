@@ -33,11 +33,11 @@ You can define as many other methods as you need in your [MySearcherName]Searche
 
 This is where you would include any configurable options that your searcher uses. For non-sensitive configuration options, set sensible defaults. Otherwise, leave the values blank (or use fake values). For any configuration that someone would normally need to set when using the module, leave instructions in the form of comments.
 
-The configuration is converted from YAML into a Ruby Hash object when QuickSearch is initialized. You can refer to this configuration in your searcher code by using the Hash constant: [MY_SEARCHER_NAME]_CONFIG
+The configuration is converted from YAML into a Ruby Hash object when QuickSearch is initialized. You can refer to this configuration in your searcher code by using the following Hash constant under the 'QuickSearch::Engine' namespace: QuickSearch::Engine::[MY_SEARCHER_NAME]_CONFIG
 
 so if your searcher was called Catalog, and you were trying to get the value from the configuration option 'catalog_api_url', it would be:
 
-    CATALOG_CONFIG['catalog_api_url']
+    QuickSearch::Engine::CATALOG_CONFIG['catalog_api_url']
 
 #### config/locales/en.yml (or any other locale depending on the language you use)
 
@@ -62,5 +62,5 @@ starts. Here's the recommended content for this file:
       # otherwise load the default config file
       config_file = File.expand_path("../../<my_searcher_name>_config.yml", __FILE__)
     end
-    <MY_SEARCHER_NAME_CAPS>_CONFIG = YAML.load_file(config_file)[Rails.env]
+    QuickSearch::Engine::<MY_SEARCHER_NAME_CAPS>_CONFIG = YAML.load_file(config_file)[Rails.env]
 

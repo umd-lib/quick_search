@@ -138,7 +138,7 @@ far. Feel free to submit a pull request to add to this list.
 
 |Theme          |Repository URL                                                      |
 |---------------|--------------------------------------------------------------------|
-|Generic Theme  |http://github.com/NCSU-Libraries/quicksearch-generic_theme          |
+|Generic Theme  |http://github.com/NCSU-Libraries/quick_search-generic_theme          |
 
 
 ## TODO

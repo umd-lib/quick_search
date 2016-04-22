@@ -1,7 +1,29 @@
 defaults: &defaults
+
+  # QuickSearch theme name
+  #
+  # To use a different theme, you must first add a new theme gem to the Gemfile,
+  # run 'bundle install', then update this with the new theme name.
+  #
+  # See docs for more details: https://github.com/NCSU-Libraries/quick_search/blob/master/docs/configuration.md
+
   theme: 'quick_search_generic_theme'
+
+  # Searchers that QuickSearch will automatically search
+  #
+  # To use different searchers, you must first add the new searcher gem to the Gemfile,
+  # run 'bundle install', then add the searcher name to this list. You must also
+  # add a 'render_module()' helper call to your search results page tempate to expose the
+  # results for that searcher.
+  #
+  # See docs for more details: https://github.com/NCSU-Libraries/quick_search/blob/master/docs/configuration.md
+
   searchers: [best_bets,arxiv,open_library,wikipedia,placeholder]
+
+  # Searchers listed in the "result type guide" bar that lists result types that were found for a given search
+
   found_types: [arxiv,open_library,wikipedia,placeholder,placeholder,placeholder,placeholder]
+
   per_page: 3
   max_per_page: 50
   http_timeout: 1.5

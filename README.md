@@ -98,7 +98,9 @@ development.
 
     bundle exec rails generate quick_search:install
 
-##### Configure QuickSearch (see [Configuring QuickSearch](docs/configuration.md))
+The generator will install the generic QuickSearch theme, and some
+searchers that will work out of the box. For more information on further
+configuring QuickSearch, see: [Configuring QuickSearch](docs/configuration.md)
 
 ##### Start the server:
 

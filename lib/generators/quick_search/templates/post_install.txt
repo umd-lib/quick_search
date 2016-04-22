@@ -1,4 +1,8 @@
-QuickSearch installation complete. To add searchers:
+QuickSearch installation complete.
+
+We've installed a generic theme and a few searchers that will work out of the box.
+
+To add/remove/replace searchers:
 
 1. Add searcher gems (see README for list of gems) to your project's Gemfile
 2. Add a theme gem to Gemfile (see README)

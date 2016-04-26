@@ -7,7 +7,7 @@ defaults: &defaults
   #
   # See docs for more details: https://github.com/NCSU-Libraries/quick_search/blob/master/docs/configuration.md
 
-  theme: 'quick_search_generic_theme'
+  theme: ''
 
   # Searchers that QuickSearch will automatically search
   #
@@ -18,11 +18,11 @@ defaults: &defaults
   #
   # See docs for more details: https://github.com/NCSU-Libraries/quick_search/blob/master/docs/configuration.md
 
-  searchers: [best_bets,arxiv,open_library,wikipedia,placeholder]
+  searchers: [best_bets]
 
   # Searchers listed in the "result type guide" bar that lists result types that were found for a given search
 
-  found_types: [arxiv,open_library,wikipedia,placeholder,placeholder,placeholder,placeholder]
+  found_types: []
 
   per_page: 3
   max_per_page: 50

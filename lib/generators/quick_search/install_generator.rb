@@ -91,6 +91,20 @@ write your own.\n\n")
         copy_file 'quick_search_config.yml', 'config/quick_search_config.yml'
       end
 
+      desc 'update quick_search_config.yml'
+      def update_quick_search_config
+        if @theme_response == 'y'
+          theme_config = 'quick_search_generic_theme'
+          insert_into_file "config/quick_search_config.yml", theme_config, :after => /^  theme: '/
+        end
+        if @searcher_response == 'y'
+          included_searchers = ',arxiv,open_library,wikipedia,placeholder'
+          included_found_types = 'arxiv,open_library,wikipedia,placeholder,placeholder,placeholder,placeholder'
+          insert_into_file "config/quick_search_config.yml", included_searchers, :after => /^  searchers: \[best_bets/
+          insert_into_file "config/quick_search_config.yml", included_found_types, :after => /^  found_types: \[/
+        end
+      end
+
       desc 'create kaminari initializer'
       def kaminari_initializer
         copy_file 'kaminari.rb', 'config/initializers/kaminari.rb'

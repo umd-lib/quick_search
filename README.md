@@ -124,21 +124,21 @@ For more in-depth documentation about this, see:
 Here are a list of searchers that have been created for QuickSearch so
 far. Feel free to submit a pull request to add to this list.
 
-|Searcher                |Repository URL                                                        |
-|------------------------|----------------------------------------------------------------------|
-|arXiv                   |http://github.com/NCSU-Libraries/quick_search-arxiv_searcher          |
-|Wikipedia               |http://github.com/NCSU-Libraries/quick_search-wikipedia_searcher      |
-|OpenLibrary             |http://github.com/NCSU-Libraries/quick_search-open_library_searcher   |
-|Summon                  |Coming soon                                                           |
-|NCSU Libraries' Catalog |Coming soon                                                           |
+|Searcher                |Line to include in Gemfile to install          |Repository                         |
+|------------------------|-----------------------------------------------|-----------------------------------|
+|arxiv                   |gem 'quick_search-arxiv_searcher'              |[quick_search-arxiv_searcher](https://www.github.com/ncsu-libraries/quick_search-arxiv_searcher)               |
+|wikipedia               |gem 'quick_search-wikipedia_searcher'          |[quick_search-wikipedia_searcher](https://www.github.com/ncsu-libraries/quick_search-wikipedia_searcher)       |
+|OpenLibrary             |gem 'quick_search-open_library_searcher'       |[quick_search-open_library_searcher](https://www.github.com/ncsu-libraries/quick_search-open_library_searcher) |
+|Summon                  |Coming soon                                    |                                   |
+|NCSU Libraries' Catalog |Coming soon                                    |                                   |
 
 
 
 ### Themes
 
-|Theme          |Repository URL                                                      |
-|---------------|--------------------------------------------------------------------|
-|Generic Theme  |http://github.com/NCSU-Libraries/quick_search-generic_theme          |
+|Theme          |Line to include in Gemfile to install |Repository                         |
+|---------------|--------------------------------------|-----------------------------------|
+|Generic Theme  |gem 'quick_search-generic_theme'      |[quick_search-generic_theme](https://www.github.com/ncsu-libraries/quick_search-generic_theme)|
 
 
 ## TODO

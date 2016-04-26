@@ -19,7 +19,7 @@ module QuickSearch
     def top_searches
       @page_title = 'Top Searches'
       searches_count
-      searches = Search.where(page: 'index').where(date_range)
+      searches = Search.where(page: '/').where(date_range)
       queries = []
       searches.each do |search|
         queries << search["query"].downcase
@@ -83,7 +83,7 @@ module QuickSearch
     end
 
     def searches_count
-      @searches_count = Search.where(page: 'index').where(date_range).count
+      @searches_count = Search.where(page: '/').where(date_range).count
     end
 
     def search_click_ratio

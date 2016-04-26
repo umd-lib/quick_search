@@ -197,16 +197,9 @@ var quickSearchEventTracking = (function () {
 
     function searchPage() {
         var pathname = window.location.pathname;
-        pathname = pathname.replace(/\/$/, "");
-        if (pathname == '<% ActionController::Base.relative_url_root || '' %>') {
-            var page = 'index';
-        } else if (pathname.indexOf('website') > -1) {
-            var page = 'search/website_search';
-        } else {
-            var page = pathname;
-        }
 
-        return page;
+        // Get the pathname relative to the application root
+        return pathname.replace("<%= ActionController::Base.relative_url_root || '' %>", "");
     }
 
     function logSearchToDatabase(searchValues) {

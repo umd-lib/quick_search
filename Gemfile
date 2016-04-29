@@ -28,7 +28,7 @@ gem 'quicksearch_arxiv_searcher', path: 'searcher_repos/quick_search-arxiv_searc
 gem 'quicksearch_placeholder_searcher', path: 'searcher_repos/quick_search-placeholder_searcher'
 
 # UMD
-gem 'quicksearch_arxiv_searcher', path: 'searcher_repos/quick_search-arxiv_searcher'
+gem 'quicksearch_worldcat_searcher', path: 'searcher_repos/quick_search-worldcat_searcher'
 
 
 gem 'rack-ssl-enforcer'

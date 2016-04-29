@@ -25,3 +25,6 @@ config/newrelic.yml
 
 # temporarily ignore vcr cassettes
 test/vcr_cassettes/*
+
+# ignore umd worldcat repo
+searcher_repos/worldcat_searcher

@@ -28,3 +28,4 @@ test/vcr_cassettes/*
 
 # ignore umd worldcat repo
 searcher_repos/worldcat_searcher
+theme_repo/quick_search-umd_theme

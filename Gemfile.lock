@@ -20,7 +20,13 @@ PATH
     quicksearch_wikipedia_searcher (0.0.1)
 
 PATH
-  remote: theme_repo/quick_search-generic_theme
+  remote: searcher_repos/worldcat_searcher
+  specs:
+    quicksearch_worldcat_searcher (0.0.1)
+      nokogiri
+
+PATH
+  remote: theme_repo/quick_search-umd_theme
   specs:
     quicksearch_generic_theme (0.0.1)
       compass
@@ -292,6 +298,7 @@ DEPENDENCIES
   quicksearch_open_library_searcher!
   quicksearch_placeholder_searcher!
   quicksearch_wikipedia_searcher!
+  quicksearch_worldcat_searcher!
   rack-ssl-enforcer
   rails (= 4.1.13)
   rb-fsevent

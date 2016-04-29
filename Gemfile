@@ -13,13 +13,18 @@ gem 'newrelic_rpm'
 gem 'modernizr-rails'
 
 # QuickSearch theme
-gem 'quicksearch_generic_theme', git: 'git@github.com:ncsu-libraries/quick_search-generic_theme.git'
+# gem 'quicksearch_generic_theme', git: 'git@github.com:ncsu-libraries/quick_search-generic_theme.git'
+gem 'quicksearch_generic_theme', path: 'theme_repo/quick_search-generic_theme'
 
 # QuickSearch searchers
-gem 'quicksearch_wikipedia_searcher', git: 'git@github.com:ncsu-libraries/quick_search-wikipedia_searcher.git'
-gem 'quicksearch_open_library_searcher', git: 'git@github.com:ncsu-libraries/quick_search-open_library_searcher.git'
-gem 'quicksearch_arxiv_searcher', git: 'git@github.com:ncsu-libraries/quick_search-arxiv_searcher.git'
-gem 'quicksearch_placeholder_searcher', git: 'git@github.com:ncsu-libraries/quick_search-placeholder_searcher.git'
+# gem 'quicksearch_wikipedia_searcher', git: 'git@github.com:ncsu-libraries/quick_search-wikipedia_searcher.git'
+# gem 'quicksearch_open_library_searcher', git: 'git@github.com:ncsu-libraries/quick_search-open_library_searcher.git'
+# gem 'quicksearch_arxiv_searcher', git: 'git@github.com:ncsu-libraries/quick_search-arxiv_searcher.git'
+# gem 'quicksearch_placeholder_searcher', git: 'git@github.com:ncsu-libraries/quick_search-placeholder_searcher.git'
+gem 'quicksearch_wikipedia_searcher', path: 'searcher_repos/quick_search-wikipedia_searcher'
+gem 'quicksearch_open_library_searcher', path: 'searcher_repos/quick_search-open_library_searcher'
+gem 'quicksearch_arxiv_searcher', path: 'searcher_repos/quick_search-arxiv_searcher'
+gem 'quicksearch_placeholder_searcher', path: 'searcher_repos/quick_search-placeholder_searcher'
 
 gem 'rack-ssl-enforcer'
 

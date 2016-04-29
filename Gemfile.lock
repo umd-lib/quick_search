@@ -1,13 +1,26 @@
-GIT
-  remote: git@github.com:ncsu-libraries/quick_search-arxiv_searcher.git
-  revision: 7c5272f212b474fe6f115279f5e1874420ea2ff3
+PATH
+  remote: searcher_repos/quick_search-arxiv_searcher
   specs:
     quicksearch_arxiv_searcher (0.0.1)
       nokogiri
 
-GIT
-  remote: git@github.com:ncsu-libraries/quick_search-generic_theme.git
-  revision: 9bd86ea9528ca3cfed78abb8dadff9a8f4b13b54
+PATH
+  remote: searcher_repos/quick_search-open_library_searcher
+  specs:
+    quicksearch_open_library_searcher (0.0.1)
+
+PATH
+  remote: searcher_repos/quick_search-placeholder_searcher
+  specs:
+    quicksearch_placeholder_searcher (0.0.1)
+
+PATH
+  remote: searcher_repos/quick_search-wikipedia_searcher
+  specs:
+    quicksearch_wikipedia_searcher (0.0.1)
+
+PATH
+  remote: theme_repo/quick_search-generic_theme
   specs:
     quicksearch_generic_theme (0.0.1)
       compass
@@ -16,24 +29,6 @@ GIT
       foundation-rails (= 5.4.5)
       sass (~> 3.2)
       sass-rails (~> 4.0.5)
-
-GIT
-  remote: git@github.com:ncsu-libraries/quick_search-open_library_searcher.git
-  revision: 09f61591bcda6581bfe6aafc8b1489d06967bbd5
-  specs:
-    quicksearch_open_library_searcher (0.0.1)
-
-GIT
-  remote: git@github.com:ncsu-libraries/quick_search-placeholder_searcher.git
-  revision: 756410ead58ee221e420b5a2ce7fbbde6ec40a04
-  specs:
-    quicksearch_placeholder_searcher (0.0.1)
-
-GIT
-  remote: git@github.com:ncsu-libraries/quick_search-wikipedia_searcher.git
-  revision: 8141eca6ceaa9a88e052db2c7d18c73511a85f78
-  specs:
-    quicksearch_wikipedia_searcher (0.0.1)
 
 GEM
   remote: https://rubygems.org/

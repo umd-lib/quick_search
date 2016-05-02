@@ -2,11 +2,11 @@ require 'test_helper'
 
 class QueryParserTest < ActionController::TestCase
 
-  include QueryParser
+  include QuickSearch::QueryParser
 
   test "should extract basic prefixed scoped query" do
     full_query = 'scope:scrc libraries'
-    
+
     query = extracted_query(full_query)
     assert_equal('libraries', query)
 
@@ -16,7 +16,7 @@ class QueryParserTest < ActionController::TestCase
 
   test "should extract basic suffixed scoped query" do
     full_query = 'libraries scope:scrc'
-    
+
     query = extracted_query(full_query)
     assert_equal('libraries', query)
 
@@ -26,7 +26,7 @@ class QueryParserTest < ActionController::TestCase
 
   test "should extract compound prefixed scoped query" do
     full_query = 'scope:(scrc OR jobs) libraries'
-    
+
     query = extracted_query(full_query)
     assert_equal('libraries', query)
 
@@ -36,7 +36,7 @@ class QueryParserTest < ActionController::TestCase
 
   test "should extract compound suffixed scoped query" do
     full_query = 'libraries scope:(scrc OR jobs)'
-    
+
     query = extracted_query(full_query)
     assert_equal('libraries', query)
 

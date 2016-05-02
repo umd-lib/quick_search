@@ -20,6 +20,7 @@ group :test do
   gem 'launchy'
   gem 'vcr'
   gem 'webmock'
+  gem 'sqlite3'
 end
 
 group :development, :test do

@@ -131,6 +131,7 @@ far. Feel free to submit a pull request to add to this list.
 |arxiv                   |gem 'quick_search-arxiv_searcher'              |[quick_search-arxiv_searcher](https://www.github.com/ncsu-libraries/quick_search-arxiv_searcher)               |
 |wikipedia               |gem 'quick_search-wikipedia_searcher'          |[quick_search-wikipedia_searcher](https://www.github.com/ncsu-libraries/quick_search-wikipedia_searcher)       |
 |OpenLibrary             |gem 'quick_search-open_library_searcher'       |[quick_search-open_library_searcher](https://www.github.com/ncsu-libraries/quick_search-open_library_searcher) |
+|Placeholder           |gem 'quick_search-placeholder_searcher'       |[quick_search-placeholder_searcher](https://www.github.com/ncsu-libraries/quick_search-placeholder_searcher) |
 |Summon                  |Coming soon                                    |                                   |
 |NCSU Libraries' Catalog |Coming soon                                    |                                   |
 

@@ -90,7 +90,7 @@ development.
 
     gem 'quick_search-core'
 
-> For development, use: gem 'quick_search-core', :git => 'git://github.com/NCSU-Libraries/quick_search.git'
+> For development, use: gem 'quick_search-core', git: 'git://github.com/NCSU-Libraries/quick_search.git'
 
 ##### Run 'bundle install'
 
@@ -144,12 +144,30 @@ far. Feel free to submit a pull request to add to this list.
 |Generic Theme  |gem 'quick_search-generic_theme'      |[quick_search-generic_theme](https://www.github.com/ncsu-libraries/quick_search-generic_theme)|
 
 
+## Running the Tests
+
+In order to run the tests, you'll need to have Xvfb installed. If you
+are on CentOS, you can run:
+
+    sudo yum install org-x11-server-Xvfb
+
+On Ubuntu/Debian:
+
+    sudo apt-get install xvfb
+
+To set up the testing database, run:
+
+    RAILS_ENV=test bundle exec rake db:schema:load
+
+Then, to run the tests:
+
+    bundle exec rake test
+
 ## TODO
 
 There are still some TODOs left in terms of extracting this code from
 our production codebase:
 
-- Fix tests
 - Improve documentation
 
 ## Bugs, Feature Requests, etc.

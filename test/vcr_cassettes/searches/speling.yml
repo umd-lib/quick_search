@@ -1,0 +1,1171 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:8983/solr/bestbets/select?q=keywords:%20%22speling%22&wt=json
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      User-Agent:
+      - HTTPClient/1.0 (2.8.0, ruby 2.1.7 (2015-08-18))
+      Accept:
+      - "*/*"
+      Date:
+      - Tue, 03 May 2016 17:44:30 GMT
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - text/plain; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |
+        {"responseHeader":{"status":0,"QTime":0,"params":{"q":"keywords: \"speling\"","wt":"json"}},"response":{"numFound":0,"start":0,"docs":[]}}
+    http_version: 
+  recorded_at: Tue, 03 May 2016 17:44:30 GMT
+- request:
+    method: get
+    uri: https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&srlimit=3&sroffset=0&srsearch=speling&utf8
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      User-Agent:
+      - HTTPClient/1.0 (2.8.0, ruby 2.1.7 (2015-08-18))
+      Accept:
+      - "*/*"
+      Date:
+      - Tue, 03 May 2016 17:44:30 GMT
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 03 May 2016 17:44:30 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Server:
+      - mw1199.eqiad.wmnet
+      X-Powered-By:
+      - HHVM/3.12.1
+      X-Content-Type-Options:
+      - nosniff
+      Cache-Control:
+      - private, must-revalidate, max-age=0
+      P3p:
+      - CP="This is not a P3P policy! See https://en.wikipedia.org/wiki/Special:CentralAutoLogin/P3P
+        for more info."
+      X-Frame-Options:
+      - SAMEORIGIN
+      Vary:
+      - Accept-Encoding,Treat-as-Untrusted,X-Forwarded-Proto,Cookie,Authorization
+      Backend-Timing:
+      - D=55372 t=1462297470067499
+      X-Varnish:
+      - 3743209249, 3125058301
+      Via:
+      - 1.1 varnish, 1.1 varnish
+      Age:
+      - '0'
+      X-Cache:
+      - cp1052 miss+chfp(0), cp1053 frontend miss+chfp(0)
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Set-Cookie:
+      - GeoIP=US:NC:Raleigh:35.75:-78.72:v4; Path=/; secure; Domain=.wikipedia.org
+      - WMF-Last-Access=03-May-2016;Path=/;HttpOnly;secure;Expires=Sat, 04 Jun 2016
+        12:00:00 GMT
+      X-Analytics:
+      - https=1;nocookies=1
+      X-Client-Ip:
+      - 152.1.24.134
+    body:
+      encoding: UTF-8
+      string: '{"batchcomplete":"","continue":{"sroffset":3,"continue":"-||"},"query":{"searchinfo":{"totalhits":68,"suggestion":"speaking","suggestionsnippet":"<em>speaking</em>"},"search":[{"ns":0,"title":"Spelling","snippet":"Spelling
+        is the writing of a word or words with the necessary letters and diacritics
+        present in an accepted standard order, &quot;the conventions which determine","size":12320,"wordcount":1286,"timestamp":"2016-04-16T22:43:49Z"},{"ns":0,"title":"Rozalie
+        Hirs","snippet":"2002  Review of <span class=\"searchmatch\">Speling</span>/
+        Leeway: Edwin Fagel, Wat doen de regels?, De Recensent, The Netherlands, 20
+        September 2005  Review of <span class=\"searchmatch\">Speling</span>/ Leeway:
+        Johan Sonnenschein","size":25898,"wordcount":3353,"timestamp":"2016-03-17T12:34:51Z"},{"ns":0,"title":"Lisis
+        et Délie","snippet":"finally admits her love for Lisis and the opera ends
+        in celebration.   <span class=\"searchmatch\">Speling</span> preferred by
+        Girdlestone  Bouissou, p. 772  Bouissou, pp. 776—778  However","size":2531,"wordcount":298,"timestamp":"2016-03-19T09:35:08Z"}]}}'
+    http_version: 
+  recorded_at: Tue, 03 May 2016 17:44:30 GMT
+- request:
+    method: get
+    uri: http://export.arxiv.org/api/query?max_results=3&search_query=all:speling&start=0
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      User-Agent:
+      - HTTPClient/1.0 (2.8.0, ruby 2.1.7 (2015-08-18))
+      Accept:
+      - "*/*"
+      Date:
+      - Tue, 03 May 2016 17:44:30 GMT
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 03 May 2016 17:44:29 GMT
+      Server:
+      - Apache
+      Access-Control-Allow-Origin:
+      - "*"
+      Vary:
+      - Accept-Encoding,User-Agent
+      Transfer-Encoding:
+      - chunked
+      Content-Type:
+      - application/atom+xml; charset=UTF-8
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <feed xmlns="http://www.w3.org/2005/Atom">
+          <link href="http://arxiv.org/api/query?search_query%3Dall%3Aspeling%26id_list%3D%26start%3D0%26max_results%3D3" rel="self" type="application/atom+xml"/>
+          <title type="html">ArXiv Query: search_query=all:speling&amp;id_list=&amp;start=0&amp;max_results=3</title>
+          <id>http://arxiv.org/api/9OeFk5Le02fmHWaPV+nNdtO6x30</id>
+          <updated>2016-05-03T00:00:00-04:00</updated>
+          <opensearch:totalResults xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">0</opensearch:totalResults>
+          <opensearch:startIndex xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">0</opensearch:startIndex>
+          <opensearch:itemsPerPage xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">3</opensearch:itemsPerPage>
+        </feed>
+    http_version: 
+  recorded_at: Tue, 03 May 2016 17:44:31 GMT
+- request:
+    method: get
+    uri: http://openlibrary.org/search.json?q=speling
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      User-Agent:
+      - HTTPClient/1.0 (2.8.0, ruby 2.1.7 (2015-08-18))
+      Accept:
+      - "*/*"
+      Date:
+      - Tue, 03 May 2016 17:44:30 GMT
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx/1.4.6 (Ubuntu)
+      Date:
+      - Tue, 03 May 2016 17:44:30 GMT
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Method:
+      - GET, OPTIONS
+      Access-Control-Max-Age:
+      - '86400'
+      X-Ol-Stats:
+      - '"SR 1 0.105 TT 0 0.110"'
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+         "start": 0,
+         "num_found": 15,
+         "numFound": 15,
+         "docs": [
+          {
+           "title_suggest": "Spele vir die jongspan",
+           "edition_key": [
+            "OL5360056M"
+           ],
+           "has_fulltext": false,
+           "text": [
+            "OL5360056M",
+            "Gerhard Johannes Beukes",
+            "22621346",
+            "OL1789040A",
+            "Spele vir die jongspan",
+            "byeengebring deur Gerhard J. Beukes.",
+            "Children's plays, Afrikaans",
+            "/works/OL6641814W",
+            "Van Schaik (J.L.)",
+            "72323053"
+           ],
+           "author_name": [
+            "Gerhard Johannes Beukes"
+           ],
+           "seed": [
+            "/books/OL5360056M",
+            "/works/OL6641814W",
+            "/subjects/children's_plays_afrikaans",
+            "/authors/OL1789040A"
+           ],
+           "oclc": [
+            "22621346"
+           ],
+           "author_key": [
+            "OL1789040A"
+           ],
+           "subject": [
+            "Children's plays, Afrikaans"
+           ],
+           "title": "Spele vir die jongspan",
+           "publish_date": [
+            "1970"
+           ],
+           "type": "work",
+           "ebook_count_i": 0,
+           "publish_place": [
+            "Pretoria"
+           ],
+           "edition_count": 1,
+           "key": "/works/OL6641814W",
+           "publisher": [
+            "Van Schaik (J.L.)"
+           ],
+           "language": [
+            "afr"
+           ],
+           "lccn": [
+            "72323053"
+           ],
+           "last_modified_i": 1291548104,
+           "publish_year": [
+            1970
+           ],
+           "first_publish_year": 1970
+          },
+          {
+           "title_suggest": "Phonic spelling, fonik speling",
+           "publish_place": [
+            "Toronto"
+           ],
+           "has_fulltext": false,
+           "language": [
+            "eng"
+           ],
+           "edition_count": 1,
+           "edition_key": [
+            "OL15186755M"
+           ],
+           "last_modified_i": 1263995623,
+           "title": "Phonic spelling, fonik speling",
+           "subject": [
+            "Phonetics",
+            "Orthography and spelling",
+            "English language"
+           ],
+           "author_name": [
+            "Bruce Rouse"
+           ],
+           "seed": [
+            "/books/OL15186755M",
+            "/works/OL11440916W",
+            "/subjects/english_language",
+            "/subjects/phonetics",
+            "/subjects/orthography_and_spelling",
+            "/authors/OL4811393A"
+           ],
+           "first_publish_year": 1961,
+           "publish_year": [
+            1961
+           ],
+           "key": "/works/OL11440916W",
+           "text": [
+            "OL15186755M",
+            "Bruce Rouse",
+            "OL4811393A",
+            "Phonic spelling, fonik speling",
+            "Phonetics",
+            "Orthography and spelling",
+            "English language",
+            "/works/OL11440916W",
+            "Phonic spelling, fonik speling."
+           ],
+           "publish_date": [
+            "1961"
+           ],
+           "author_key": [
+            "OL4811393A"
+           ],
+           "type": "work",
+           "ebook_count_i": 0
+          },
+          {
+           "title_suggest": "Een speling van de natuur",
+           "edition_key": [
+            "OL3080650M"
+           ],
+           "isbn": [
+            "9789062134915",
+            "9062134912"
+           ],
+           "has_fulltext": false,
+           "text": [
+            "OL3080650M",
+            "9789062134915",
+            "9062134912",
+            "Theodoor Kars",
+            "10900846",
+            "OL52989A",
+            "Een speling van de natuur",
+            "Theo Kars.",
+            "/works/OL676375W",
+            "Loeb",
+            "82180933"
+           ],
+           "author_name": [
+            "Theodoor Kars"
+           ],
+           "seed": [
+            "/books/OL3080650M",
+            "/works/OL676375W",
+            "/authors/OL52989A"
+           ],
+           "oclc": [
+            "10900846"
+           ],
+           "author_key": [
+            "OL52989A"
+           ],
+           "title": "Een speling van de natuur",
+           "publish_date": [
+            "1982"
+           ],
+           "type": "work",
+           "ebook_count_i": 0,
+           "publish_place": [
+            "Amsterdam"
+           ],
+           "edition_count": 1,
+           "key": "/works/OL676375W",
+           "id_goodreads": [
+            "6516656"
+           ],
+           "publisher": [
+            "Loeb"
+           ],
+           "language": [
+            "dut"
+           ],
+           "lccn": [
+            "82180933"
+           ],
+           "last_modified_i": 1304059158,
+           "id_librarything": [
+            "4639057"
+           ],
+           "publish_year": [
+            1982
+           ],
+           "first_publish_year": 1982
+          },
+          {
+           "title_suggest": "The Pioneer ov simplified speling",
+           "edition_key": [
+            "OL7027540M"
+           ],
+           "has_fulltext": true,
+           "text": [
+            "OL7027540M",
+            "Simplified Spelling Society, London.",
+            "n01pioneerovsimp02simpuoft",
+            "The Pioneer ov simplified speling",
+            "Spelling reform",
+            "Accessible book",
+            "Periodicals",
+            "/works/OL16851130W",
+            "Simplified speling soesieti.",
+            "The Pioneer ov simplified speling.",
+            "20022404"
+           ],
+           "ia": [
+            "n01pioneerovsimp02simpuoft"
+           ],
+           "seed": [
+            "/books/OL7027540M",
+            "/works/OL16851130W",
+            "/subjects/spelling_reform",
+            "/subjects/periodicals"
+           ],
+           "contributor": [
+            "Simplified Spelling Society, London."
+           ],
+           "subject": [
+            "Spelling reform",
+            "Accessible book",
+            "Periodicals"
+           ],
+           "title": "The Pioneer ov simplified speling",
+           "ia_collection_s": "toronto;robarts",
+           "publish_date": [
+            "1912"
+           ],
+           "type": "work",
+           "ebook_count_i": 1,
+           "publish_place": [
+            "London"
+           ],
+           "edition_count": 1,
+           "key": "/works/OL16851130W",
+           "public_scan_b": true,
+           "publisher": [
+            "Simplified speling soesieti."
+           ],
+           "lccn": [
+            "20022404"
+           ],
+           "last_modified_i": 1406227349,
+           "cover_edition_key": "OL7027540M",
+           "publish_year": [
+            1912
+           ],
+           "first_publish_year": 1912
+          },
+          {
+           "title_suggest": "The Little child's speling [sic] book",
+           "publish_place": [
+            "[United States"
+           ],
+           "has_fulltext": false,
+           "language": [
+            "eng"
+           ],
+           "edition_count": 1,
+           "edition_key": [
+            "OL15100078M"
+           ],
+           "last_modified_i": 1419574715,
+           "title": "The Little child's speling [sic] book",
+           "publisher": [
+            "Sine nomine"
+           ],
+           "seed": [
+            "/books/OL15100078M",
+            "/works/OL15100078M",
+            "/subjects/spellers",
+            "/subjects/english_language_--_orthography_and_spelling_--_juvenile_literature"
+           ],
+           "first_publish_year": 1814,
+           "publish_year": [
+            1814
+           ],
+           "key": "/works/OL15100078M",
+           "text": [
+            "OL15100078M",
+            "containing a great variety of plain, easy and useful words, with proper directions to read and speak the Columbian language, and a number of easy and instructive lessons",
+            "The Little child's speling [sic] book",
+            "English language -- Orthography and spelling -- Juvenile literature",
+            "Spellers",
+            "/works/OL15100078M",
+            "Sine nomine"
+           ],
+           "publish_date": [
+            "1814"
+           ],
+           "subject": [
+            "English language -- Orthography and spelling -- Juvenile literature",
+            "Spellers"
+           ],
+           "type": "work",
+           "ebook_count_i": 0
+          },
+          {
+           "title_suggest": "Nu gaet reynaerde al huten spele",
+           "edition_key": [
+            "OL4998978M"
+           ],
+           "isbn": [
+            "9789061851011",
+            "9061851017"
+           ],
+           "has_fulltext": false,
+           "text": [
+            "OL4998978M",
+            "9789061851011",
+            "9061851017",
+            "Frank Lulofs",
+            "3909105",
+            "OL1944504A",
+            "over commentaar en interpretatie",
+            "Nu gaet reynaerde al huten spele",
+            "F. Lulofs.",
+            "Reinaert de Vos",
+            "/works/OL6977929W",
+            "Thespa",
+            "76500932"
+           ],
+           "author_name": [
+            "Frank Lulofs"
+           ],
+           "seed": [
+            "/books/OL4998978M",
+            "/works/OL6977929W",
+            "/subjects/reinaert_de_vos",
+            "/authors/OL1944504A"
+           ],
+           "oclc": [
+            "3909105"
+           ],
+           "author_key": [
+            "OL1944504A"
+           ],
+           "subject": [
+            "Reinaert de Vos"
+           ],
+           "title": "Nu gaet reynaerde al huten spele",
+           "publish_date": [
+            "1975"
+           ],
+           "type": "work",
+           "ebook_count_i": 0,
+           "publish_place": [
+            "Amsterdam"
+           ],
+           "edition_count": 1,
+           "key": "/works/OL6977929W",
+           "publisher": [
+            "Thespa"
+           ],
+           "language": [
+            "dut"
+           ],
+           "lccn": [
+            "76500932"
+           ],
+           "last_modified_i": 1291540479,
+           "publish_year": [
+            1975
+           ],
+           "first_publish_year": 1975
+          },
+          {
+           "title_suggest": "The Little child's speling [sic] book",
+           "publish_place": [
+            "[United States"
+           ],
+           "has_fulltext": false,
+           "language": [
+            "eng"
+           ],
+           "edition_count": 1,
+           "edition_key": [
+            "OL15950840M"
+           ],
+           "last_modified_i": 1419575606,
+           "title": "The Little child's speling [sic] book",
+           "publisher": [
+            "Sine nomine"
+           ],
+           "seed": [
+            "/books/OL15950840M",
+            "/works/OL15950840M",
+            "/subjects/spellers.",
+            "/subjects/english_language_--_orthography_and_spelling_--_juvenile_literature."
+           ],
+           "first_publish_year": 1814,
+           "publish_year": [
+            1814
+           ],
+           "key": "/works/OL15950840M",
+           "text": [
+            "OL15950840M",
+            "containing a great variety of plain, easy and useful words, with proper directions to read and speak the Columbian language, and a number of easy and instructive lessons.",
+            "The Little child's speling [sic] book",
+            "Spellers.",
+            "English language -- Orthography and spelling -- Juvenile literature.",
+            "/works/OL15950840M",
+            "Sine nomine"
+           ],
+           "publish_date": [
+            "1814"
+           ],
+           "subject": [
+            "Spellers.",
+            "English language -- Orthography and spelling -- Juvenile literature."
+           ],
+           "type": "work",
+           "ebook_count_i": 0
+          },
+          {
+           "title_suggest": "Die goue kalf",
+           "edition_key": [
+            "OL544061M"
+           ],
+           "isbn": [
+            "9781874901426",
+            "1874901422"
+           ],
+           "has_fulltext": false,
+           "text": [
+            "OL544061M",
+            "9781874901426",
+            "1874901422",
+            "Klaas Steytler",
+            "34489387",
+            "OL325255A",
+            "\u02bcn sepie in 13 spele",
+            "Die goue kalf",
+            "Klaas Steytler.",
+            "/works/OL2383099W",
+            "Queillerie",
+            "96123983"
+           ],
+           "author_name": [
+            "Klaas Steytler"
+           ],
+           "seed": [
+            "/books/OL544061M",
+            "/works/OL2383099W",
+            "/authors/OL325255A"
+           ],
+           "oclc": [
+            "34489387"
+           ],
+           "author_key": [
+            "OL325255A"
+           ],
+           "title": "Die goue kalf",
+           "publish_date": [
+            "1995"
+           ],
+           "type": "work",
+           "ebook_count_i": 0,
+           "publish_place": [
+            "Kaapstad"
+           ],
+           "edition_count": 1,
+           "key": "/works/OL2383099W",
+           "id_goodreads": [
+            "5411368"
+           ],
+           "publisher": [
+            "Queillerie"
+           ],
+           "language": [
+            "afr"
+           ],
+           "lccn": [
+            "96123983"
+           ],
+           "last_modified_i": 1303967086,
+           "publish_year": [
+            1995
+           ],
+           "first_publish_year": 1995
+          },
+          {
+           "title_suggest": "Viertal",
+           "publish_place": [
+            "Pretoria"
+           ],
+           "edition_key": [
+            "OL5358098M"
+           ],
+           "has_fulltext": false,
+           "language": [
+            "afr"
+           ],
+           "edition_count": 1,
+           "lccn": [
+            "72317095"
+           ],
+           "last_modified_i": 1260830831,
+           "title": "Viertal",
+           "publisher": [
+            "J. L. van Schaik"
+           ],
+           "author_name": [
+            "Gerhard Johannes Beukes"
+           ],
+           "seed": [
+            "/books/OL5358098M",
+            "/works/OL6641815W",
+            "/authors/OL1789040A"
+           ],
+           "first_publish_year": 1972,
+           "publish_year": [
+            1972
+           ],
+           "key": "/works/OL6641815W",
+           "text": [
+            "OL5358098M",
+            "Gerhard Johannes Beukes",
+            "OL1789040A",
+            "'n keur van vier verwerkte spele uit sy eenbedrywe",
+            "Viertal",
+            "[deur] Gerhard J. Beukes.",
+            "/works/OL6641815W",
+            "J. L. van Schaik",
+            "72317095"
+           ],
+           "publish_date": [
+            "1972"
+           ],
+           "author_key": [
+            "OL1789040A"
+           ],
+           "type": "work",
+           "ebook_count_i": 0
+          },
+          {
+           "title_suggest": "English express",
+           "publish_place": [
+            "London"
+           ],
+           "has_fulltext": false,
+           "language": [
+            "eng"
+           ],
+           "edition_count": 1,
+           "edition_key": [
+            "OL20148251M"
+           ],
+           "last_modified_i": 1419575178,
+           "title": "English express",
+           "publisher": [
+            "BBC"
+           ],
+           "seed": [
+            "/books/OL20148251M",
+            "/works/OL20148251M"
+           ],
+           "first_publish_year": 1994,
+           "publish_year": [
+            1994
+           ],
+           "key": "/works/OL20148251M",
+           "text": [
+            "OL20148251M",
+            "language skills.",
+            "English express",
+            "/works/OL20148251M",
+            "BBC",
+            "Language skills.",
+            "How cum Inglish speling's so wierd?.",
+            "What's in a word.",
+            "Talking and writing.",
+            "What's the point of full stops?.",
+            "How can you write better writing?."
+           ],
+           "publish_date": [
+            "1994"
+           ],
+           "type": "work",
+           "ebook_count_i": 0
+          },
+          {
+           "title_suggest": "Donuts Aren't Ughly Eny Mor",
+           "publisher": [
+            "R.P. Mudgett, Staten Island, NY"
+           ],
+           "isbn": [
+            "9780965859516",
+            "0965859517"
+           ],
+           "has_fulltext": false,
+           "language": [
+            "eng"
+           ],
+           "edition_count": 1,
+           "edition_key": [
+            "OL8531360M"
+           ],
+           "last_modified_i": 1419575757,
+           "title": "Donuts Aren't Ughly Eny Mor",
+           "seed": [
+            "/books/OL8531360M",
+            "/works/OL8531360M"
+           ],
+           "first_publish_year": 1997,
+           "publish_year": [
+            1997
+           ],
+           "key": "/works/OL8531360M",
+           "text": [
+            "OL8531360M",
+            "9780965859516",
+            "0965859517",
+            "Simpler Speling for th 2,000z [sic]",
+            "Donuts Aren't Ughly Eny Mor",
+            "/works/OL8531360M",
+            "R.P. Mudgett, Staten Island, NY"
+           ],
+           "publish_date": [
+            "1997"
+           ],
+           "type": "work",
+           "ebook_count_i": 0
+          },
+          {
+           "title_suggest": "Donuts Aren't Ughly Eny Mor",
+           "edition_key": [
+            "OL401429M"
+           ],
+           "isbn": [
+            "9780965859509",
+            "0965859509",
+            "0965859517",
+            "9780965859516"
+           ],
+           "has_fulltext": false,
+           "text": [
+            "OL401429M",
+            "9780965859509",
+            "0965859509",
+            "0965859517",
+            "9780965859516",
+            "Richard P. Mudgett",
+            "OL248896A",
+            "Simpler Speling for th 2,000z",
+            "Donuts Aren't Ughly Eny Mor",
+            "bi Richard P. Mudgett ; art bi Walter James Brogan.",
+            "Spelling reform",
+            "Orthography and spelling",
+            "English language",
+            "/works/OL2047678W",
+            "R.P. Mudgett",
+            "Donuts aren't ugly any more",
+            "98100481"
+           ],
+           "author_name": [
+            "Richard P. Mudgett"
+           ],
+           "seed": [
+            "/books/OL401429M",
+            "/works/OL2047678W",
+            "/subjects/spelling_reform",
+            "/subjects/english_language",
+            "/subjects/orthography_and_spelling",
+            "/authors/OL248896A"
+           ],
+           "author_key": [
+            "OL248896A"
+           ],
+           "subject": [
+            "Spelling reform",
+            "Orthography and spelling",
+            "English language"
+           ],
+           "title": "Donuts Aren't Ughly Eny Mor",
+           "publish_date": [
+            "1997"
+           ],
+           "type": "work",
+           "ebook_count_i": 0,
+           "publish_place": [
+            "Staten Island, N.Y"
+           ],
+           "edition_count": 1,
+           "key": "/works/OL2047678W",
+           "id_goodreads": [
+            "1952435"
+           ],
+           "publisher": [
+            "R.P. Mudgett"
+           ],
+           "language": [
+            "eng"
+           ],
+           "lccn": [
+            "98100481"
+           ],
+           "last_modified_i": 1271450181,
+           "publish_year": [
+            1997
+           ],
+           "first_publish_year": 1997
+          },
+          {
+           "title_suggest": "The Foolish almanak for anuthur year",
+           "edition_key": [
+            "OL7074771M"
+           ],
+           "has_fulltext": true,
+           "text": [
+            "OL7074771M",
+            "4303179",
+            "foolishalmanakfo00bostiala",
+            "the furst cinc the introdukshun ov the muk-rake in magazeen gardning, and the speling reform ov owr langwij by Theodor Rosyfelt.",
+            "The Foolish almanak for anuthur year",
+            "Accessible book",
+            "American wit and humor",
+            "American Satire",
+            "/works/OL16749495W",
+            "J. W. Luce and Company",
+            "Foolish almanak.",
+            "06043522"
+           ],
+           "seed": [
+            "/books/OL7074771M",
+            "/works/OL16749495W",
+            "/subjects/american_wit_and_humor",
+            "/subjects/american_satire"
+           ],
+           "oclc": [
+            "4303179"
+           ],
+           "ia": [
+            "foolishalmanakfo00bostiala"
+           ],
+           "subject": [
+            "Accessible book",
+            "American wit and humor",
+            "American Satire"
+           ],
+           "title": "The Foolish almanak for anuthur year",
+           "ia_collection_s": "cdl;americana",
+           "publish_date": [
+            "1906"
+           ],
+           "type": "work",
+           "ebook_count_i": 1,
+           "publish_place": [
+            "Boston",
+            "London"
+           ],
+           "edition_count": 1,
+           "key": "/works/OL16749495W",
+           "public_scan_b": true,
+           "publisher": [
+            "J. W. Luce and Company"
+           ],
+           "lccn": [
+            "06043522"
+           ],
+           "last_modified_i": 1344126488,
+           "cover_edition_key": "OL7074771M",
+           "publish_year": [
+            1906
+           ],
+           "first_publish_year": 1906
+          },
+          {
+           "title_suggest": "Teatime talk with G.B.S",
+           "publish_place": [
+            "London"
+           ],
+           "has_fulltext": false,
+           "language": [
+            "eng"
+           ],
+           "edition_count": 1,
+           "edition_key": [
+            "OL19230160M"
+           ],
+           "last_modified_i": 1291413260,
+           "title": "Teatime talk with G.B.S",
+           "subject": [
+            "Interviews"
+           ],
+           "author_name": [
+            "Charles Hamblett"
+           ],
+           "person": [
+            "Bernard Shaw (1856-1950)"
+           ],
+           "seed": [
+            "/books/OL19230160M",
+            "/works/OL7029646W",
+            "/subjects/interviews",
+            "/subjects/person:bernard_shaw_(1856-1950)",
+            "/authors/OL1968927A"
+           ],
+           "first_publish_year": 1948,
+           "publish_year": [
+            1948
+           ],
+           "key": "/works/OL7029646W",
+           "text": [
+            "OL19230160M",
+            "Charles Hamblett",
+            "OL1968927A",
+            "at his Ayot Saint Lawrence home he talked of Stalin, the \"nonsense\" of war, Communism, Bevin, Vishinsky, and his pet subject \"Nu Speling\"",
+            "Teatime talk with G.B.S",
+            "by Charles Hamblett.",
+            "Interviews",
+            "/works/OL7029646W",
+            "Odhams Press",
+            "Teatime talk with G.B.S.",
+            "Bernard Shaw (1856-1950)"
+           ],
+           "publisher": [
+            "Odhams Press"
+           ],
+           "publish_date": [
+            "1948"
+           ],
+           "author_key": [
+            "OL1968927A"
+           ],
+           "type": "work",
+           "ebook_count_i": 0
+          },
+          {
+           "title_suggest": "The Star",
+           "edition_key": [
+            "OL6617451M",
+            "OL12032258M"
+           ],
+           "subtitle": "And Other Stories",
+           "has_fulltext": false,
+           "text": [
+            "OL6617451M",
+            "OL12032258M",
+            "And Other Stories",
+            "H. G. Wells",
+            "Simplified Spelling Society.",
+            "Tom Teti (Narrator)",
+            "11479233",
+            "1556560923",
+            "9781556560927",
+            "OL13066A",
+            "The Star",
+            "by H. G. Wells, iseud in simplifyd speling with the kynd permishon ov the author.",
+            "Spelling reform",
+            "Texts",
+            "/works/OL52102W",
+            "Dercum Audio",
+            "Simplified Spelling Society",
+            "The star",
+            "19011051",
+            "H. G Wells",
+            "H .G Wells",
+            "Wells H G",
+            "H.-G. Wells",
+            "H. G. (foreword and afterword by Gregory Benford) Wells",
+            "Herbert George Wells",
+            "H.g. Wells",
+            "H.G., Wells",
+            "H. G. Herbert George Wells",
+            "H. G. Wells",
+            "H G ; Joe Mugnaini (illus Wells",
+            "H.G. Wells",
+            "Herbert G. Wells",
+            "F. Scott Fitzgerald Oscar Wilde Robert Nathan Henry James H. G. Wells Leo B. Kneer",
+            "Wells H.G",
+            "H. G, Wells",
+            "Ed. Jeremy Hunter H.G. Wells",
+            "H.G. George Herbert Wells",
+            "H G. Wells",
+            "H.G Wells",
+            "H.G. Wells; Conspiracy Journal staff",
+            "H., G. Wells",
+            "H. G. Wells, Julian Huxley, G. P. Wells",
+            "H. G. (Herbert George) Wells",
+            "HG Wells",
+            "G. H. Wells",
+            "WELLS, H.G. (HERBERT GEORGE), 1866-1946."
+           ],
+           "author_name": [
+            "H. G. Wells"
+           ],
+           "seed": [
+            "/books/OL6617451M",
+            "/books/OL12032258M",
+            "/works/OL52102W",
+            "/subjects/spelling_reform",
+            "/subjects/texts",
+            "/authors/OL13066A"
+           ],
+           "oclc": [
+            "11479233"
+           ],
+           "contributor": [
+            "Simplified Spelling Society.",
+            "Tom Teti (Narrator)"
+           ],
+           "isbn": [
+            "1556560923",
+            "9781556560927"
+           ],
+           "author_key": [
+            "OL13066A"
+           ],
+           "subject": [
+            "Spelling reform",
+            "Texts"
+           ],
+           "title": "The Star",
+           "publish_date": [
+            "December 1991",
+            "1917"
+           ],
+           "type": "work",
+           "ebook_count_i": 0,
+           "publish_place": [
+            "London"
+           ],
+           "edition_count": 2,
+           "key": "/works/OL52102W",
+           "id_goodreads": [
+            "2080232"
+           ],
+           "publisher": [
+            "Dercum Audio",
+            "Simplified Spelling Society"
+           ],
+           "language": [
+            "eng"
+           ],
+           "lccn": [
+            "19011051"
+           ],
+           "last_modified_i": 1285093431,
+           "author_alternative_name": [
+            "H. G Wells",
+            "H .G Wells",
+            "Wells H G",
+            "H.-G. Wells",
+            "H. G. (foreword and afterword by Gregory Benford) Wells",
+            "Herbert George Wells",
+            "H.g. Wells",
+            "H.G., Wells",
+            "H. G. Herbert George Wells",
+            "H. G. Wells",
+            "H G ; Joe Mugnaini (illus Wells",
+            "H.G. Wells",
+            "Herbert G. Wells",
+            "F. Scott Fitzgerald Oscar Wilde Robert Nathan Henry James H. G. Wells Leo B. Kneer",
+            "Wells H.G",
+            "H. G, Wells",
+            "Ed. Jeremy Hunter H.G. Wells",
+            "H.G. George Herbert Wells",
+            "H G. Wells",
+            "H.G Wells",
+            "H.G. Wells; Conspiracy Journal staff",
+            "H., G. Wells",
+            "H. G. Wells, Julian Huxley, G. P. Wells",
+            "H. G. (Herbert George) Wells",
+            "HG Wells",
+            "G. H. Wells",
+            "WELLS, H.G. (HERBERT GEORGE), 1866-1946."
+           ],
+           "publish_year": [
+            1991,
+            1917
+           ],
+           "first_publish_year": 1917
+          }
+         ]
+        }
+    http_version: 
+  recorded_at: Tue, 03 May 2016 17:44:31 GMT
+recorded_with: VCR 2.9.3

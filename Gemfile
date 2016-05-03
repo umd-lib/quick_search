@@ -16,10 +16,19 @@ group :development do
 end
 
 group :test do
+  gem 'headless'
   gem 'capybara-webkit'
   gem 'launchy'
   gem 'vcr'
   gem 'webmock'
+  gem 'sqlite3'
+
+  # include a theme and some searchers for integration tests
+  gem 'quick_search-generic_theme'
+  gem 'quick_search-wikipedia_searcher'
+  gem 'quick_search-arxiv_searcher'
+  gem 'quick_search-open_library_searcher'
+  gem 'quick_search-placeholder_searcher'
 end
 
 group :development, :test do

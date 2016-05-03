@@ -8,8 +8,11 @@ module QuickSearch::SearcherConfig
     if searcher == 'best_bets'
       QuickSearch::Engine::APP_CONFIG['best_bets']
     else
-      #TODO: test for the existence of this?
-      "QuickSearch::Engine::#{searcher.upcase}_CONFIG".constantize
+      begin
+        "QuickSearch::Engine::#{searcher.upcase}_CONFIG".constantize
+      rescue NameError
+        nil
+      end
     end
   end
 

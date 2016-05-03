@@ -11,9 +11,98 @@ ROUTES
         insert_into_file "config/routes.rb", routes, :after => "Rails.application.routes.draw do\n"
       end
 
+
+      desc 'insert generic theme'
+      def insert_theme
+
+        theme_gem_entry = <<-THEME
+\n
+# -Inserted by QuickSearch-
+
+# QuickSearch theme
+#
+# Remove the following if you want to use a different theme
+
+gem 'quick_search-generic_theme'
+
+# END -Inserted by QuickSearch-
+
+THEME
+
+
+        say("\nYou'll need to include a theme which QuickSearch uses to render your results. We've built a generic
+theme which can be modified or extended to meet your needs. Alternatively you can build your own from
+scratch and include it.\n\n")
+
+        @theme_response = ask("Would you like to install the generic theme?", limited_to: ['y', 'n'])
+
+        if @theme_response == 'y'
+          insert_into_file "Gemfile", theme_gem_entry, :after => /gem [\"\']quick_search-core[\"\'].*$/
+        end
+
+      end
+
+
+      desc 'insert searchers'
+      def insert_searchers
+        searcher_gem_entry = <<-SEARCHERS
+\n
+# -Inserted by QuickSearch-
+
+# QuickSearch searchers
+#
+# If you want to use different searchers, remove/replace these and be sure to remove them from
+# your config/quick_search_config.yml file as well as references to them in your theme's search
+# results page template
+
+gem 'quick_search-wikipedia_searcher'
+gem 'quick_search-open_library_searcher'
+gem 'quick_search-arxiv_searcher'
+gem 'quick_search-placeholder_searcher'
+
+# -END Inserted by QuickSearch-
+
+        SEARCHERS
+
+        say("\nTo have a working application you'll need to install some searchers. Searchers are the
+code that integrates with third-party APIs, handles performing searches and creating results objects.
+By default quick_search-core provides no searchers. Some searchers are available and it is easy to
+write your own.\n\n")
+
+
+        @searcher_response = ask("Would you like to install some basic searchers that do not require API keys?", limited_to: ['y', 'n'])
+
+        if @searcher_response == 'y'
+          insert_into_file "Gemfile", searcher_gem_entry, :after => /gem [\"\']quick_search-core[\"\'].*$/
+        end
+
+      end
+
+
+      desc 'bundle install theme/searchers'
+      def bundle_install_theme_searchers
+        Bundler.with_clean_env do
+          run "bundle install"
+        end
+      end
+
       desc 'create application configuration file'
       def quick_search_config_yml
         copy_file 'quick_search_config.yml', 'config/quick_search_config.yml'
+      end
+
+      desc 'update quick_search_config.yml'
+      def update_quick_search_config
+        if @theme_response == 'y'
+          theme_config = 'quick_search_generic_theme'
+          insert_into_file "config/quick_search_config.yml", theme_config, :after => /^  theme: '/
+        end
+        if @searcher_response == 'y'
+          included_searchers = ',arxiv,open_library,wikipedia,placeholder'
+          included_found_types = 'arxiv,open_library,wikipedia,placeholder,placeholder,placeholder,placeholder'
+          insert_into_file "config/quick_search_config.yml", included_searchers, :after => /^  searchers: \[best_bets/
+          insert_into_file "config/quick_search_config.yml", included_found_types, :after => /^  found_types: \[/
+        end
       end
 
       desc 'create kaminari initializer'
@@ -40,6 +129,13 @@ ROUTES
 
       desc 'display messages about what needs to be configured'
       def configuration_messages
+        say "QuickSearch installation complete.\n\n", :green
+        if @searcher_response == 'y'
+          say "We've installed a set of default searchers.\n", :green
+        end
+        if @theme_response == 'y'
+          say "We've installed the generic theme.\n", :green
+        end
         file = File.read(File.join( File.expand_path('../templates', __FILE__), 'post_install.txt'))
         say file, :green
       end

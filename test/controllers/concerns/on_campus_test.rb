@@ -5,7 +5,7 @@ class OnCampusTest < ActionController::TestCase
   include QuickSearch::OnCampus
 
   test "should be on campus" do
-    ip = '152.14.1.1'
+    ip = '192.168.1.100'
     on_campus = on_campus?(ip)
     assert on_campus
   end

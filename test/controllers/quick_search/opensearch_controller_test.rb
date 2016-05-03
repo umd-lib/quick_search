@@ -1,10 +1,10 @@
 require 'test_helper'
 
-class OpensearchControllerTest < ActionController::TestCase
+class QuickSearch::OpensearchControllerTest < ActionController::TestCase
 
   test "should return xml" do
     @request.env['HTTP_ACCEPT'] = 'application/xml'
-    get :opensearch
+    get :opensearch, use_route: :quick_search
 
     assert_response :success
     assert_select 'OpenSearchDescription'

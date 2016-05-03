@@ -44,7 +44,7 @@ class ActionDispatch::IntegrationTest
   Capybara.server_port = 7000
   Capybara.app_host = "http://localhost:#{Capybara.server_port}"
   Capybara.javascript_driver = :webkit
-  Capybara.default_wait_time = 8
+  Capybara.default_max_wait_time = 8
 
 end
 

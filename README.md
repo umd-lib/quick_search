@@ -5,6 +5,7 @@
 > https://github.com/NCSU-Libraries/quick_search/tree/pre-gem
 
 [![Build Status](https://travis-ci.org/NCSU-Libraries/quick_search.svg?branch=master)](https://travis-ci.org/NCSU-Libraries/quick_search)
+[![Gem Version](https://badge.fury.io/rb/quick_search-core.svg)](https://badge.fury.io/rb/quick_search-core)
 
 QuickSearch is a customized federated search tool designed to connect people to a variety of library resources, services, and tools. QuickSearch is designed to complement and increase use of existing dedicated library resource discovery tools, such as the catalog, electronic resource search, and subject guides/portals, by directing people to them via an intuitive search interface. The aim of QuickSearch is to provide people with a quick and easy way to find the information they need.
 

@@ -2,7 +2,13 @@ module QuickSearch
   class BestBetsSearcher < QuickSearch::Searcher
 
     def search
-      search_best_bets_index
+      unless QuickSearch::Engine::APP_CONFIG['best_bets']['solr_url'].empty?
+        search_best_bets_index
+      else
+        if defined? QuickSearch::Engine::BEST_BETS
+          search_local_best_bets
+        end
+      end
     end
 
     def results
@@ -40,6 +46,23 @@ module QuickSearch
         result.best_bets_type = 'best-bets-regular'
 
         @response = result
+      end
+    end
+
+    def search_local_best_bets
+      if QuickSearch::Engine::BEST_BETS_INDEX.has_key? http_request_queries['not_escaped'].downcase
+        best_bet_name = QuickSearch::Engine::BEST_BETS_INDEX[http_request_queries['not_escaped'].downcase]
+        best_bet = QuickSearch::Engine::BEST_BETS[best_bet_name]
+        result = OpenStruct.new
+        result.title = title(best_bet)
+        result.link = link(best_bet)
+        result.id = ''
+        result.description = description(best_bet)
+        result.best_bets_type = 'best-bets-regular'
+
+        @response = result
+      else
+        nil
       end
     end
 

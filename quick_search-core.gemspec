@@ -23,7 +23,6 @@ Gem::Specification.new do |s|
   s.add_dependency "nokogiri"
   s.add_dependency "fastimage"
   s.add_dependency "mysql2"
-  s.add_dependency "rsolr"
   s.add_dependency "exception_notification"
   s.add_dependency "modernizr-rails"
   s.add_dependency "therubyracer"

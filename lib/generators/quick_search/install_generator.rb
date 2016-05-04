@@ -105,6 +105,11 @@ write your own.\n\n")
         end
       end
 
+      desc 'create best bets configuration file'
+      def best_bets_yml
+        copy_file 'best_bets.yml', 'config/best_bets.yml'
+      end
+
       desc 'create kaminari initializer'
       def kaminari_initializer
         copy_file 'kaminari.rb', 'config/initializers/kaminari.rb'

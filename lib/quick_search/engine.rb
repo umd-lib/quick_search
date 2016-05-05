@@ -10,8 +10,6 @@ module QuickSearch
           theme_engine_class = "#{QuickSearch::Engine::APP_CONFIG['theme'].classify}::Engine".constantize
           prepend_view_path theme_engine_class.root.join('app', 'views', QuickSearch::Engine::APP_CONFIG['theme'])
         end
-      else
-        raise StandardError, "QuickSearch requires a configuration file called /config/quick_search_config.yml to run"
       end
     end
 

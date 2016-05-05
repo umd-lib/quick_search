@@ -14,7 +14,7 @@ module QuickSearch
     end
 
     initializer :best_bets, :after => :quick_search do
-      if QuickSearch::Engine::APP_CONFIG['best_bets']['solr_url'].empty?
+      if defined? QuickSearch::Engine::APP_CONFIG and QuickSearch::Engine::APP_CONFIG['best_bets']['solr_url'].empty?
         best_bets_file = File.join(Rails.root, "/config/best_bets.yml")
         if File.exist?(best_bets_file)
           QuickSearch::Engine::BEST_BETS = YAML.load_file(best_bets_file)['best_bets']

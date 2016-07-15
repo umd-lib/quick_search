@@ -1,4 +1,4 @@
-class Search < ActiveRecord::Base
+class Search < ApplicationRecord
   
   def self.get_most_frequent_searches
     frequent_searches = []

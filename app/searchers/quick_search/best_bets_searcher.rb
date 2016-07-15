@@ -99,12 +99,7 @@ module QuickSearch
     end
 
     def link(value)
-      # TODO: should we make all URLS in the best_bets index absolute? currently some begin with a /
-      if value['url'].start_with?('/')
-        QuickSearch::Engine::APP_CONFIG['website']['website_base_url'] + value['url']
-      else
-        value['url']
-      end
+      value['url']
     end
 
     def id(value)

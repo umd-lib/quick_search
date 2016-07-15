@@ -10,8 +10,8 @@ module QuickSearch
 
     require 'benchmark_logger'
 
-    before_filter :doi_trap, :log_query
-    after_filter :realtime_message, only: [:index]
+    before_action :doi_trap, :log_query
+    after_action :realtime_message, only: [:index]
     protect_from_forgery except: :log_event
 
     def index
@@ -117,9 +117,9 @@ module QuickSearch
     def log_search
       if params[:query].present? && params[:page].present?
         Search.create(query: params[:query], page: params[:page])
-        render :nothing => true, :status => 200, :content_type => 'text/html'
+        head :ok
       else
-        render :nothing => true, :status => 500, :content_type => 'text/html'
+        head :bad_request
       end
     end
 
@@ -127,12 +127,12 @@ module QuickSearch
       if params[:category].present? && params[:event_action].present? && params[:label].present?
         Event.create(category: params[:category], action: params[:event_action], label: params[:label][0..250])
         if params[:callback].present?
-          render :nothing => true, :status => 200, :content_type => 'text/javascript'
+          head :ok, content_type: 'text/javascript'
         else
-          render :nothing => true, :status => 200, :content_type => 'text/html'
+          head :ok
         end
       else
-        render :nothing => true, :status => 500, :content_type => 'text/html'
+        head :bad_request
       end
     end
 

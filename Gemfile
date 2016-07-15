@@ -22,6 +22,7 @@ group :test do
   gem 'vcr'
   gem 'webmock'
   gem 'sqlite3'
+  gem 'rails-controller-testing'
 
   # include a theme and some searchers for integration tests
   gem 'quick_search-generic_theme'

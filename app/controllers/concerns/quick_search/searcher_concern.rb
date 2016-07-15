@@ -27,13 +27,20 @@ module QuickSearch::SearcherConcern
         end
       end
 
+      # Constantize all searchers before creating searcher threads
+      # Excluding this line causes threads to hang indefinitely as of Rails 5
+      QuickSearch::Engine::APP_CONFIG['searchers'].each do |searcher_name|
+        "QuickSearch::#{searcher_name.camelize}Searcher".constantize
+      end
+
       searchers.shuffle.each do |search_method|
         search_threads << Thread.new(search_method) do |sm|
           benchmark "%s server #{sm}" % CGI.escape(query.to_str) do
             begin
               klass = "QuickSearch::#{sm.camelize}Searcher".constantize
+
               http_client = HTTPClient.new
-              update_searcher_timeout(http_client, search_method)
+              update_searcher_timeout(http_client, sm)
               # FIXME: Probably want to set paging and offset somewhere else.
               # searcher = klass.new(http_client, params_q_scrubbed, QuickSearch::Engine::APP_CONFIG['per_page'], 0, 1, on_campus?(request.remote_ip))
               if sm == primary_searcher

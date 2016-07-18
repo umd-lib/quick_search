@@ -30,52 +30,15 @@ production, but still should be considered an early release.
 
 ## Installation
 
-The aim of QuickSearch is to make it very easy to get up and running. There are several ways that you can go about installing it, depending on your situation.
+The aim of QuickSearch is to make it very easy to get up and running.
 
-### Vagrant
-
-If you’re interested in trying out QuickSearch, or you’re a developer looking to get a development environment up and running, the easiest way is to use Vagrant to create a virtual environment which automatically installs QuickSearch and its dependencies in only a couple easy steps.
-
-This method uses Ansible playbooks to provision the virtual environment
-and install QuickSearch, so it is a good guide to see how you might
-configure a server for a QuickSearch production envrionment.
-
-#### Prerequisites
-
-- Vagrant 1.8+ (http://www.vagrantup.com)
-- VirtualBox (https://www.virtualbox.org/wiki/Downloads)
-
-#### Instructions
-
-##### Clone this repository
-
-    git clone git@github.com:ncsu-libraries/quick_search
-
-##### Change into the cloned directory
-
-    cd quick_search
-
-##### Run
-
-    vagrant up
-
-> Note: sometimes the provisioning process will hang at the "dev-bundle |
-bundle install" step. If this happens, press Ctrl+C to kill the process,
-then run the following command to continue the provisioning process:
-
-    vagrant provision
-
-#####Once this completes, you'll have a running instance of QuickSearch available at http://localhost:8888/
-
-### Manual Installation
-
-Follow these instructions to manually install QuickSearch for
+Follow these instructions to install QuickSearch for
 development.
 
 #### Prerequisites
 
-- Rails 4.1
-- Ruby 2.1
+- Rails 5.0
+- Ruby 2.2 or 2.3
 - MySQL development headers (mysql-devel package on CentOS)
 - qtwebkit development headers (qtwebkit-devel package on CentOS)
 
@@ -89,7 +52,7 @@ development.
 
     cd my_app
 
-##### Add quick_search_core gem to your Gemfile:
+##### Add quick_search-core gem to your Gemfile:
 
     gem 'quick_search-core'
 
@@ -184,6 +147,7 @@ Here are the people who have contributed code to this implementation of
 QuickSearch (listed in alphabetical order)
 
 - Kevin Beswick
+- Nushrat Khan
 - Cory Lown
 - Jason Ronallo
 

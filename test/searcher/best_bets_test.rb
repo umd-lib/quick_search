@@ -14,6 +14,7 @@ class BestBetsSearcherTest < ActiveSupport::TestCase
   end
 
   test "should fall back to local yml file if no solr url defined" do
+    QuickSearch::Engine::APP_CONFIG['best_bets']['solr_url'] = ''
     @best_bets_eric.search
     parsed_results = @best_bets_eric.results
     assert parsed_results.first.title.include?('ERIC (Educational Resource Information Center)')

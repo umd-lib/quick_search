@@ -8,7 +8,7 @@ class QuickSearch::SearchControllerTest < ActionController::TestCase
 #  end
 
   test "should redirect to link resolver" do
-    get :index, q: 'doi:10.1002/0470841559.ch1'
+    get :index, params: { q: 'doi:10.1002/0470841559.ch1' }
     assert_redirected_to 'http://doi.org/10.1002%2F0470841559.ch1'
   end
 

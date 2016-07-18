@@ -38,7 +38,7 @@ development.
 #### Prerequisites
 
 - Rails 5.0
-- Ruby 2.2 or 2.3
+- Ruby 2.2.2+ or 2.3.x
 - MySQL development headers (mysql-devel package on CentOS)
 - qtwebkit development headers (qtwebkit-devel package on CentOS)
 

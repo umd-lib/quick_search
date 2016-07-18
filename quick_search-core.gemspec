@@ -7,7 +7,7 @@ require "quick_search/version"
 Gem::Specification.new do |s|
   s.name        = "quick_search-core"
   s.version     = QuickSearch::VERSION
-  s.authors     = ["Kevin Beswick", "Cory Lown", "Jason Ronallo"]
+  s.authors     = ["Kevin Beswick", "Nushrat Khan", "Cory Lown", "Jason Ronallo"]
   s.email       = ["quicksearch@lists.ncsu.edu"]
   s.homepage    = "http://www.github.com/ncsu-libraries/quick_search"
   s.summary     = "QuickSearch is a toolkit for easily creating custom bento-box search applications"
@@ -16,14 +16,13 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]
 
-  s.required_ruby_version = '>= 2.1'
+  s.required_ruby_version = '>= 2.2.2'
 
   s.add_dependency "rails", "~> 5.0"
   s.add_dependency "kaminari"
   s.add_dependency "nokogiri"
   s.add_dependency "fastimage"
   s.add_dependency "mysql2"
-  s.add_dependency "exception_notification"
   s.add_dependency "modernizr-rails"
   s.add_dependency "therubyracer"
   s.add_dependency "httpclient"

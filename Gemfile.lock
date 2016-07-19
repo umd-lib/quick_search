@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    quick_search-core (0.0.1)
+    quick_search-core (0.1.0)
       fastimage
       httpclient
       kaminari
@@ -196,12 +196,12 @@ GEM
     quick_search-arxiv_searcher (0.0.1)
       nokogiri (~> 1.6)
       quick_search-core (~> 0)
-    quick_search-generic_theme (0.0.2)
+    quick_search-generic_theme (0.1.0)
       compass (~> 1.0)
       compass-rails (~> 3.0)
       font-awesome-sass (~> 4.4)
       foundation-rails (= 5.4.5)
-      quick_search-core (~> 0)
+      quick_search-core (~> 0.1)
       sass (~> 3.2)
       sass-rails (~> 5.0)
     quick_search-open_library_searcher (0.0.1)

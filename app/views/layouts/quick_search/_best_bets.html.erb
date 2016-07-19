@@ -11,7 +11,21 @@
                     <% end %>
                      <span class='highlight'>Best&nbsp;Bet</span>
                 </h3>
-                <p><%= best_bets[:description] %></p>
+             
+				<p>
+					<% if best_bets[:description].length > 200 %>
+				    <%= truncate(best_bets[:description], length: 200) %>
+				    <%= link_to 'Read more', '', class: "read-more" %>
+				    <script>
+				      $('.read-more').on('click', function(e) {
+				        e.preventDefault()
+				        $(this).parent().html('<%= escape_javascript best_bets[:description] %>')
+				      })
+				    </script>
+				  <% else %>
+				    <%= best_bets[:description] %>
+				  <% end %>
+			  </p>
             </div>
         </div>
     <% end %>

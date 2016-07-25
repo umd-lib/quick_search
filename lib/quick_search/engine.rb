@@ -18,7 +18,7 @@ module QuickSearch
         QuickSearch::Engine::APP_CONFIG = YAML.load_file(config_file)[Rails.env]
         ActiveSupport.on_load(:action_controller) do
           # get theme / core engine classes
-	  theme_engine_class = "#{QuickSearch::Engine::APP_CONFIG['theme'].classify}::Engine".constantize
+          theme_engine_class = "#{QuickSearch::Engine::APP_CONFIG['theme'].classify}::Engine".constantize
           core_engine_class = "QuickSearch::Engine".constantize
 
           # get the correct view paths for the application, theme, and engine
@@ -28,8 +28,8 @@ module QuickSearch
 
           # prepend to the existing view path ordering
           prepend_view_path(core_view_path)
-	  prepend_view_path(theme_view_path)
-	  prepend_view_path(app_view_path)
+          prepend_view_path(theme_view_path)
+          prepend_view_path(app_view_path)
         end
       end
     end

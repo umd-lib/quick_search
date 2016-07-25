@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    quick_search-core (0.1.0)
+    quick_search-core (0.1.1)
       fastimage
       httpclient
       kaminari

@@ -39,8 +39,8 @@ development.
 
 - Rails 5.0
 - Ruby 2.2.2+ or 2.3.x
-- MySQL development headers (mysql-devel package on CentOS)
-- qtwebkit development headers (qtwebkit-devel package on CentOS)
+- MySQL development headers (mysql-devel package on CentOS, libmysqlclient-dev on Ubuntu)
+- qtwebkit development headers (qtwebkit-devel package on CentOS, libqtwebkit-dev on Ubuntu)
 
 #### Instructions
 

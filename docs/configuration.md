@@ -56,7 +56,7 @@ To include a searcher in QuickSearch, follow these steps:
 
 - Include your searcher gem in the QuickSearch Gemfile
 - Add the searcher name to the “searchers” section in “config/quick_search_config.yml”
-- In your theme, you will need to specify where the searcher is rendered. To do this, edit your “app/views/search/index.html.erb” file, and include this where you’d like the searcher to be rendered: “render_module(@your_searcher, ‘your_searcher’)”
+- In your theme, you will need to specify where the searcher is rendered. To do this, edit your “app/views/quick_search/search/index.html.erb” file, and include this where you’d like the searcher to be rendered: “render_module(@your_searcher, ‘your_searcher’)”
 
 Normally, searchers require some configuration options to be set -
 things like API keys, URL to the service, etc. To override the default

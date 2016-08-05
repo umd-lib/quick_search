@@ -100,7 +100,7 @@ far. Feel free to submit a pull request to add to this list.
 |Placeholder           |gem 'quick_search-placeholder_searcher'       |[quick_search-placeholder_searcher](https://www.github.com/ncsu-libraries/quick_search-placeholder_searcher) |
 |Summon                  |Coming soon                                    |                                   |
 |NCSU Libraries' Catalog |Coming soon                                    |                                   |
-
+|ContentDM               |gem 'quick_search-contentdm'                   | [quick_search-contentdm](https://github.com/tulibraries/quick_search-contentdm)                       |
 
 
 ### Themes

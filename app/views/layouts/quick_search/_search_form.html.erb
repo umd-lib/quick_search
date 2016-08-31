@@ -4,9 +4,9 @@
         <div class="row collapse">
             <div class="small-10 columns">
                 <% if @query  %>
-                    <input type="search" name="q" id="params-q" class="quicksearch-typeahead search-query" value="<%= @query %>" />
+                    <input type="search" name="q" id="params-q" class="search-query" value="<%= @query %>" />
                 <% else %>
-                    <input type="search" name="q" id="params-q" class="quicksearch-typeahead search-query" placeholder="<%= @search_form_placeholder %>" />
+                    <input type="search" name="q" id="params-q" class="search-query" placeholder="<%= @search_form_placeholder %>" />
                 <% end %>
             </div>
             <div class="small-2 columns">

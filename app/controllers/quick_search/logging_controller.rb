@@ -18,7 +18,7 @@ module QuickSearch
 
     def log_search
       if params[:query].present? && params[:page].present?
-        Search.create(query: params[:query], page: params[:page])
+        @session.searches.create(query: params[:query], page: params[:page])
         head :ok
       else
         head :bad_request
@@ -34,7 +34,13 @@ module QuickSearch
 
     def log_event
       if params[:category].present? && params[:event_action].present? && params[:label].present?
-        Event.create(category: params[:category], action: params[:event_action], label: params[:label][0..250])
+        # if an action isn't passed in, assume that it is a click
+        action = params.fetch(:action_type, 'click')
+
+        # create a new event on the current session
+        @session.events.create(category: params[:category], item: params[:event_action], query: params[:label][0..250], action: action)
+
+        # check whether this is a jsonp request
         if params[:callback].present?
           head :ok, content_type: 'text/javascript'
         else
@@ -52,7 +58,7 @@ module QuickSearch
     # Handles creating/updating a session on every request
 
     def handle_session
-      if is_exisiting_session?
+      if is_existing_session?
         update_session
       else
         new_session
@@ -63,7 +69,7 @@ module QuickSearch
     # Returns true if current request has an existing session, false otherwise
 
     def is_existing_session?
-      cookies.has_key? 'session_id' && Session.find(cookies[:session_id][:value])
+      cookies.has_key? :session_id and Session.find(cookies[:session_id])
     end
 
     ##
@@ -88,13 +94,14 @@ module QuickSearch
 
     def new_session
       on_campus = on_campus?(request.remote_ip)
-      is_mobile = True #TODO: how can we check this?
+      is_mobile = is_mobile?
       session_expiry = 5.minutes.from_now
+      session_id = SecureRandom.uuid
 
       # create session in db
-      session = Session.new(session_expiry, on_campus, is_mobile)
+      @session = Session.create(id: session_id, expiry: session_expiry, on_campus: on_campus, is_mobile: is_mobile)
       # set cookie
-      cookies[:session_id] = { :value => session.id, :expires => session_expiry }
+      cookies[:session_id] = { :value => session_id, :expires => session_expiry }
     end
 
     ##
@@ -105,13 +112,13 @@ module QuickSearch
 
     def update_session
       # update session expiry in the database
-      session_id = cookies[:session_id][:value]
-      session = Session.find(session_id)
-      session.expiry = 5.minutes.from_now
-      session.save
+      session_id = cookies[:session_id]
+      @session = Session.find(session_id)
+      @session.expiry = 5.minutes.from_now
+      @session.save
 
       # update session expiry on cookie
-      cookies[:session_id][:expires] = session.expiry
+      cookies[:session_id] = { :value => session_id, :expires => @session.expiry }
     end
 
   end

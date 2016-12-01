@@ -6,6 +6,6 @@ class ChangeEventColumns < ActiveRecord::Migration[5.0]
     end
 
     add_column :events, :action, :string
-    add_reference :events, :sessions, foreign_key: true 
+    add_reference :events, :session, foreign_key: true, type: :uuid 
   end
 end

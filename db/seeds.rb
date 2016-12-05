@@ -11,7 +11,7 @@ end
 # Generates a random (category, action) pair for an event
 
 def random_category_action
-  category = (QuickSearch::Engine::APP_CONFIG['searchers'] + ['spelling-suggestion', 'found-types', 'doi-trap', 'more-options']).sample.dasherize
+  category = (QuickSearch::Engine::APP_CONFIG['searchers'] + ['spelling-suggestion', 'result-types', 'doi-trap', 'more-options']).sample.dasherize
   # Default action is a click
   action = 'click'
 
@@ -38,7 +38,7 @@ def random_item(category)
      'http://dx.doi.org/10.3168/jds.S0022-0302(86)80552-5', 'DOI: 10.1023/A:1005204727421', '10.1039/C3TA00019B', 'doi:10.1038/leu.2016.163',
      'DOI: 10.1007/s10853-013-7374-x', 'doi: 10.1016/0167-2738(91)90233-2', 'doi: 10.1179/000705992798268927', '10.1038/nphys3794',
      'doi: 10.1149/1.1393288', '10.1080/1554480X.2014.926052', '10.1002/adma.201506234', '10.1080/00958972.2016.1176158'].sample
-  elsif category == 'found-types'
+  elsif category == 'result-types'
     # Use a defined searcher for found types
     (QuickSearch::Engine::APP_CONFIG['searchers']).sample.dasherize
   elsif category == 'more-options'
@@ -69,7 +69,7 @@ end
 
   # Generate 0-8 random searches, occuring at random times during the current session
   (rand*8).to_i.times do |j|
-    session.searches.create(query: random_query, page: 'index', created_at: Time.at((session.expiry.to_f - session.created_at.to_f)*rand + session.created_at.to_f))
+    session.searches.create(query: random_query, page: '/', created_at: Time.at((session.expiry.to_f - session.created_at.to_f)*rand + session.created_at.to_f))
   end
 
   # Generate 0-15 random events, occuring at random times during the current session

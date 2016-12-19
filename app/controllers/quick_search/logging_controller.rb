@@ -69,7 +69,7 @@ module QuickSearch
     # Returns true if current request has an existing session, false otherwise
 
     def is_existing_session?
-      cookies.has_key? :session_id and Session.find(cookies[:session_id])
+      cookies.has_key? :session_id and Session.find_by(session_uuid: cookies[:session_id])
     end
 
     ##
@@ -96,12 +96,12 @@ module QuickSearch
       on_campus = on_campus?(request.remote_ip)
       is_mobile = is_mobile?
       session_expiry = 5.minutes.from_now
-      session_id = SecureRandom.uuid
+      session_uuid = SecureRandom.uuid
 
       # create session in db
-      @session = Session.create(id: session_id, expiry: session_expiry, on_campus: on_campus, is_mobile: is_mobile)
+      @session = Session.create(session_uuid: session_uuid, expiry: session_expiry, on_campus: on_campus, is_mobile: is_mobile)
       # set cookie
-      cookies[:session_id] = { :value => session_id, :expires => session_expiry }
+      cookies[:session_id] = { :value => session_uuid, :expires => session_expiry }
     end
 
     ##
@@ -113,7 +113,7 @@ module QuickSearch
     def update_session
       # update session expiry in the database
       session_id = cookies[:session_id]
-      @session = Session.find(session_id)
+      @session = Session.find_by session_uuid: session_id
       @session.expiry = 5.minutes.from_now
       @session.save
 

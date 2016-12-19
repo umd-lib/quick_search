@@ -62,7 +62,7 @@ end
 
 15000.times do |i|
   # Create session with random parameters. Simulate 2 years worth of data
-  session = Session.create(id: SecureRandom.uuid, expiry: rand(2.years).seconds.ago, on_campus: [true, false].sample, is_mobile: [true, false].sample)
+  session = Session.create(session_uuid: SecureRandom.uuid, expiry: rand(2.years).seconds.ago, on_campus: [true, false].sample, is_mobile: [true, false].sample)
   # Update created_at (since we use this as session start time) to be within 10 minutes of the expiry of the session
   session.created_at = session.expiry - (rand*10).minutes
   session.save

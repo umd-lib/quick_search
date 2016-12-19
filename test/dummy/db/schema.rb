@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 20161212192454) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "action"
-    t.         "session_id"
+    t.integer  "session_id"
     t.string   "created_at_string"
     t.index ["created_at_string"], name: "index_events_on_created_at_string"
     t.index ["session_id"], name: "index_events_on_session_id"
@@ -30,13 +30,14 @@ ActiveRecord::Schema.define(version: 20161212192454) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "page"
-    t.         "session_id"
+    t.integer  "session_id"
     t.string   "created_at_string"
     t.index ["created_at_string"], name: "index_searches_on_created_at_string"
     t.index ["session_id"], name: "index_searches_on_session_id"
   end
 
-  create_table "sessions", id: nil, force: :cascade do |t|
+  create_table "sessions", force: :cascade do |t|
+    t.string   "session_uuid"
     t.datetime "expiry"
     t.boolean  "on_campus"
     t.boolean  "is_mobile"
@@ -44,7 +45,6 @@ ActiveRecord::Schema.define(version: 20161212192454) do
     t.datetime "updated_at"
     t.string   "created_at_string"
     t.index ["created_at_string"], name: "index_sessions_on_created_at_string"
-    t.index ["id"], name: "sqlite_autoindex_sessions_1", unique: true
   end
 
 end

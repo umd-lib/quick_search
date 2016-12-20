@@ -1,6 +1,7 @@
 module QuickSearch
   class TypeaheadController < ApplicationController
-    
+    protect_from_forgery except: :typeahead
+
     # This method should return a list of search suggestions for a given searcher
     # It should return errors if there is no param called 'searcher', if the searcher does not exist
     # or if the searcher doesn't implement the 'typeahead' method
@@ -30,7 +31,12 @@ module QuickSearch
 
       if klass.method_defined? :typeahead
         typeahead_result = klass.new(HTTPClient.new, query, total).typeahead
-        render json: typeahead_result 
+
+        if params.has_key? 'callback'
+          render json: typeahead_result, callback: params['callback']
+        else
+          render json: typeahead_result
+        end
       else
         logger.error "Typeahead request: searcher #{searcher} has no typeahead method"
         head :bad_request

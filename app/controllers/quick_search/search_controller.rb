@@ -12,7 +12,6 @@ module QuickSearch
 
     before_action :doi_trap, :log_query
     after_action :realtime_message, only: [:index]
-    protect_from_forgery except: :log_event
 
     def index
       loaded_searches

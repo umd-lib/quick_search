@@ -8,6 +8,7 @@ module QuickSearch
     include QuickSearch::OnCampus
 
     before_action :handle_session
+    protect_from_forgery except: :log_event
 
     ##
     # Logs a search to the database

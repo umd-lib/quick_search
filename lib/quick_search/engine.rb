@@ -48,6 +48,7 @@ module QuickSearch
           QuickSearch::Engine::BEST_BETS = YAML.load_file(best_bets_file)['best_bets']
           QuickSearch::Engine::BEST_BETS_INDEX = {}
           QuickSearch::Engine::BEST_BETS.each do |best_bet_name, best_bet|
+            QuickSearch::Engine::BEST_BETS[best_bet_name]['id'] = best_bet_name
             best_bet['keywords'].each do |keyword|
               QuickSearch::Engine::BEST_BETS_INDEX[keyword.downcase] = best_bet_name
             end

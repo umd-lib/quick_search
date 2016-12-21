@@ -56,7 +56,7 @@ module QuickSearch
         result = OpenStruct.new
         result.title = title(best_bet)
         result.link = link(best_bet)
-        result.id = ''
+        result.id = best_bet['id']
         result.description = description(best_bet)
         result.best_bets_type = 'best-bets-regular'
 

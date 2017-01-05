@@ -43,9 +43,9 @@ module QuickSearch
 
         # check whether this is a jsonp request
         if params[:callback].present?
-          head :ok, content_type: 'text/javascript'
+          render :json => { 'response': 'success' }, :callback => params[:callback]
         else
-          head :ok
+          render :json => { 'response': 'success' }
         end
       else
         head :bad_request

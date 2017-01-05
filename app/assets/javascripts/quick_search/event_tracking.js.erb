@@ -145,26 +145,21 @@ var quickSearchEventTracking = (function () {
         
         // Universal Analytics
 
-        // ga('send', 'event', {
-        //     'hitType': 'event',
-        //     'eventCategory': eventValues.category,
-        //     'eventAction': eventValues.action,
-        //     'eventLabel': eventValues.label,
-        //     'hitCallback': function () {
-        //         if (link !== '') {
-        //             document.location = link;
-        //         }
-        //     }
-        // });
-        
-        // Classic Analytics
-        _gaq.push(['_set','hitCallback',function() {
-            if (link !== '') {
-                document.location = link;
-            }
-        }]);
         var category = eventValues.action_type == 'serve' ? eventValues.category + '-serve' : eventValues.category;
-        _gaq.push(['_trackEvent', category, eventValues.action, eventValues.label]);
+
+
+         ga('send', {
+             hitType: 'event',
+             eventCategory: category,
+             eventAction: eventValues.action,
+             eventLabel: eventValues.label,
+             hitCallback: function () {
+                 if (link !== '') {
+                     document.location = link;
+                 }
+             }
+         });
+        
     }
 
     function logEventToDatabase(eventValues) {

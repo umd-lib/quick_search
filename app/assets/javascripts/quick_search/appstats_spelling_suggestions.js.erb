@@ -593,71 +593,23 @@
 
     function sort_search_data(sort) {
         var id = "#graph_spelling_suggestions";
-        switch (sort) {
-            case 0: // rank asc
-                AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
-                    return d3.ascending(a.rank, b.rank);
-                });
-                break;
-            case 1: // rank desc
-                AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
-                    return d3.ascending(b.rank, a.rank);
-                });
-                break;
-            case 2: // label asc
-                AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
-                    return d3.ascending(a.label, b.label);
-                });
-                break;
-            case 3: // label desc
-                AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
-                    return d3.ascending(b.label, a.label);
-                });
-                break;
-            case 4: // rank asc
-                AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
-                    return d3.ascending(a.serves, b.serves);
-                });
-                break;
-            case 5: // rank desc
-                AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
-                    return d3.ascending(b.serves, a.serves);
-                });
-                break;
-            case 6: // label asc
-                AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
-                    return d3.ascending(a.clicks, b.clicks);
-                });
-                break;
-            case 7: // label desc
-                AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
-                    return d3.ascending(b.clicks, a.clicks);
-                });
-                break;
-            case 8: // rank asc
-                AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
-                    return d3.ascending(a.ratio, b.ratio);
-                });
-                break;
-            case 9: // rank desc
-                AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
-                    return d3.ascending(b.ratio, a.ratio);
-                });
-                break;
-        }
 
         AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
             switch(sort) {
                 case 0: return d3.ascending(a.rank,b.rank);
                 case 1: return d3.ascending(b.rank,a.rank);
-                case 2: return d3.ascending(a.rank,b.rank);
-                case 3: return d3.ascending(b.rank,a.rank);
-                case 4: return d3.ascending(a.rank,b.rank);
-                case 5: return d3.ascending(b.rank,a.rank);
-                case 6: return d3.ascending(a.rank,b.rank);
-                case 7: return d3.ascending(b.rank,a.rank);
-                case 8: return d3.ascending(a.rank,b.rank);
-                case 9: return d3.ascending(b.rank,a.rank);
+
+                case 2: return d3.ascending(a.label,b.label);
+                case 3: return d3.ascending(b.label,a.label);
+
+                case 4: return d3.ascending(a.serves,b.serves);
+                case 5: return d3.ascending(b.serves,a.serves);
+
+                case 6: return d3.ascending(a.clicks,b.clicks);
+                case 7: return d3.ascending(b.clicks,a.clicks);
+
+                case 8: return d3.ascending(a.ratio,b.ratio);
+                case 9: return d3.ascending(b.ratio,a.ratio);
             }
         });
 

@@ -491,32 +491,15 @@
 
     function sort_search_data(sort) {
         var id = "#graph_top_searches";
-        console.log("Before Sort:");
-        console.log(AppStatsGlobals[id].OriginalData);
-        switch (sort) {
-            case 0: // rank asc
-                AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
-                    return d3.ascending(a.rank, b.rank);
-                });
-                break;
-            case 1: // rank desc
-                AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
-                    return d3.ascending(b.rank, a.rank);
-                });
-                break;
-            case 2: // label asc
-                AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
-                    return d3.ascending(a.label, b.label);
-                });
-                break;
-            case 3: // label desc
-                AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
-                    return d3.ascending(b.label, a.label);
-                });
-                break;
-        }
-        console.log("After Sort:");
-        console.log(AppStatsGlobals[id].OriginalData);
+        AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
+            switch(sort) {
+                case 0: return d3.ascending(a.rank,b.rank);
+                case 1: return d3.ascending(b.rank,a.rank);
+
+                case 2: return d3.ascending(a.label,b.label);
+                case 3: return d3.ascending(b.label,a.label);
+            }
+        });
 
         // Update global sort
         AppStatsGlobals[id].Sort = sort;

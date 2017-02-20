@@ -23,6 +23,26 @@ module QuickSearch
       end
     end
 
+    def data_test
+      result = []
+      # events = Event.where(date_range).limit(100)
+      # searches = Search.where(date_range).limit(100)
+      # sessions = Session.where(date_range).limit(100)
+
+      # result[0] = events
+      # result[1] = searches
+      # result[2] = sessions
+      res = Session.joins("INNER JOIN searches ON searches.session_id=sessions.id").limit(100)
+      # res = Session.joins(:searches).limit(100)
+      result[0] = res
+
+      respond_to do |format|
+        format.json {
+          render :json => result
+        }
+      end
+    end
+
     def data_general_statistics
       result = []
 

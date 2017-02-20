@@ -4,6 +4,206 @@ module QuickSearch
 
     before_action :auth, :start_date, :end_date, :days_in_sample
 
+
+    ########################## ADDED #############################
+    def data_sample
+      result = []
+      events = Event.where(date_range).limit(100)
+      searches = Search.where(date_range).limit(100)
+      sessions = Session.where(date_range).limit(100)
+
+      result[0] = events
+      result[1] = searches
+      result[2] = sessions
+
+      respond_to do |format|
+        format.json {
+          render :json => result
+        }
+      end
+    end
+
+    def data_general_statistics
+      result = []
+
+      clicks = Event.where(date_range).where(:action => 'click').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      clicksSub = []
+      clicks.each do |date , count|
+        row = { "date" => date ,
+                "count" => count}
+        clicksSub << row
+      end
+      result << clicksSub
+
+      serves = Event.where(date_range).where(:action => 'serve').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      servesSub = []
+      serves.each do |date , count|
+        row = { "date" => date ,
+                "count" => count}
+        servesSub << row
+      end
+      result << servesSub
+
+      sessions = Session.where(date_range).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      sessionsSub = []
+      sessions.each do |date , count|
+        row = { "date" => date ,
+                "count" => count}
+        sessionsSub << row
+      end
+      result << sessionsSub
+
+      searches = Search.where(date_range).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      searchesSub = []
+      searches.each do |date , count|
+        row = { "date" => date ,
+                "count" => count}
+        searchesSub << row
+      end
+      result << searchesSub
+
+      respond_to do |format|
+        format.json {
+          render :json => result
+        }
+      end
+    end
+
+    def data_module_clicks
+      clicks = Event.where(date_range).where(excluded_categories).where(:action => 'click').group(:category).order("count_category DESC").count(:category)
+      total_clicks = clicks.values.sum
+
+      i=1
+      result = []
+      clicks.each do |category, count|
+        row = {"rank" => i,
+               "label" => category,
+               "clickcount" => count,
+               "percentage" => ((100.0*count)/total_clicks).round(2),
+               "parent" => 0,
+               "expanded" => 0,
+               "key" => category + ((100.0*count)/total_clicks).to_s}
+        result << row
+        i += 1
+      end
+
+      respond_to do |format|
+        format.json {
+          render :json => result
+        }
+      end
+    end
+
+    def data_result_clicks
+      clicks = Event.where(date_range).where(:category => "result-types").where(:action => 'click').group(:item).order("count_item DESC").count(:item)
+      total_clicks = clicks.values.sum
+
+      i=1
+      result = []
+      clicks.each do |item, count|
+        row = {"rank" => i,
+               "label" => item,
+               "clickcount" => count,
+               "percentage" => ((100.0*count)/total_clicks).round(2),
+               "parent" => 0,
+               "expanded" => 0,
+               "key" => item + ((100.0*count)/total_clicks).to_s}
+        result << row
+        i += 1
+      end
+
+      respond_to do |format|
+        format.json {
+          render :json => result
+        }
+      end
+    end
+
+    def data_module_details
+      category = params[:category]
+      clicks = Event.where(:category => category).where(:action => 'click').where(date_range).group(:item).order('count_category DESC').count(:category)
+      total_clicks = clicks.values.sum
+
+      i=1
+      result = []
+      clicks.each do |item, count|
+        row = {"rank" => i,
+               "label" => item,
+               "clickcount" => count,
+               "percentage" => ((100.0*count)/total_clicks).round(2),
+               "parent" => category,
+               "key" => item + ((100.0*count)/total_clicks).to_s}
+        result << row
+        i += 1
+      end
+
+      respond_to do |format|
+        format.json {
+          render :json => result
+        }
+      end
+    end
+
+    def data_top_searches
+      searches = Search.where(:page => '/').where(date_range).limit(200).group(:query).order('count_query DESC').count(:query)
+      total_searches = Search.where(:page => '/').where(date_range).group(:query).order('count_query DESC').count(:query).sum {|k,v| v}
+
+      i=1
+      result = []
+      last_row = {}
+      searches.each do |query, count|
+        if (last_row=={}) 
+          last_cum_percentage = 0
+        else 
+          last_cum_percentage = last_row["cum_perc"]
+        end
+        row = {"rank" => i,
+               "label" => query,
+               "count" => count,
+               "percentage" => ((100.0*count)/total_searches).round(2),
+               "cum_perc" => (last_cum_percentage + ((100.0*count)/total_searches)),
+               "cum_percentage" => (last_cum_percentage + ((100.0*count)/total_searches)).round(2),
+               "key" => query + (last_cum_percentage + ((100.0*count)/total_searches)).to_s}
+        result << row
+        last_row = row
+        i += 1
+      end
+
+      respond_to do |format|
+        format.json {
+          render :json => result
+        }
+      end
+    end
+
+    def data_spelling_suggestions
+      serves = Event.where(date_range).where(:category => "spelling-suggestion", :action => 'serve').group(:item).order("count_category DESC").count(:category)
+      clicks = Event.where(date_range).where(:category => "spelling-suggestion", :action => 'click').group(:item).count(:category)
+
+      i=1
+      result = []
+      serves.each do |item , count|
+        row = {"rank" => i,
+               "label" => item,
+               "serves" => count,
+               "clicks" =>  clicks[item],
+               "ratio" => (100.0*clicks[item]/count).round(2),
+               "key" => i.to_s + item + (100.0*clicks[item]/count).to_s}
+        result << row
+        i+=1
+        if i>200 then
+          break
+        end
+      end
+
+      respond_to do |format|
+        format.json {
+          render :json => result
+        }
+      end
+    end
+    ##############################################################
+
     def index
       @page_title = 'Search Statistics'
       search_click_ratio

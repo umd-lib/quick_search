@@ -1,0 +1,42 @@
+<style>
+
+.area {
+  fill: steelblue;
+  clip-path: url(#clip);
+}
+
+.areaMini {
+  fill: steelblue;
+  clip-path: url(#clipMini);
+}
+
+.chartTitle {
+	text-anchor: middle;
+	fill: 	#333333;
+	font-size: 30px;
+	font-family: "Lucida Console";
+}
+
+.zoom {
+  cursor: move;
+  fill: none;
+  pointer-events: all;
+}
+
+.graph_mini {
+    float: left;
+}
+
+.clearfix{
+    clear:both
+}
+
+</style>
+
+<svg id="graph_general_statistics" width="960" height="500"></svg>
+
+<svg class="graph_mini" id="mini0" width="240" height="200"></svg>
+<svg class="graph_mini" id="mini1" width="240" height="200"></svg>
+<svg class="graph_mini" id="mini2" width="240" height="200"></svg>
+<svg class="graph_mini" id="mini3" width="240" height="200"></svg>
+<div class="clearfix"></div>

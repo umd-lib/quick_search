@@ -6,19 +6,6 @@
         <%= render partial: "date_range" %>
     </div>
     <div class="medium-9 columns">
-        <h2>Module Clicks</h2>
-        <%= render partial: 'click_count_table', locals: { :clicks => @module_clicks, :total_clicks => @module_click_total} %>
-
-        <h2>Result Types Guide Clicks</h2>
-        <%= render partial: 'click_count_table', locals: { :clicks => @result_types_clicks, :total_clicks => @result_types_click_total} %>
-
         <%= render partial: 'graph_clicks_overview' %>
-
-        <table>
-            <tr>
-                <td>Result Type Guide Click/Search</td>
-                <td><%= number_to_percentage((@result_types_click_total / @searches_count.to_f)*100, precision: 2) %></td>
-            </tr>
-        </table>
     </div>
 </div>

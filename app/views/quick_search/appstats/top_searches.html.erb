@@ -7,35 +7,6 @@
     </div>
     <div class="small-9 columns">
         <h2>Most Frequent Searches</h2>
-        <table class="datatable">
-            <thead>
-                <tr>
-                    <th>Rank</th>
-                    <th>Query</th>
-                    <th>Total</th>
-                    <th>Percent of Total</th>
-                    <th>Cumulative Percent</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% it_count = 0 %>
-                <% total_percent = 0 %>
-                <% @query_counts.each do |query, count| %>
-                    <% it_count += 1 %>
-                    <% term_percent = (count / @searches_count.to_f)*100 %>
-                    <% total_percent += term_percent %>
-                    <tr>
-                        <td><%= it_count %></td>
-                        <td><%= link_to query, root_path(q: query) %></td>
-                        <td><%= number_with_delimiter(count) %></td>
-                        <td><%= number_to_percentage(term_percent, precision: 2) %></td>
-                        <td><%= number_to_percentage(total_percent, precision: 2)%></td>
-                    </tr>
-                <% end %>
-            </tbody>
-        </table>
-
         <%= render partial: 'graph_top_searches' %>
-
     </div>
 </div>

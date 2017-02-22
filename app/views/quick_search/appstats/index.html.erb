@@ -1,8 +1,8 @@
 <% title("#{@page_title} | ") %>
 <%= render partial: 'datatables' %>
-<div class="row" style="display: inline-block; width: 1400px;">
+<div class="row">
     <%= render partial: 'menu' %>
-    <div class="medium-8 columns" style="display: inline-block; width: 1000px;">
+    <div class="medium-9 columns">
         <%= render partial: 'date_range' %>
         <h2>General Statistics</h2>
         <table>
@@ -27,6 +27,7 @@
                 <td><%= number_to_percentage(@click_serve_ratio, precision: 2) %></td>
             </tr>
         </table>
+
 
         <%= render partial: 'graph_general_statistics'  %>
 

@@ -12,6 +12,12 @@
     <%= javascript_include_tag 'application' %>
     <%= render '/layouts/quick_search/head' %>
     <%= render '/layouts/quick_search/google_analytics' %>
+
+    <!-- datepicker (temp) -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
 <body class="<%= body_class %>" data-quicksearch-ga-query="<%= strip_tags(@log_query) %>">
 <div class="off-canvas-wrap">

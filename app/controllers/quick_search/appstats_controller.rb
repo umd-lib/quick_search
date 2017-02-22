@@ -32,9 +32,14 @@ module QuickSearch
       # result[0] = events
       # result[1] = searches
       # result[2] = sessions
-      res = Session.joins("INNER JOIN searches ON searches.session_id=sessions.id").limit(100)
-      # res = Session.joins(:searches).limit(100)
-      result[0] = res
+      res1 = Event.joins("INNER JOIN sessions ON sessions.id=events.session_id").limit(100)
+      res2 = Search.joins("INNER JOIN sessions ON sessions.id=searches.session_id").limit(100)
+      res3 = Session.joins("INNER JOIN events ON events.session_id=sessions.id").limit(100)
+      res4 = Session.joins("INNER JOIN searches ON searches.session_id=sessions.id").limit(100)
+      result[0] = res1
+      result[1] = res2
+      result[2] = res3
+      result[3] = res4
 
       respond_to do |format|
         format.json {
@@ -199,6 +204,33 @@ module QuickSearch
     def data_spelling_suggestions
       serves = Event.where(date_range).where(:category => "spelling-suggestion", :action => 'serve').group(:item).order("count_category DESC").count(:category)
       clicks = Event.where(date_range).where(:category => "spelling-suggestion", :action => 'click').group(:item).count(:category)
+
+      i=1
+      result = []
+      serves.each do |item , count|
+        row = {"rank" => i,
+               "label" => item,
+               "serves" => count,
+               "clicks" =>  clicks[item],
+               "ratio" => (100.0*clicks[item]/count).round(2),
+               "key" => i.to_s + item + (100.0*clicks[item]/count).to_s}
+        result << row
+        i+=1
+        if i>200 then
+          break
+        end
+      end
+
+      respond_to do |format|
+        format.json {
+          render :json => result
+        }
+      end
+    end
+
+    def data_best_bets
+      serves = Event.where(date_range).where(:category => "best-bet", :action => 'serve').group(:item).order("count_category DESC").count(:category)
+      clicks = Event.where(date_range).where(:category => "best-bet", :action => 'click').group(:item).count(:category)
 
       i=1
       result = []

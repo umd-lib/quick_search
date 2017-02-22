@@ -4,7 +4,6 @@
 
     $(document).on("turbolinks:load", function() {
         if ($("#graph_spelling_suggestions").length) {
-            console.log("IN load of appstats_spelling_suggestions");
             $.ajax({
                 type: "GET",
                 contentType: "application/json; charset=utf-8",

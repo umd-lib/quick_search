@@ -35,6 +35,7 @@ QuickSearch::Engine.routes.draw do
   get 'appstats/data_module_details', :defaults => { :format => 'json' }
   get 'appstats/data_top_searches', :defaults => { :format => 'json' }
   get 'appstats/data_spelling_suggestions', :defaults => { :format => 'json' }
+  get 'appstats/data_best_bets', :defaults => { :format => 'json' }
 
 
   ##############################################################

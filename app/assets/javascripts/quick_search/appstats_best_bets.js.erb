@@ -9,10 +9,10 @@
                 contentType: "application/json; charset=utf-8",
                 url: "data_best_bets",
                 dataType: "json",
-                success: function(searchDataSet) {
-                    var searchData = _.cloneDeep(searchDataSet);
-                    AppStatsGlobals["#graph_best_bets"].OriginalData = searchData;
-                    AppStatsGlobals["#graph_best_bets"].Data = searchData;
+                success: function(bestBetDataSet) {
+                    var bestBetData = _.cloneDeep(bestBetDataSet);
+                    AppStatsGlobals["#graph_best_bets"].OriginalData = bestBetData;
+                    AppStatsGlobals["#graph_best_bets"].Data = bestBetData;
                     AppStatsGlobals["#graph_best_bets"].Sort = 0;
                     AppStatsGlobals["#graph_best_bets"].Height = 450;
                     draw_graph_best_bets();
@@ -20,6 +20,32 @@
                 error: function(result) {
                     error();
                 }
+            });
+            // Redraw graph if the date range is changed
+            document.getElementById("dateButton").addEventListener("click", function() { 
+                var from = $( "#from" ).datepicker( "getDate" );
+                var to = $( "#to" ).datepicker( "getDate" );
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: "data_best_bets",
+                    dataType: "json",
+                    data: {
+                        "start_date": from,
+                        "end_date": to
+                    },
+                    success: function(bestBetDataSet) {
+                        var bestBetData = _.cloneDeep(bestBetDataSet);
+                        AppStatsGlobals["#graph_best_bets"].OriginalData = bestBetData;
+                        AppStatsGlobals["#graph_best_bets"].Data = bestBetData;
+                        AppStatsGlobals["#graph_best_bets"].Sort = 0;
+                        AppStatsGlobals["#graph_best_bets"].Height = 450;
+                        draw_graph_best_bets();
+                    },
+                    error: function(result) {
+                        error();
+                    }
+                });
             });
         }
     });

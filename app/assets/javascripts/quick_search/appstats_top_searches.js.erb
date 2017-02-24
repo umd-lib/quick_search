@@ -21,6 +21,32 @@
                     error();
                 }
             });
+            // Redraw graph if the date range is changed
+            document.getElementById("dateButton").addEventListener("click", function() { 
+                var from = $( "#from" ).datepicker( "getDate" );
+                var to = $( "#to" ).datepicker( "getDate" );
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: "data_top_searches",
+                    dataType: "json",
+                    data: {
+                        "start_date": from,
+                        "end_date": to
+                    },
+                    success: function(searchDataSet) {
+                        var searchData = _.cloneDeep(searchDataSet);
+                        AppStatsGlobals["#graph_top_searches"].OriginalData = searchData;
+                        AppStatsGlobals["#graph_top_searches"].Data = searchData;
+                        AppStatsGlobals["#graph_top_searches"].Sort = 0;
+                        AppStatsGlobals["#graph_top_searches"].Height = 450;
+                        draw_graph_top_searches();
+                    },
+                    error: function(result) {
+                        error();
+                    }
+                });
+            });
         }
     });
 

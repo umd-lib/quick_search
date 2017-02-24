@@ -1,13 +1,13 @@
 <style>
 
 .area {
-  fill: steelblue;
-  clip-path: url(#clip);
+    fill: steelblue;
+    clip-path: url(#clip);
 }
 
 .areaMini {
-  fill: steelblue;
-  clip-path: url(#clipMini);
+    fill: steelblue;
+    clip-path: url(#clipMini);
 }
 
 .chartTitle {
@@ -18,9 +18,9 @@
 }
 
 .zoom {
-  cursor: move;
-  fill: none;
-  pointer-events: all;
+    cursor: move;
+    fill: none;
+    pointer-events: all;
 }
 
 .graph_mini {
@@ -36,9 +36,9 @@
 <svg id="graph_general_statistics" width="960" height="500"></svg>
 
 <div style="display: inline-block; width: 1000px;">
-  <svg class="graph_mini" id="mini0" width="240" height="200"></svg>
-  <svg class="graph_mini" id="mini1" width="240" height="200"></svg>
-  <svg class="graph_mini" id="mini2" width="240" height="200"></svg>
-  <svg class="graph_mini" id="mini3" width="240" height="200"></svg>
-  <div class="clearfix"></div>
+    <svg class="graph_mini" id="mini0" width="240" height="200" onmouseover="lighten()" onmouseout="darken()"></svg>
+    <svg class="graph_mini" id="mini1" width="240" height="200" onmouseover="lighten()" onmouseout="darken()"></svg>
+    <svg class="graph_mini" id="mini2" width="240" height="200" onmouseover="lighten()" onmouseout="darken()"></svg>
+    <svg class="graph_mini" id="mini3" width="240" height="200" onmouseover="lighten()" onmouseout="darken()"></svg>
+    <div class="clearfix"></div>
 </div>

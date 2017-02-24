@@ -22,6 +22,32 @@
                     error();
                 }
             });
+            // Redraw graph if the date range is changed
+            document.getElementById("dateButton").addEventListener("click", function() { 
+                var from = $( "#from" ).datepicker( "getDate" );
+                var to = $( "#to" ).datepicker( "getDate" );
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: "data_module_clicks",
+                    dataType: "json",
+                    data: {
+                        "start_date": from,
+                        "end_date": to
+                    },
+                    success: function(moduleDataSet) {
+                        var moduleData = _.cloneDeep(moduleDataSet);
+                        AppStatsGlobals["#graph_module_clicks"].OriginalData = moduleData;
+                        AppStatsGlobals["#graph_module_clicks"].Data = moduleData;
+                        AppStatsGlobals["#graph_module_clicks"].Height = 450;
+                        AppStatsGlobals["#graph_module_clicks"].Sort = 0;
+                        draw_graph_clicks_overview("#graph_module_clicks");
+                    },
+                    error: function(result) {
+                        error();
+                    }
+                });
+            });
         }
         if ($("#graph_result_clicks").length) {
             $.ajax({
@@ -40,6 +66,32 @@
                 error: function(result) {
                     error();
                 }
+            });
+            // Redraw graph if the date range is changed
+            document.getElementById("dateButton").addEventListener("click", function() { 
+                var from = $( "#from" ).datepicker( "getDate" );
+                var to = $( "#to" ).datepicker( "getDate" );
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: "data_result_clicks",
+                    dataType: "json",
+                    data: {
+                        "start_date": from,
+                        "end_date": to
+                    },
+                    success: function(resultDataSet) {
+                        var resultData = _.cloneDeep(resultDataSet);
+                        AppStatsGlobals["#graph_result_clicks"].OriginalData = resultData;
+                        AppStatsGlobals["#graph_result_clicks"].Data = resultData;
+                        AppStatsGlobals["#graph_result_clicks"].Sort = 0;
+                        AppStatsGlobals["#graph_result_clicks"].Height = 450;
+                        draw_graph_clicks_overview("#graph_result_clicks");
+                    },
+                    error: function(result) {
+                        error();
+                    }
+                });
             });
         }
     });

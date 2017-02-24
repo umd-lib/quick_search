@@ -2,6 +2,7 @@
     var AppStatsGlobals = {};
     AppStatsGlobals["#graph_general_statistics"] = {};
 
+
     $(document).on("turbolinks:load", function() {
         if ($("#graph_general_statistics").length) {
             $.ajax({
@@ -9,56 +10,51 @@
                 contentType: "application/json; charset=utf-8",
                 url: "appstats/data_general_statistics",
                 dataType: "json",
-                success: function(sampleDataSet) {
-                    var dataMain = _.cloneDeep(sampleDataSet);
-                    var dataMini = _.cloneDeep(sampleDataSet);
+                success: function(generalStatisticsDataSet) {
+                    var dataMain = _.cloneDeep(generalStatisticsDataSet);
+                    var dataMini = _.cloneDeep(generalStatisticsDataSet);
 
                     draw_graph_general_statistics(dataMain, false, 0);
 
-                    draw_graph_mini(dataMini[0], "#mini0");
-                    document.getElementById("mini0").addEventListener("click", function() {
-                        load_new_data(0);
-                    });
-                    document.getElementById("mini0").addEventListener("mouseover", function() {
-                        d3.select("#mini0").select(".areaMini").style("fill", "lightsteelblue");
-                    });
-                    d3.select("#mini0").on("mouseout", function() {
-                        d3.select("#mini0").select(".areaMini").style("fill", "steelblue");
-                    });
-                    draw_graph_mini(dataMini[1], "#mini1");
-                    document.getElementById("mini1").addEventListener("click", function() {
-                        load_new_data(1);
-                    });
-                    document.getElementById("mini1").addEventListener("mouseover", function() {
-                        d3.select("#mini1").select(".areaMini").style("fill", "lightsteelblue");
-                    });
-                    document.getElementById("mini1").addEventListener("mouseout", function() {
-                        d3.select("#mini1").select(".areaMini").style("fill", "steelblue");
-                    });
-                    draw_graph_mini(dataMini[2], "#mini2");
-                    document.getElementById("mini2").addEventListener("click", function() {
-                        load_new_data(2);
-                    });
-                    document.getElementById("mini2").addEventListener("mouseover", function() {
-                        d3.select("#mini2").select(".areaMini").style("fill", "lightsteelblue");
-                    });
-                    document.getElementById("mini2").addEventListener("mouseout", function() {
-                        d3.select("#mini2").select(".areaMini").style("fill", "steelblue");
-                    });
-                    draw_graph_mini(dataMini[3], "#mini3");
-                    document.getElementById("mini3").addEventListener("click", function() {
-                        load_new_data(3);
-                    });
-                    document.getElementById("mini3").addEventListener("mouseover", function() {
-                        d3.select("#mini3").select(".areaMini").style("fill", "lightsteelblue");
-                    });
-                    document.getElementById("mini3").addEventListener("mouseout", function() {
-                        d3.select("#mini3").select(".areaMini").style("fill", "steelblue");
-                    });
+                    for (var i=0 ; i<4 ; i++) {
+                        var id = "mini" + i;
+                        draw_graph_mini(dataMini[i], "#"+id);
+                        document.getElementById(id).addEventListener("click", function() { load_new_data(i); });
+                    }
                 },
                 error: function(result) {
                     error();
                 }
+            });
+            // Redraw graph if the date range is changed
+            document.getElementById("dateButton").addEventListener("click", function() { 
+                var from = $( "#from" ).datepicker( "getDate" );
+                var to = $( "#to" ).datepicker( "getDate" );
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: "appstats/data_general_statistics",
+                    dataType: "json",
+                    data: {
+                        "start_date": from,
+                        "end_date": to
+                    },
+                    success: function(generalStatisticsDataSet) {
+                        var dataMain = _.cloneDeep(generalStatisticsDataSet);
+                        var dataMini = _.cloneDeep(generalStatisticsDataSet);
+
+                        draw_graph_general_statistics(dataMain, false, 0);
+
+                        for (var i=0 ; i<4 ; i++) {
+                            var id = "mini" + i;
+                            draw_graph_mini(dataMini[i], "#"+id);
+                            document.getElementById(id).addEventListener("click", function() { load_new_data(i); });
+                        }
+                    },
+                    error: function(result) {
+                        error();
+                    }
+                });
             });
         }
     });
@@ -68,6 +64,7 @@
     }
 
     function draw_graph_general_statistics(dataShared, transitioning, index) {
+        console.log(dataShared);
         var transitioning = transitioning;
         var Globals = AppStatsGlobals["#graph_general_statistics"],
             svg = d3.select("#graph_general_statistics"),

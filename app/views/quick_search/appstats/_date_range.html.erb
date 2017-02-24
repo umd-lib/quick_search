@@ -1,13 +1,55 @@
+<style>
+#dateButton {
+	margin: auto;
+	width: 30%;
+}
+
+#fromLabel {
+	float: left;
+	width: 12.5%;
+	fill: 	#333333;
+	font-size: 25px;
+	font-family: "Lucida Console";
+}
+
+#from {
+	float: left;
+	width: 25%;
+}
+
+#toLabel {
+	float: right;
+	width: 12.5%;
+	fill: 	#333333;
+	font-size: 25px;
+	font-family: "Lucida Console";
+}
+
+#to {
+	float: right;
+	width: 25%;
+}
+
+
+.clearfix{
+    clear:both
+}
+</style>
+
 <% title('Foo') %>
 <div class="row">
     <div class="small-12 columns">
         <h1><%= @page_title %></h1>
 
-        <label for="from">From</label>
-        <input type="text" id="from" name="from">
-        <label for="to">to</label>
-        <input type="text" id="to" name="to">
-        <button type="button" onclick="printDate()">Print Date Range</button>
-
+       	<div style="display: inline-block; width: 750px">
+       	 	<label  id="fromLabel"	for="from"> From: </label>
+	        <input  id="from"		type="text" 	name="from">
+	        <input  id="to"			type="text" 	name="to">
+	        <label  id="toLabel"	for="to"> To: </label>
+	        <div 	class="clearfix"></div>
+	    </div>
+	    <div style="width: 750px; text-align: center;">
+	    	<button id="dateButton"	type="button" 	onclick="printDate()"> Update Date Range </button>
+	    </div>
     </div>
 </div>

@@ -2,49 +2,66 @@
 // All this logic will automatically be available in application.js.
 (function() {
 
-    $(function() {
-        $("#appstats-date-showhide").click(function() {
-            $("#appstats-date-filter").toggle();
-        });
-    });
+	$(function() {
+		$("#appstats-date-showhide").click(function() {
+			$("#appstats-date-filter").toggle();
+		});
+	});
 
 })();
 
 $(document).on("turbolinks:load", function() {
 	var dateFormat = "mm/dd/yy",
-	  from = $( "#from" )
-	    .datepicker({
-	      defaultDate: "+1w",
-	      changeMonth: true,
-	      numberOfMonths: 3
-	    })
-	    .on( "change", function() {
-	      to.datepicker( "option", "minDate", getDate( this ) );
-	    }),
-	  to = $( "#to" ).datepicker({
-	    defaultDate: "+1w",
-	    changeMonth: true,
-	    numberOfMonths: 3
-	  })
-	  .on( "change", function() {
-	    from.datepicker( "option", "maxDate", getDate( this ) );
-	  });
+		from = $("#from").datepicker({
+			defaultDate: "-6m",
+			maxDate: 0,
+			changeMonth: true,
+			changeYear: true,
+			numberOfMonths: 1
+		})
+		.on("change", function() {
+			to.datepicker("option", "minDate", getDate(this));
+		}),
+		to = $("#to").datepicker({
+			defaultDate: "+0",
+			maxDate: 0,
+			changeMonth: true,
+			changeYear: true,
+			numberOfMonths: 1
+		})
+		.on("change", function() {
+			from.datepicker("option", "maxDate", getDate(this));
+		});
 
-	function getDate( element ) {
-	  var date;
-	  try {
-	    date = $.datepicker.parseDate( dateFormat, element.value );
-	  } catch( error ) {
-	    date = null;
-	  }
+	function getDate(element) {
+		var date;
+		try {
+			date = $.datepicker.parseDate(dateFormat, element.value);
+		} catch (error) {
+			date = null;
+		}
 
-	  return date;
+		return date;
 	}
 });
 
 function printDate() {
-	var from = $( "#from" ).datepicker( "getDate" );
-	var to = $( "#to" ).datepicker( "getDate" );
+	var from = $("#from").datepicker("getDate");
+	var to = $("#to").datepicker("getDate");
 	var range = [from, to];
 	console.log(range);
+}
+
+function lighten() {
+	var id = "#" + event.target.id;
+	if (id != "#") {
+		d3.select(id).select(".areaMini").style("fill", "lightsteelblue");
+	}
+}
+
+function darken() {
+	var id = "#" + event.target.id;
+	if (id != "#") {
+		d3.select(id).select(".areaMini").style("fill", "steelblue");
+	}
 }

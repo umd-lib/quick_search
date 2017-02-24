@@ -9,10 +9,10 @@
                 contentType: "application/json; charset=utf-8",
                 url: "data_spelling_suggestions",
                 dataType: "json",
-                success: function(searchDataSet) {
-                    var searchData = _.cloneDeep(searchDataSet);
-                    AppStatsGlobals["#graph_spelling_suggestions"].OriginalData = searchData;
-                    AppStatsGlobals["#graph_spelling_suggestions"].Data = searchData;
+                success: function(suggestionDataSet) {
+                    var suggestionData = _.cloneDeep(suggestionDataSet);
+                    AppStatsGlobals["#graph_spelling_suggestions"].OriginalData = suggestionData;
+                    AppStatsGlobals["#graph_spelling_suggestions"].Data = suggestionData;
                     AppStatsGlobals["#graph_spelling_suggestions"].Sort = 0;
                     AppStatsGlobals["#graph_spelling_suggestions"].Height = 450;
                     draw_graph_spelling_suggestions();
@@ -20,6 +20,32 @@
                 error: function(result) {
                     error();
                 }
+            });
+            // Redraw graph if the date range is changed
+            document.getElementById("dateButton").addEventListener("click", function() { 
+                var from = $( "#from" ).datepicker( "getDate" );
+                var to = $( "#to" ).datepicker( "getDate" );
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: "data_spelling_suggestions",
+                    dataType: "json",
+                    data: {
+                        "start_date": from,
+                        "end_date": to
+                    },
+                    success: function(suggestionDataSet) {
+                        var suggestionData = _.cloneDeep(suggestionDataSet);
+                        AppStatsGlobals["#graph_spelling_suggestions"].OriginalData = suggestionData;
+                        AppStatsGlobals["#graph_spelling_suggestions"].Data = suggestionData;
+                        AppStatsGlobals["#graph_spelling_suggestions"].Sort = 0;
+                        AppStatsGlobals["#graph_spelling_suggestions"].Height = 450;
+                        draw_graph_spelling_suggestions();
+                    },
+                    error: function(result) {
+                        error();
+                    }
+                });
             });
         }
     });

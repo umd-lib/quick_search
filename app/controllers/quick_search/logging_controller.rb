@@ -41,6 +41,10 @@ module QuickSearch
         # create a new event on the current session
         @session.events.create(category: params[:category], item: params[:event_action], query: params[:label][0..250], action: action)
 
+        if params[:ga].present? and params[:ga]
+          send_event_to_ga(params[:category], params[:event_action], params[:label])
+        end
+
         # check whether this is a jsonp request
         if params[:callback].present?
           render :json => { 'response': 'success' }, :callback => params[:callback]
@@ -54,6 +58,41 @@ module QuickSearch
 
 
     private
+
+    ##
+    # Logs an event to Google Analytics using the Measurement Protocol API
+    # https://developers.google.com/analytics/devguides/collection/protocol/v1/
+
+    def send_event_to_ga(category, action, label)
+      # google_analytics_client_id is a UUID that identifies a particular client to the GA Measurement Protocol API
+      if QuickSearch::Engine::APP_CONFIG['google_analytics_tracking_id'].blank? or QuickSearch::Engine::APP_CONFIG['google_analytics_client_id'].blank?
+        return false
+      end
+
+      # Pass along the client user agent and IP address so it is associated
+      # with the event in Google Analytics
+      params = {
+          v: 1,
+          t: 'event',
+          tid: QuickSearch::Engine::APP_CONFIG['google_analytics_tracking_id'],
+          cid: QuickSearch::Engine::APP_CONFIG['google_analytics_client_id'],
+          ec: category,
+          ea: action,
+          el: label,
+          uip: request.remote_ip,
+          ua: request.user_agent,
+      }
+  
+      client = HTTPClient.new
+      url = "https://www.google-analytics.com/collect?" + params.to_query
+
+      # The measurement protocol API does not validate responses.
+      # The best way to test this is testing the query string against:
+      # https://ga-dev-tools.appspot.com/hit-builder/
+
+      client.post(url)
+
+    end
 
     ##
     # Handles creating/updating a session on every request

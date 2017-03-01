@@ -216,12 +216,13 @@ module QuickSearch
       i=1
       result = []
       serves.each do |item , count|
+        click_count = clicks[item] ? clicks[item] : 0
         row = {"rank" => i,
                "label" => item,
                "serves" => count,
-               "clicks" =>  clicks[item],
-               "ratio" => (100.0*clicks[item]/count).round(2),
-               "key" => i.to_s + item + (100.0*clicks[item]/count).to_s}
+               "clicks" =>  click_count,
+               "ratio" => (100.0*click_count/count).round(2),
+               "key" => i.to_s + item + (100.0*click_count/count).to_s}
         result << row
         i+=1
         if i>200 then
@@ -244,12 +245,13 @@ module QuickSearch
       i=1
       result = []
       serves.each do |item , count|
+        click_count = clicks[item] ? clicks[item] : 0
         row = {"rank" => i,
                "label" => item,
                "serves" => count,
-               "clicks" =>  clicks[item],
-               "ratio" => (100.0*clicks[item]/count).round(2),
-               "key" => i.to_s + item + (100.0*clicks[item]/count).to_s}
+               "clicks" =>  click_count,
+               "ratio" => (100.0*click_count/count).round(2),
+               "key" => i.to_s + item + (100.0*click_count/count).to_s}
         result << row
         i+=1
         if i>200 then

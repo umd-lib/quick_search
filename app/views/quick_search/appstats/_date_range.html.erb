@@ -1,35 +1,20 @@
 <style>
 #dateButton {
-	margin: auto;
 	width: 30%;
 }
 
-#fromLabel {
+.inputLabel {
 	float: left;
-	width: 12.5%;
+	width: 60%;
 	fill: 	#333333;
 	font-size: 25px;
 	font-family: "Lucida Console";
 }
 
-#from {
+#from, #to, #num {
 	float: left;
 	width: 25%;
 }
-
-#toLabel {
-	float: right;
-	width: 12.5%;
-	fill: 	#333333;
-	font-size: 25px;
-	font-family: "Lucida Console";
-}
-
-#to {
-	float: right;
-	width: 25%;
-}
-
 
 .clearfix{
     clear:both
@@ -42,14 +27,22 @@
         <h1><%= @page_title %></h1>
 
        	<div style="display: inline-block; width: 750px">
-       	 	<label  id="fromLabel"	for="from"> From: </label>
+       	 	<label  for="from" 		class="inputLabel"> From: </label>
 	        <input  id="from"		type="text" 	name="from">
+	    </div>
+	    <div style="display: inline-block; width: 750px">
+	    	<label  for="to" 		class="inputLabel"> To: </label>
 	        <input  id="to"			type="text" 	name="to">
-	        <label  id="toLabel"	for="to"> To: </label>
 	        <div 	class="clearfix"></div>
 	    </div>
-	    <div style="width: 750px; text-align: center;">
-	    	<button id="dateButton"	type="button" 	onclick="printDate()"> Update Date Range </button>
+	    <% if @page_title=='spelling-suggestion'||@page_title=='best-bets-regular'||@page_title=='Top Searches' %> 
+	    	<div style="display: inline-block; width: 750px">
+	            <label  for="num"		class="inputLabel"> Number of Results to Display: </label>
+	   			<input  id="num"		type="number" 	name="num" min="0">
+	   		</div>
+        <% end %>
+	    <div style="width: 750px;">
+	    	<button id="dateButton"	type="button" 	onclick="printDate()"> Update </button>
 	    </div>
     </div>
 </div>

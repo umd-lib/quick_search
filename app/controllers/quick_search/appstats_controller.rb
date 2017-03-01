@@ -177,6 +177,7 @@ module QuickSearch
 
     def data_top_searches
       range = date_range(params[:start_date], params[:end_date])
+      num_results = params[:num_results].to_i>=0 ? params[:num_results].to_i : 20
       searches = Search.where(:page => '/').where(range).limit(200).group(:query).order('count_query DESC').count(:query)
       total_searches = Search.where(:page => '/').where(range).group(:query).order('count_query DESC').count(:query).sum {|k,v| v}
 
@@ -199,6 +200,9 @@ module QuickSearch
         result << row
         last_row = row
         i += 1
+        if i>num_results then
+          break
+        end
       end
 
       respond_to do |format|
@@ -210,6 +214,7 @@ module QuickSearch
 
     def data_spelling_suggestions
       range = date_range(params[:start_date], params[:end_date])
+      num_results = params[:num_results].to_i>=0 ? params[:num_results].to_i : 20
       serves = Event.where(range).where(:category => "spelling-suggestion", :action => 'serve').group(:item).order("count_category DESC").count(:category)
       clicks = Event.where(range).where(:category => "spelling-suggestion", :action => 'click').group(:item).count(:category)
 
@@ -225,7 +230,7 @@ module QuickSearch
                "key" => i.to_s + item + (100.0*click_count/count).to_s}
         result << row
         i+=1
-        if i>200 then
+        if i>num_results then
           break
         end
       end
@@ -239,6 +244,7 @@ module QuickSearch
 
     def data_best_bets
       range = date_range(params[:start_date], params[:end_date])
+      num_results = params[:num_results].to_i>=0 ? params[:num_results].to_i : 20
       serves = Event.where(range).where(:category => "best-bet", :action => 'serve').group(:item).order("count_category DESC").count(:category)
       clicks = Event.where(range).where(:category => "best-bet", :action => 'click').group(:item).count(:category)
 
@@ -254,7 +260,7 @@ module QuickSearch
                "key" => i.to_s + item + (100.0*click_count/count).to_s}
         result << row
         i+=1
-        if i>200 then
+        if i>num_results then
           break
         end
       end

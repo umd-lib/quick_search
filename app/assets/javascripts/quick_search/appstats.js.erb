@@ -35,6 +35,16 @@ $(document).on("turbolinks:load", function() {
 
 		$("#from").datepicker('setDate', new Date(new Date() - 180*24*60*60*1000));
 		$("#to").datepicker('setDate', new Date());
+		var number = document.getElementById("num");
+		if (number) { 
+			number.onkeydown = function(e) {
+				console.log(e.keyCode);
+			    if(!((e.keyCode > 95 && e.keyCode < 106) || (e.keyCode > 47 && e.keyCode < 58) || e.keyCode == 8)) {
+			        return false;
+			    }
+			};
+			number.value = "20"; 
+		}
 
 	function getDate(element) {
 		var date;
@@ -53,6 +63,7 @@ function printDate() {
 	var to = $("#to").datepicker("getDate");
 	var range = [from, to];
 	console.log(range);
+	console.log(document.getElementById("num").value);
 }
 
 function lighten() {

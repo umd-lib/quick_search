@@ -32,7 +32,8 @@
                     dataType: "json",
                     data: {
                         "start_date": from,
-                        "end_date": to
+                        "end_date": to,
+                        "num_results": document.getElementById("num").value
                     },
                     success: function(bestBetDataSet) {
                         var bestBetData = _.cloneDeep(bestBetDataSet);

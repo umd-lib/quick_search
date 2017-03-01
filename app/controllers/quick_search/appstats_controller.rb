@@ -9,9 +9,9 @@ module QuickSearch
     def data_sample
       range = date_range(params[:start_date], params[:end_date])
       result = []
-      events = Event.where(range)
-      searches = Search.where(range)
-      sessions = Session.where(range)
+      events = Event.where(range).limit(100)
+      searches = Search.where(range).limit(100)
+      sessions = Session.where(range).limit(100)
 
       result[0] = events
       result[1] = searches
@@ -34,14 +34,14 @@ module QuickSearch
       # result[0] = events
       # result[1] = searches
       # result[2] = sessions
-      res1 = Event.joins("INNER JOIN sessions ON sessions.id=events.session_id").limit(100)
-      res2 = Search.joins("INNER JOIN sessions ON sessions.id=searches.session_id").limit(100)
-      res3 = Session.joins("INNER JOIN events ON events.session_id=sessions.id").limit(100)
-      res4 = Session.joins("INNER JOIN searches ON searches.session_id=sessions.id").limit(100)
+      res1 = Event.select("").joins("INNER JOIN sessions ON sessions.id=events.session_id").limit(100)
+      # res2 = Search.joins("INNER JOIN sessions ON sessions.id=searches.session_id").limit(100)
+      # res3 = Session.joins("INNER JOIN events ON events.session_id=sessions.id").limit(100)
+      # res4 = Session.joins("INNER JOIN searches ON searches.session_id=sessions.id").limit(100)
       result[0] = res1
-      result[1] = res2
-      result[2] = res3
-      result[3] = res4
+      # result[1] = res2
+      # result[2] = res3
+      # result[3] = res4
 
       respond_to do |format|
         format.json {
@@ -284,27 +284,16 @@ module QuickSearch
     end
 
     def date_range(start, stop)
-      puts("1")
       if (start!="" && start!=nil)
-      puts("2")
         sd = convert_to_time(start)
-      puts("3")
       else
-      puts("4")
         sd = Time.current - 180.days
-      puts("6")
       end
-      puts("7")
       if (stop!="" && stop!=nil)
-      puts("8")
         ed = convert_to_time(stop)
-      puts("9")
       else
-      puts("10")
         ed = Time.current
-      puts("11")
       end
-      puts("12")
       puts(sd)
       puts(ed)
       puts(sd..ed)

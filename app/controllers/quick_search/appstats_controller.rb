@@ -34,7 +34,7 @@ module QuickSearch
       # result[0] = events
       # result[1] = searches
       # result[2] = sessions
-      res1 = Event.select("").joins("INNER JOIN sessions ON sessions.id=events.session_id").limit(100)
+      res1 = Event.select("*").joins("INNER JOIN sessions ON sessions.id=events.session_id").limit(100)
       # res2 = Search.joins("INNER JOIN sessions ON sessions.id=searches.session_id").limit(100)
       # res3 = Session.joins("INNER JOIN events ON events.session_id=sessions.id").limit(100)
       # res4 = Session.joins("INNER JOIN searches ON searches.session_id=sessions.id").limit(100)
@@ -177,7 +177,7 @@ module QuickSearch
 
     def data_top_searches
       range = date_range(params[:start_date], params[:end_date])
-      num_results = params[:num_results].to_i>=0 ? params[:num_results].to_i : 20
+      num_results = params[:num_results] ? params[:num_results].to_i : 20
       searches = Search.where(:page => '/').where(range).limit(200).group(:query).order('count_query DESC').count(:query)
       total_searches = Search.where(:page => '/').where(range).group(:query).order('count_query DESC').count(:query).sum {|k,v| v}
 
@@ -185,6 +185,9 @@ module QuickSearch
       result = []
       last_row = {}
       searches.each do |query, count|
+        if i>num_results then
+          break
+        end
         if (last_row=={}) 
           last_cum_percentage = 0
         else 
@@ -200,9 +203,6 @@ module QuickSearch
         result << row
         last_row = row
         i += 1
-        if i>num_results then
-          break
-        end
       end
 
       respond_to do |format|
@@ -214,13 +214,16 @@ module QuickSearch
 
     def data_spelling_suggestions
       range = date_range(params[:start_date], params[:end_date])
-      num_results = params[:num_results].to_i>=0 ? params[:num_results].to_i : 20
+      num_results = params[:num_results] ? params[:num_results].to_i : 20
       serves = Event.where(range).where(:category => "spelling-suggestion", :action => 'serve').group(:item).order("count_category DESC").count(:category)
       clicks = Event.where(range).where(:category => "spelling-suggestion", :action => 'click').group(:item).count(:category)
 
       i=1
       result = []
       serves.each do |item , count|
+        if i>num_results then
+          break
+        end
         click_count = clicks[item] ? clicks[item] : 0
         row = {"rank" => i,
                "label" => item,
@@ -230,9 +233,6 @@ module QuickSearch
                "key" => i.to_s + item + (100.0*click_count/count).to_s}
         result << row
         i+=1
-        if i>num_results then
-          break
-        end
       end
 
       respond_to do |format|
@@ -244,13 +244,16 @@ module QuickSearch
 
     def data_best_bets
       range = date_range(params[:start_date], params[:end_date])
-      num_results = params[:num_results].to_i>=0 ? params[:num_results].to_i : 20
+      num_results = params[:num_results] ? params[:num_results].to_i : 20
       serves = Event.where(range).where(:category => "best-bet", :action => 'serve').group(:item).order("count_category DESC").count(:category)
       clicks = Event.where(range).where(:category => "best-bet", :action => 'click').group(:item).count(:category)
 
       i=1
       result = []
       serves.each do |item , count|
+        if i>num_results then
+          break
+        end
         click_count = clicks[item] ? clicks[item] : 0
         row = {"rank" => i,
                "label" => item,
@@ -260,9 +263,6 @@ module QuickSearch
                "key" => i.to_s + item + (100.0*click_count/count).to_s}
         result << row
         i+=1
-        if i>num_results then
-          break
-        end
       end
 
       respond_to do |format|

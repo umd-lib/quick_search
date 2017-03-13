@@ -1,6 +1,7 @@
+var temp;
+
 (function() {
-    var AppStatsGlobals = {};
-    AppStatsGlobals["#graph_spelling_suggestions"] = {};
+    var Globals = {};
 
     $(document).on("turbolinks:load", function() {
         if ($("#graph_spelling_suggestions").length) {
@@ -11,10 +12,10 @@
                 dataType: "json",
                 success: function(suggestionDataSet) {
                     var suggestionData = _.cloneDeep(suggestionDataSet);
-                    AppStatsGlobals["#graph_spelling_suggestions"].OriginalData = suggestionData;
-                    AppStatsGlobals["#graph_spelling_suggestions"].Data = suggestionData;
-                    AppStatsGlobals["#graph_spelling_suggestions"].Sort = 0;
-                    AppStatsGlobals["#graph_spelling_suggestions"].Height = 450;
+                    Globals.OriginalData = suggestionData;
+                    Globals.Data = suggestionData;
+                    Globals.Sort = 0;
+                    Globals.Height = 450;
                     draw_graph_spelling_suggestions();
                 },
                 error: function(result) {
@@ -25,6 +26,7 @@
             document.getElementById("dateButton").addEventListener("click", function() { 
                 var from = $( "#from" ).datepicker( "getDate" );
                 var to = $( "#to" ).datepicker( "getDate" );
+                console.log(document.getElementById("num").value);
                 $.ajax({
                     type: "GET",
                     contentType: "application/json; charset=utf-8",
@@ -37,10 +39,9 @@
                     },
                     success: function(suggestionDataSet) {
                         var suggestionData = _.cloneDeep(suggestionDataSet);
-                        AppStatsGlobals["#graph_spelling_suggestions"].OriginalData = suggestionData;
-                        AppStatsGlobals["#graph_spelling_suggestions"].Data = suggestionData;
-                        AppStatsGlobals["#graph_spelling_suggestions"].Sort = 0;
-                        AppStatsGlobals["#graph_spelling_suggestions"].Height = 450;
+                        Globals.OriginalData = suggestionData;
+                        Globals.Data = suggestionData;
+                        Globals.Sort = 0;
                         draw_graph_spelling_suggestions();
                     },
                     error: function(result) {
@@ -56,12 +57,13 @@
     }
 
     function draw_graph_spelling_suggestions() {
-        var Globals = AppStatsGlobals["#graph_spelling_suggestions"],
-            sortStates = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        var sortStates = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             dataInt = Globals.Data,
             oldHeight = Globals.Height;
 
         sortStates[Globals.Sort] = 1;
+
+        temp = dataInt;
 
         var svg = d3.select("#graph_spelling_suggestions"),
             margin = {
@@ -318,13 +320,16 @@
             });
         dataRects.exit().remove();
         dataRects.enter().append("rect")
+            .style("opacity", .000001)
             .attr("class", function(d, i) { return "darkBar"; })
             .attr("x", 0)
             .attr("y", function(d, i) {
                 return (i + 1) * rowHeight;
             })
             .attr("width", width)
-            .attr("height", rowHeight);
+            .attr("height", rowHeight)
+            .transition().delay(750).duration(500)
+            .style("opacity", 1);
 
         // Make rank text
         var dataRanks = dataRows.selectAll(".dataRank").data(dataInt, key);
@@ -488,6 +493,12 @@
             .duration(750)
             .attr("y", function(d, i) {
                 return (i + 1) * rowHeight + (rowHeight - barHeight) / 2;
+            })
+            .attr("width", function(d) {
+                return serveScale(d.serves);
+            })
+            .attr("x", function(d) {
+                return serveBarStart;
             });
         serveBar.exit().transition().duration(500)
             .attr("width", 0)
@@ -522,6 +533,12 @@
             .duration(750)
             .attr("y", function(d, i) {
                 return (i + 1) * rowHeight + (rowHeight - barHeight) / 2;
+            })
+            .attr("width", function(d) {
+                return clickScale(d.clicks);
+            })
+            .attr("x", function(d) {
+                return clickBarStart;
             });
         clickBar.exit().transition().duration(500)
             .attr("width", 0)
@@ -556,6 +573,12 @@
             .duration(750)
             .attr("y", function(d, i) {
                 return (i + 1) * rowHeight + (rowHeight - barHeight) / 2;
+            })
+            .attr("width", function(d) {
+                return ratioScale(d.ratio);
+            })
+            .attr("x", function(d) {
+                return ratioBarStart;
             });
         ratioBar.exit().transition().duration(500)
             .attr("width", 0)
@@ -620,7 +643,7 @@
     function sort_search_data(sort) {
         var id = "#graph_spelling_suggestions";
 
-        AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
+        Globals.Data = Globals.OriginalData.sort(function(a, b) {
             switch(sort) {
                 case 0: return d3.ascending(a.rank,b.rank);
                 case 1: return d3.ascending(b.rank,a.rank);
@@ -640,7 +663,7 @@
         });
 
         // Update global sort
-        AppStatsGlobals[id].Sort = sort;
+        Globals.Sort = sort;
         draw_graph_spelling_suggestions();
     }
 

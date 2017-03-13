@@ -1,6 +1,5 @@
 (function() {
-    var AppStatsGlobals = {};
-    AppStatsGlobals["#graph_top_searches"] = {};
+    var Globals = {};
 
     $(document).on("turbolinks:load", function() {
         if ($("#graph_top_searches").length) {
@@ -11,10 +10,10 @@
                 dataType: "json",
                 success: function(searchDataSet) {
                     var searchData = _.cloneDeep(searchDataSet);
-                    AppStatsGlobals["#graph_top_searches"].OriginalData = searchData;
-                    AppStatsGlobals["#graph_top_searches"].Data = searchData;
-                    AppStatsGlobals["#graph_top_searches"].Sort = 0;
-                    AppStatsGlobals["#graph_top_searches"].Height = 450;
+                    Globals.OriginalData = searchData;
+                    Globals.Data = searchData;
+                    Globals.Sort = 0;
+                    Globals.Height = 450;
                     draw_graph_top_searches();
                 },
                 error: function(result) {
@@ -25,6 +24,7 @@
             document.getElementById("dateButton").addEventListener("click", function() { 
                 var from = $( "#from" ).datepicker( "getDate" );
                 var to = $( "#to" ).datepicker( "getDate" );
+                console.log(document.getElementById("num").value);
                 $.ajax({
                     type: "GET",
                     contentType: "application/json; charset=utf-8",
@@ -37,10 +37,10 @@
                     },
                     success: function(searchDataSet) {
                         var searchData = _.cloneDeep(searchDataSet);
-                        AppStatsGlobals["#graph_top_searches"].OriginalData = searchData;
-                        AppStatsGlobals["#graph_top_searches"].Data = searchData;
-                        AppStatsGlobals["#graph_top_searches"].Sort = 0;
-                        AppStatsGlobals["#graph_top_searches"].Height = 450;
+                        Globals.OriginalData = searchData;
+                        Globals.Data = searchData;
+                        Globals.Sort = 0;
+                        Globals.Height = 450;
                         draw_graph_top_searches();
                     },
                     error: function(result) {
@@ -56,9 +56,8 @@
     }
 
     function draw_graph_top_searches() {
-        var Globals = AppStatsGlobals["#graph_top_searches"],
-            sortStates = [0, 0, 0, 0]
-        dataInt = Globals.Data,
+        var sortStates = [0, 0, 0, 0]
+            dataInt = Globals.Data,
             oldHeight = Globals.Height;
 
         sortStates[Globals.Sort] = 1;
@@ -79,7 +78,9 @@
             countWidth = 2 * width / 16,
             percentWidth = 3 * width / 16,
             cumPercentWidth = 5 * width / 16,
-            percBarCenter = rankWidth + categoryWidth + countWidth,
+            percBarCenter = rankWidth + categoryWidth + countWidth + 13 * d3.max(dataInt, function(d) {
+                return d.count.toString().length;
+            }),
             cumPercBarStart = rankWidth + categoryWidth + countWidth + percentWidth + 3 * textPadding + 13 * d3.max(dataInt, function(d) {
                 return d.cum_percentage.toString().length;
             }),
@@ -247,13 +248,16 @@
             });
         dataRects.exit().remove();
         dataRects.enter().append("rect")
+            .style("opacity", .000001)
             .attr("class", function(d, i) { return "darkBar"; })
             .attr("x", 0)
             .attr("y", function(d, i) {
                 return (i + 1) * rowHeight;
             })
             .attr("width", width)
-            .attr("height", rowHeight);
+            .attr("height", rowHeight)
+            .transition().delay(750).duration(500)
+            .style("opacity", 1);
 
         // Make rank text
         var dataRanks = dataRows.selectAll(".dataRank").data(dataInt, key);
@@ -417,6 +421,12 @@
             .duration(750)
             .attr("y", function(d, i) {
                 return (i + 1) * rowHeight + (rowHeight - barHeight) / 2;
+            })
+            .attr("width", function(d) {
+                return percScale(d.percentage);
+            })
+            .attr("x", function(d) {
+                return percBarCenter - percScale(d.percentage) / 2;
             });
         percBars.exit().transition().duration(500)
             .attr("x", percBarCenter)
@@ -455,6 +465,12 @@
             .duration(750)
             .attr("y", function(d, i) {
                 return (i + 1) * rowHeight + (rowHeight - barHeight) / 2;
+            })
+            .attr("width", function(d) {
+                return cumPercScale(d.cum_percentage);
+            })
+            .attr("x", function(d) {
+                return cumPercBarStart;
             });
         cumPercBar.exit().transition().duration(500)
             .attr("width", 0)
@@ -518,7 +534,7 @@
 
     function sort_search_data(sort) {
         var id = "#graph_top_searches";
-        AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
+        Globals.Data = Globals.OriginalData.sort(function(a, b) {
             switch(sort) {
                 case 0: return d3.ascending(a.rank,b.rank);
                 case 1: return d3.ascending(b.rank,a.rank);
@@ -529,7 +545,7 @@
         });
 
         // Update global sort
-        AppStatsGlobals[id].Sort = sort;
+        Globals.Sort = sort;
         draw_graph_top_searches();
     }
 

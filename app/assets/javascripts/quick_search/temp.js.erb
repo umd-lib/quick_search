@@ -16,7 +16,6 @@
                     draw_graph_general_statistics(dataMain, false, 0, false);
 
                     draw_graph_mini(dataMini[0], "#mini0");
-                    //document.getElementById("mini0").addEventListener("click", function() { load_new_data(0); })
                     document.getElementById("mini0").addEventListener("click", function() { load_new_data(0); })
                     draw_graph_mini(dataMini[1], "#mini1");
                     document.getElementById("mini1").addEventListener("click", function() { load_new_data(1); })
@@ -48,16 +47,22 @@
                         // $(".focus").remove();
                         // $(".context").remove();
                         // $(".zoom").remove();
+                        d3.select("#graph_general_statistics").selectAll(".focus, .context, .zoom")
+                            .transition().duration(500)
+                            .style("opacity", .000001)
+                            .remove();
 
-                        // draw_graph_general_statistics([[],[],[],[]], false, Globals.Index, true);
-                        console.log("About to render date change...");
-                        draw_graph_general_statistics(dataMain, false, Globals.Index, true);
+                        draw_graph_general_statistics(dataMain, false, 0, true);
 
 
                         draw_graph_mini(dataMini[0], "#mini0");
+                        document.getElementById("mini0").addEventListener("click", function() { load_new_data(0); })
                         draw_graph_mini(dataMini[1], "#mini1");
+                        document.getElementById("mini1").addEventListener("click", function() { load_new_data(1); })
                         draw_graph_mini(dataMini[2], "#mini2");
+                        document.getElementById("mini2").addEventListener("click", function() { load_new_data(2); })
                         draw_graph_mini(dataMini[3], "#mini3");
+                        document.getElementById("mini3").addEventListener("click", function() { load_new_data(3); })
                     },
                     error: function(result) {
                         error();
@@ -72,8 +77,6 @@
     }
 
     function draw_graph_general_statistics(dataShared, transitioning, index, dateUpdated) {
-        console.log("Rendering...");
-        Globals.Index = index;
         var transitioning = transitioning;
         var svg = d3.select("#graph_general_statistics"),
             dataInt = dataShared[index],
@@ -130,11 +133,10 @@
             .on("zoom", zoomed);
 
         // Set domains
-        if (_.isEqual(undefined, Globals.Domain) ) {
+        if (_.isEqual(undefined, Globals.Domain) || dateUpdated) {
             x.domain(d3.extent(dataInt, function(d) {
                 return d.date;
             }));
-            console.log("In if!");
         } else {
             x.domain(Globals.Domain);
         }
@@ -145,8 +147,7 @@
             return d.date;
         }));
         y2.domain(y.domain());
-        console.log(x.domain());
-        console.log(Globals.Domain);
+        //Globals.Domain = x.domain();
 
         // Make axes
         var xAxis = d3.axisBottom(x),
@@ -174,20 +175,8 @@
                 return y2(d.count);
             });
 
-        // Make overarching group
-        var gAllSelection = svg.selectAll(".gAll").data([dataInt]);
-
-        gAllSelection.exit().transition().duration(500)
-            .style("opacity", .000001)
-            .remove();
-        gAllSelection.enter().append("g")
-            .attr("class", "gAll")
-            .attr("transform", "translate(0,0)");
-
-        var gAll = svg.select(".gAll");
-
         // Make focus
-        var focusSelection = gAll.selectAll(".focus").data([dataInt]);
+        var focusSelection = svg.selectAll(".focus").data([dataInt]);
 
         focusSelection.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -196,10 +185,10 @@
             .attr("class", "focus")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        var focus = gAll.select(".focus");
+        var focus = svg.select(".focus");
 
         // Make context
-        var contextSelection = gAll.selectAll(".context").data([dataInt]);
+        var contextSelection = svg.selectAll(".context").data([dataInt]);
 
         contextSelection.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -208,10 +197,15 @@
             .attr("class", "context")
             .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
 
-        var context = gAll.select(".context");
+        var context = svg.select(".context");
+
+        // Before updating domains, move brush to domain it was previously set to
+        if (dateUpdated) {
+            context.select(".brush").call(brush.move, [x2(Globals.Domain[0]),x2(Globals.Domain[1])]);
+        }
 
         // Make clip path
-        var clipSelection = gAll.selectAll("defs").data([dataInt]);
+        var clipSelection = svg.selectAll("defs").data([dataInt]);
 
         clipSelection.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -235,7 +229,7 @@
             .attr("class", "xAxis")
             .attr("transform", "translate(0," + height + ")")
             .call(xAxis)
-            .transition().duration(500)
+            .transition().delay(750).duration(500)
             .style("opacity", 1);
 
         // Make focus y axis
@@ -251,7 +245,7 @@
             .attr("class", "yAxis")
             .attr("transform", "translate(0,0)")
             .call(yAxis)
-            .transition().duration(500)
+            .transition().delay(750).duration(500)
             .style("opacity", 1);
 
         // Make chart title
@@ -271,7 +265,7 @@
             .text(title)
             .attr("class", "chartTitle")
             .attr("transform", "translate(" + (width / 2) + "," + 30 + ")")
-            .transition().duration(500)
+            .transition().delay(750).duration(500)
             .style("opacity", 1);
 
         // Make focus path
@@ -286,7 +280,7 @@
             .style("opacity", .000001)
             .datum(dataInt)
             .attr("class", "area")
-            .transition().duration(500)
+            .transition().delay(750).duration(500)
             .style("opacity", 1);;
 
         // Make context x axis
@@ -302,7 +296,7 @@
             .attr("class", "xAxis")
             .attr("transform", "translate(0," + height2 + ")")
             .call(xAxis2)
-            .transition().duration(500)
+            .transition().delay(750).duration(500)
             .style("opacity", 1);
 
         // Make context path
@@ -318,7 +312,7 @@
             .datum(dataInt)
             .attr("class", "area")
             .attr("d", area2)
-            .transition().duration(500)
+            .transition().delay(750).duration(500)
             .style("opacity", 1);
 
         // Make brush container
@@ -332,7 +326,6 @@
             .call(brush)
             .call(brush.move, x.range())
         .merge(brushSelection)
-            .style("opacity", 1)
             .call(brush);
 
         // Have to prevent zoom or brush temporarily for transitions to execute
@@ -340,23 +333,16 @@
             setTimeout(function() {
                 transitioning = false;
             }, 50);
-        } // If not on transition, fade in brush
+        } // If not on transition, don't fade in brush
         else {
             svg.selectAll(".brush")
                 .style("opacity", .000001)
-                .transition().duration(500)
-                .style("opacity", 1);
-        }
-
-        // Before updating domains, move brush to domain it was previously set to
-        if (dateUpdated) {
-            context.select(".brush").call(brush.move, [x2(Globals.Domain[0]),x2(Globals.Domain[1])]);
-            context.select(".brush").transition().duration(500)
+                .transition().delay(750).duration(500)
                 .style("opacity", 1);
         }
 
         // Make zoom container
-        var zoomSelection = gAll.selectAll(".zoom").data([dataInt]);
+        var zoomSelection = svg.selectAll(".zoom").data([dataInt]);
 
         zoomSelection.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -404,17 +390,11 @@
     }
 
     function load_new_data(index) {
-        var from = $( "#from" ).datepicker( "getDate" );
-        var to = $( "#to" ).datepicker( "getDate" );
         $.ajax({
             type: "GET",
             contentType: "application/json; charset=utf-8",
             url: "appstats/data_general_statistics",
             dataType: "json",
-            data: {
-                "start_date": from,
-                "end_date": to
-            },
             success: function(updateDataSet) {
                 var updateData = _.cloneDeep(updateDataSet);
                 draw_graph_general_statistics(updateData, true, index, false);
@@ -434,7 +414,7 @@
                 bottom: 5,
                 left: 5
             }
-            width = +svg.attr("width") - margin.left - margin.right,
+        width = +svg.attr("width") - margin.left - margin.right,
             height = +svg.attr("height") - margin.top - margin.bottom,
             title = "";
         if (id == "#mini0") {
@@ -488,74 +468,28 @@
             .attr("width", width)
             .attr("height", height);
 
-        // Make focus
-        var focusSelection = svg.selectAll(".focus").data([dataInt]);
-
-        focusSelection.exit().transition().duration(500)
-            .style("opacity", .000001)
-            .remove();
-        focusSelection.enter().append("g")
+        var focus = svg.append("g")
             .attr("class", "focus")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        var focus = svg.select(".focus");
-
-        // Make path
-        var pathSelection = focus.selectAll(".areaMini").data([dataInt]);
-
-        pathSelection.datum(dataInt).transition().duration(750)
-            .attr("d", area);
-        pathSelection.exit().transition().duration(500)
-            .style("opacity", .000001)
-            .remove();
-        pathSelection.enter().append("path")
-            .style("opacity", .000001)
+        focus.append("path")
             .datum(dataInt)
             .attr("class", "areaMini")
-            .attr("d", area)
-            .transition().duration(500)
-            .style("opacity", 1);
+            .attr("d", area);
 
-        // Make title
-        var textSelection = focus.selectAll(".chartTitle").data([dataInt]);
-
-        textSelection.exit().transition().duration(500)
-            .style("opacity", .000001)
-            .remove();
-        textSelection.enter().append("text")
-            .style("opacity", .000001)
+        focus.append("text")
             .text(title)
             .attr("class", "chartTitle")
-            .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
-            .transition().duration(500)
-            .style("opacity", 1);
+            .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")");
 
-        // Make xAxis
-        var xAxisSelection = focus.selectAll(".xAxis").data([dataInt]);
-
-        xAxisSelection.exit().transition().duration(500)
-            .style("opacity", .000001)
-            .remove();
-        xAxisSelection.enter().append("g")
-            .style("opacity", .000001)
+        focus.append("g")
             .attr("class", "xAxis")
             .attr("transform", "translate(0," + height + ")")
-            .call(xAxis.ticks(0))
-            .transition().duration(500)
-            .style("opacity", 1);
+            .call(xAxis.ticks(0));
 
-        // Make yAxis
-        var yAxisSelection = focus.selectAll(".yAxis").data([dataInt]);
-
-        yAxisSelection.exit().transition().duration(500)
-            .style("opacity", .000001)
-            .remove();
-        yAxisSelection.enter().append("g")
-            .style("opacity", .000001)
+        focus.append("g")
             .attr("class", "yAxis")
-            .call(yAxis.ticks(0))
-            .transition().duration(500)
-            .style("opacity", 1);
+            .call(yAxis.ticks(0));
     }
 
 })();

@@ -111,7 +111,7 @@ module QuickSearch
                "percentage" => ((100.0*count)/total_clicks).round(2),
                "parent" => 0,
                "expanded" => 0,
-               "key" => category + ((100.0*count)/total_clicks).to_s}
+               "key" => "module" + category}
         result << row
         i += 1
       end
@@ -137,7 +137,7 @@ module QuickSearch
                "percentage" => ((100.0*count)/total_clicks).round(2),
                "parent" => 0,
                "expanded" => 0,
-               "key" => item + ((100.0*count)/total_clicks).to_s}
+               "key" => "result" + item}
         result << row
         i += 1
       end
@@ -163,7 +163,7 @@ module QuickSearch
                "clickcount" => count,
                "percentage" => ((100.0*count)/total_clicks).round(2),
                "parent" => category,
-               "key" => item + ((100.0*count)/total_clicks).to_s}
+               "key" => "module_detail" + item + category}
         result << row
         i += 1
       end
@@ -178,7 +178,7 @@ module QuickSearch
     def data_top_searches
       range = date_range(params[:start_date], params[:end_date])
       num_results = params[:num_results] ? params[:num_results].to_i : 20
-      searches = Search.where(:page => '/').where(range).limit(200).group(:query).order('count_query DESC').count(:query)
+      searches = Search.where(:page => '/').where(range).group(:query).order('count_query DESC').count(:query)
       total_searches = Search.where(:page => '/').where(range).group(:query).order('count_query DESC').count(:query).sum {|k,v| v}
 
       i=1

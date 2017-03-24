@@ -1,6 +1,7 @@
 (function() {
     var AppStatsGlobals = {};
     AppStatsGlobals["#graph_module_clicks"] = {};
+    AppStatsGlobals["#graph_module_clicks"].ExpandedCategories = [];
     AppStatsGlobals["#graph_result_clicks"] = {};
 
     $(document).on("turbolinks:load", function() {
@@ -39,9 +40,7 @@
                         var moduleData = _.cloneDeep(moduleDataSet);
                         AppStatsGlobals["#graph_module_clicks"].OriginalData = moduleData;
                         AppStatsGlobals["#graph_module_clicks"].Data = moduleData;
-                        AppStatsGlobals["#graph_module_clicks"].Height = 450;
-                        AppStatsGlobals["#graph_module_clicks"].Sort = 0;
-                        draw_graph_clicks_overview("#graph_module_clicks");
+                        sort_clicks_overview("#graph_module_clicks", AppStatsGlobals["#graph_module_clicks"].Sort);
                     },
                     error: function(result) {
                         error();
@@ -84,9 +83,7 @@
                         var resultData = _.cloneDeep(resultDataSet);
                         AppStatsGlobals["#graph_result_clicks"].OriginalData = resultData;
                         AppStatsGlobals["#graph_result_clicks"].Data = resultData;
-                        AppStatsGlobals["#graph_result_clicks"].Sort = 0;
-                        AppStatsGlobals["#graph_result_clicks"].Height = 450;
-                        draw_graph_clicks_overview("#graph_result_clicks");
+                        sort_clicks_overview("#graph_result_clicks", AppStatsGlobals["#graph_result_clicks"].Sort);
                     },
                     error: function(result) {
                         error();
@@ -138,7 +135,7 @@
                     return 0;
                 }
             })
-            .duration(750)
+            .duration(500)
             .attr("height", height + margin.top + margin.bottom)
             .on("end", function(d) {
                 Globals.Height = height;
@@ -277,7 +274,7 @@
                     return 0;
                 }
             })
-            .duration(750)
+            .duration(500)
             .attr("y", function(d, i) {
                 return (i + 1) * rowHeight;
             });
@@ -307,13 +304,16 @@
                     return 0;
                 }
             })
-            .duration(750)
+            .duration(500)
             .attr("transform", function(d, i) {
                 if (!d.parent) {
                     return "translate(" + textPadding + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
                 } else {
                     return "translate(" + (textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
                 }
+            })
+            .text(function(d) { 
+                return d.rank; 
             });
         dataRanks.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -344,7 +344,7 @@
                     return 0;
                 }
             })
-            .duration(750)
+            .duration(500)
             .attr("transform", function(d, i) {
                 if (!d.parent) {
                     return "translate(" + (rankWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
@@ -385,13 +385,16 @@
                     return 0;
                 }
             })
-            .duration(750)
+            .duration(500)
             .attr("transform", function(d, i) {
                 if (!d.parent) {
                     return "translate(" + (rankWidth + categoryWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
                 } else {
                     return "translate(" + (rankWidth + categoryWidth + textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
                 }
+            })
+            .text(function(d) { 
+                return d.clickcount; 
             });
         dataClicks.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -422,13 +425,16 @@
                     return 0;
                 }
             })
-            .duration(750)
+            .duration(500)
             .attr("transform", function(d, i) {
                 if (!d.parent) {
                     return "translate(" + (rankWidth + categoryWidth + countWidth + percentWidth - textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
                 } else {
                     return "translate(" + (rankWidth + categoryWidth + countWidth + percentWidth - textPadding - childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
                 }
+            })
+            .text(function(d) { 
+                return d.percentage + "%"; 
             });
         dataPercents.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -459,9 +465,15 @@
                     return 0;
                 }
             })
-            .duration(750)
+            .duration(500)
             .attr("y", function(d, i) {
                 return (i + 1) * rowHeight + (rowHeight - barHeight) / 2;
+            })
+            .attr("x", function(d) {
+                return barCenter - x(d.clickcount) / 2;
+            })
+            .attr("width", function(d) {
+                return x(d.clickcount);
             });
         dataBars.exit().transition().duration(500)
             .attr("x", barCenter)
@@ -496,10 +508,15 @@
                 if (id == "#graph_module_clicks" && !d.expanded && !d.parent) {
                     d.expanded = 1;
                     load_details(d.label, id);
+                    Globals.ExpandedCategories.push(d.label);
                 } else if (id == "#graph_module_clicks" && d.expanded && !d.parent) {
                     d.expanded = 0;
                     remove_details(d.label, id);
+                    _.remove(Globals.ExpandedCategories, function(n) {
+                        return _.isEqual(n, d.label);
+                    });
                 }
+                console.log(Globals.ExpandedCategories);
             })
             .transition().delay(750).duration(500)
             .attr("x", function(d) {
@@ -519,7 +536,7 @@
                     return 0;
                 }
             })
-            .duration(750)
+            .duration(500)
             .attr("height", height);
         lightBorder.exit().remove();
         lightBorder.enter().append("rect")
@@ -538,7 +555,7 @@
                     return 0;
                 }
             })
-            .duration(750)
+            .duration(500)
             .attr("height", height - rowHeight);
         darkBorder.exit().remove();
         darkBorder.enter().append("rect")
@@ -551,13 +568,17 @@
 
     function load_details(category, id) {
         var updateData = _.cloneDeep(AppStatsGlobals[id].Data);
+        var from = $( "#from" ).datepicker( "getDate" );
+        var to = $( "#to" ).datepicker( "getDate" );
         $.ajax({
             type: "GET",
             contentType: "application/json; charset=utf-8",
             url: "data_module_details",
             dataType: "json",
             data: {
-                "category": category
+                "category": category,
+                "start_date": from,
+                "end_date": to
             },
             success: function(detailSet) {
                 var detailData = _.cloneDeep(detailSet);

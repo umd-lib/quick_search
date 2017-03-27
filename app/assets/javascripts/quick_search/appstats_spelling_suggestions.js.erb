@@ -41,8 +41,7 @@ var temp;
                         var suggestionData = _.cloneDeep(suggestionDataSet);
                         Globals.OriginalData = suggestionData;
                         Globals.Data = suggestionData;
-                        Globals.Sort = 0;
-                        draw_graph_spelling_suggestions();
+                        sort_search_data(Globals.Sort);
                     },
                     error: function(result) {
                         error();
@@ -344,6 +343,9 @@ var temp;
             .duration(750)
             .attr("transform", function(d, i) {
                 return "translate(" + textPadding + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+            })
+            .text(function(d) {
+                return d.rank;
             });
         dataRanks.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -373,6 +375,13 @@ var temp;
             .duration(750)
             .attr("transform", function(d, i) {
                 return "translate(" + (rankWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+            })
+            .text(function(d) {
+                if (d.label.length > 25) {
+                    return d.label.slice(0, 20) + "...";
+                } else {
+                    return d.label;
+                }
             });
         dataLabels.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -406,6 +415,9 @@ var temp;
             .duration(750)
             .attr("transform", function(d, i) {
                 return "translate(" + (rankWidth + categoryWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+            })
+            .text(function(d) {
+                return d.serves;
             });
         dataServes.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -435,6 +447,9 @@ var temp;
             .duration(750)
             .attr("transform", function(d, i) {
                 return "translate(" + (rankWidth + categoryWidth + serveWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+            })
+            .text(function(d) {
+                return d.clicks;
             });
         dataClicks.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -464,6 +479,9 @@ var temp;
             .duration(750)
             .attr("transform", function(d, i) {
                 return "translate(" + (rankWidth + categoryWidth + serveWidth + clickWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+            })
+            .text(function(d) {
+                return d.ratio + "%";
             });
         dataRatios.exit().transition().duration(500)
             .style("opacity", .000001)

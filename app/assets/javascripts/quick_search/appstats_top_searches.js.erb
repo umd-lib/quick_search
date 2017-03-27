@@ -39,9 +39,7 @@
                         var searchData = _.cloneDeep(searchDataSet);
                         Globals.OriginalData = searchData;
                         Globals.Data = searchData;
-                        Globals.Sort = 0;
-                        Globals.Height = 450;
-                        draw_graph_top_searches();
+                        sort_search_data(Globals.Sort);
                     },
                     error: function(result) {
                         error();
@@ -272,6 +270,9 @@
             .duration(750)
             .attr("transform", function(d, i) {
                 return "translate(" + textPadding + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+            })
+            .text(function(d) {
+                return d.rank;
             });
         dataRanks.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -301,6 +302,13 @@
             .duration(750)
             .attr("transform", function(d, i) {
                 return "translate(" + (rankWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+            })
+            .text(function(d) {
+                if (d.label.length > 25) {
+                    return d.label.slice(0, 20) + "...";
+                } else {
+                    return d.label;
+                }
             });
         dataLabels.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -334,6 +342,9 @@
             .duration(750)
             .attr("transform", function(d, i) {
                 return "translate(" + (rankWidth + categoryWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+            })
+            .text(function(d) {
+                return d.count;
             });
         dataClicks.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -363,6 +374,9 @@
             .duration(750)
             .attr("transform", function(d, i) {
                 return "translate(" + (rankWidth + categoryWidth + countWidth + percentWidth - textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+            })
+            .text(function(d) {
+                return d.percentage + "%";
             });
         dataPercents.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -392,6 +406,9 @@
             .duration(750)
             .attr("transform", function(d, i) {
                 return "translate(" + (rankWidth + categoryWidth + countWidth + percentWidth + 3 * textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+            })
+            .text(function(d) {
+                return d.cum_percentage + "%";
             });
         dataCumPercents.exit().transition().duration(500)
             .style("opacity", .000001)

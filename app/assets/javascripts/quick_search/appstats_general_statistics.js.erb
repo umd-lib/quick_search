@@ -16,23 +16,30 @@
                     draw_graph_general_statistics(dataMain, false, 0, false);
 
                     draw_graph_mini(dataMini[0], "#mini0");
-                    //document.getElementById("mini0").addEventListener("click", function() { load_new_data(0); })
-                    document.getElementById("mini0").addEventListener("click", function() { load_new_data(0); })
+                    document.getElementById("mini0").addEventListener("click", function() {
+                        load_new_data(0);
+                    })
                     draw_graph_mini(dataMini[1], "#mini1");
-                    document.getElementById("mini1").addEventListener("click", function() { load_new_data(1); })
+                    document.getElementById("mini1").addEventListener("click", function() {
+                        load_new_data(1);
+                    })
                     draw_graph_mini(dataMini[2], "#mini2");
-                    document.getElementById("mini2").addEventListener("click", function() { load_new_data(2); })
+                    document.getElementById("mini2").addEventListener("click", function() {
+                        load_new_data(2);
+                    })
                     draw_graph_mini(dataMini[3], "#mini3");
-                    document.getElementById("mini3").addEventListener("click", function() { load_new_data(3); })
+                    document.getElementById("mini3").addEventListener("click", function() {
+                        load_new_data(3);
+                    })
                 },
                 error: function(result) {
                     error();
                 }
             });
             // Redraw graph if the date range is changed
-            document.getElementById("dateButton").addEventListener("click", function() { 
-                var from = $( "#from" ).datepicker( "getDate" );
-                var to = $( "#to" ).datepicker( "getDate" );
+            document.getElementById("dateButton").addEventListener("click", function() {
+                var from = $("#from").datepicker("getDate");
+                var to = $("#to").datepicker("getDate");
                 $.ajax({
                     type: "GET",
                     contentType: "application/json; charset=utf-8",
@@ -45,11 +52,7 @@
                     success: function(generalStatisticsDataSet) {
                         var dataMain = _.cloneDeep(generalStatisticsDataSet);
                         var dataMini = _.cloneDeep(generalStatisticsDataSet);
-                        // $(".focus").remove();
-                        // $(".context").remove();
-                        // $(".zoom").remove();
 
-                        // draw_graph_general_statistics([[],[],[],[]], false, Globals.Index, true);
                         console.log("About to render date change...");
                         draw_graph_general_statistics(dataMain, false, Globals.Index, true);
 
@@ -78,7 +81,7 @@
         var svg = d3.select("#graph_general_statistics"),
             dataInt = dataShared[index],
             margin = {
-                top: 20,
+                top: 40,
                 right: 20,
                 bottom: 110,
                 left: 40
@@ -94,7 +97,7 @@
             height2 = +svg.attr("height") - margin2.top - margin2.bottom,
             titles = ["Clicks", "Serves", "Sessions", "Searches"],
             title = titles[index];
-        
+
 
         // Parse dates into proper format
         var parseDate = d3.timeParse("%Y-%m-%d");
@@ -130,20 +133,36 @@
             .on("zoom", zoomed);
 
         // Set domains
-        if (_.isEqual(undefined, Globals.Domain) ) {
+        x2.domain(d3.extent(dataInt, function(d) {
+            return d.date;
+        }));
+        if (_.isEqual(undefined, Globals.Domain)) {
             x.domain(d3.extent(dataInt, function(d) {
                 return d.date;
             }));
             console.log("In if!");
         } else {
-            x.domain(Globals.Domain);
+            var lb, ub;
+            var range = d3.extent(dataInt, function(d) {
+                return d.date;
+            });
+            if (Globals.Domain[0] < x2.domain()[0]) {
+                lb = x2.domain()[0];
+            } else {
+                lb = Globals.Domain[0];
+            }
+            if (Globals.Domain[1] > x2.domain()[1]) {
+                ub = x2.domain()[1];
+            } else {
+                ub = Globals.Domain[1];
+            }
+            console.log(x2.domain());
+            console.log(lb + ", " + ub);
+            x.domain([lb, ub]);
         }
         y.domain([0, d3.max(dataInt, function(d) {
             return d.count;
         })]);
-        x2.domain(d3.extent(dataInt, function(d) {
-            return d.date;
-        }));
         y2.domain(y.domain());
         console.log(x.domain());
         console.log(Globals.Domain);
@@ -255,7 +274,7 @@
             .style("opacity", 1);
 
         // Make chart title
-        var titleSelection = focus.selectAll(".chartTitle").data([dataInt]);
+        var titleSelection = svg.selectAll(".chartTitle").data([dataInt]);
 
         titleSelection.transition().duration(325)
             .style("opacity", .00001)
@@ -331,7 +350,7 @@
             .attr("class", "brush")
             .call(brush)
             .call(brush.move, x.range())
-        .merge(brushSelection)
+            .merge(brushSelection)
             .style("opacity", 1)
             .call(brush);
 
@@ -350,7 +369,18 @@
 
         // Before updating domains, move brush to domain it was previously set to
         if (dateUpdated) {
-            context.select(".brush").call(brush.move, [x2(Globals.Domain[0]),x2(Globals.Domain[1])]);
+            var lb, ub;
+            if (x2(Globals.Domain[0]) < 0) {
+                lb = 0;
+            } else {
+                lb = x2(Globals.Domain[0]);
+            }
+            if (x2(Globals.Domain[1]) > width) {
+                ub = width;
+            } else {
+                ub = x2(Globals.Domain[1]);
+            }
+            context.select(".brush").call(brush.move, [lb, ub]);
             context.select(".brush").transition().duration(500)
                 .style("opacity", 1);
         }
@@ -366,7 +396,7 @@
             .attr("width", width)
             .attr("height", height)
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-        .merge(zoomSelection)
+            .merge(zoomSelection)
             .call(zoom);
 
 
@@ -404,8 +434,8 @@
     }
 
     function load_new_data(index) {
-        var from = $( "#from" ).datepicker( "getDate" );
-        var to = $( "#to" ).datepicker( "getDate" );
+        var from = $("#from").datepicker("getDate");
+        var to = $("#to").datepicker("getDate");
         $.ajax({
             type: "GET",
             contentType: "application/json; charset=utf-8",
@@ -434,7 +464,7 @@
                 bottom: 5,
                 left: 5
             }
-            width = +svg.attr("width") - margin.left - margin.right,
+        width = +svg.attr("width") - margin.left - margin.right,
             height = +svg.attr("height") - margin.top - margin.bottom,
             title = "";
         if (id == "#mini0") {

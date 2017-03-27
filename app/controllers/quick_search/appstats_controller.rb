@@ -199,7 +199,7 @@ module QuickSearch
                "percentage" => ((100.0*count)/total_searches).round(2),
                "cum_perc" => (last_cum_percentage + ((100.0*count)/total_searches)),
                "cum_percentage" => (last_cum_percentage + ((100.0*count)/total_searches)).round(2),
-               "key" => query + (last_cum_percentage + ((100.0*count)/total_searches)).to_s}
+               "key" => "top_search" + query}
         result << row
         last_row = row
         i += 1
@@ -230,7 +230,7 @@ module QuickSearch
                "serves" => count,
                "clicks" =>  click_count,
                "ratio" => (100.0*click_count/count).round(2),
-               "key" => i.to_s + item + (100.0*click_count/count).to_s}
+               "key" => "spelling_suggestion" + item}
         result << row
         i+=1
       end
@@ -260,7 +260,7 @@ module QuickSearch
                "serves" => count,
                "clicks" =>  click_count,
                "ratio" => (100.0*click_count/count).round(2),
-               "key" => i.to_s + item + (100.0*click_count/count).to_s}
+               "key" => "best_bet" + item}
         result << row
         i+=1
       end

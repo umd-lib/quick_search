@@ -1,0 +1,33 @@
+<style>
+
+.area {
+    fill: steelblue;
+    clip-path: url(#clip);
+}
+
+.areaLight {
+    fill: lightsteelblue;
+    clip-path: url(#clip);
+}
+
+.chartTitle {
+	text-anchor: middle;
+	fill: 	#333333;
+	font-size: 30px;
+	font-family: "Lucida Console";
+    pointer-events: none;
+}
+
+.zoom {
+    cursor: move;
+    fill: none;
+    pointer-events: all;
+}
+
+</style>
+
+<h2> Sessions by Location </h2>
+<svg id="graph_sessions_campus" width="960" height="500"></svg>
+
+<h2> Sessions by Access Device </h2>
+<svg id="graph_sessions_mobile" width="960" height="500"></svg>

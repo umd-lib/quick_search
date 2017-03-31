@@ -27,6 +27,7 @@ QuickSearch::Engine.routes.draw do
 
   ########################## ADDED #############################
   match 'appstats/sessions_overview', to: 'appstats#sessions_overview', as: 'sessions_overview', via: [:get, :post]
+  match 'appstats/sessions_details', to: 'appstats#sessions_details', as: 'sessions_details', via: [:get, :post]
 
   get 'appstats/data_sample', :defaults => { :format => 'json' }
   get 'appstats/data_test', :defaults => { :format => 'json' }
@@ -38,6 +39,7 @@ QuickSearch::Engine.routes.draw do
   get 'appstats/data_spelling_suggestions', :defaults => { :format => 'json' }
   get 'appstats/data_best_bets', :defaults => { :format => 'json' }
   get 'appstats/data_sessions_overview', :defaults => { :format => 'json' }
+  get 'appstats/data_sessions_campus', :defaults => { :format => 'json' }
 
 
   ##############################################################

@@ -306,6 +306,30 @@ module QuickSearch
         }
       end
     end
+
+    def data_sessions_campus
+      range = date_range(params[:start_date], params[:end_date])
+      sessions_on = Session.where(range).where(:on_campus => 't').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      sessions_off = Session.where(range).where(:on_campus => 'f').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      result = []
+
+      sessionsSub = []
+      i = 0
+      sessions_on.each do |date , count|
+        row = { "date" => date ,
+                "on" => count,
+                "off" => sessions_off[date] ? sessions_off[date] : 0 }
+        i+=1
+        sessionsSub << row
+      end
+      result << sessionsSub
+      
+      respond_to do |format|
+        format.json {
+          render :json => result
+        }
+      end
+    end
     ##############################################################
 
     def index
@@ -326,6 +350,10 @@ module QuickSearch
 
     def sessions_overview
       @page_title = 'Sessions Overview'
+    end
+
+    def sessions_details
+      @page_title = 'Sessions Details'
     end
 
     def date_range(start, stop)

@@ -9,13 +9,13 @@ module QuickSearch
     def data_sample
       range = date_range(params[:start_date], params[:end_date])
       result = []
-      events = Event.where(range).limit(100)
-      searches = Search.where(range).limit(100)
-      sessions = Session.where(range).limit(100)
+      events = Event.order("session_id ASC")
+      searches = Search.order("session_id ASC")
+      sessions = Session.order("id ASC")
 
-      result[0] = events
-      result[1] = searches
-      result[2] = sessions
+      result[0] = events[0..99]
+      result[1] = searches[0..99]
+      result[2] = sessions[0..99]
 
       respond_to do |format|
         format.json {
@@ -27,21 +27,11 @@ module QuickSearch
     def data_test
       range = date_range(params[:start_date], params[:end_date])
       result = []
-      # events = Event.where(range).limit(100)
-      # searches = Search.where(range).limit(100)
-      # sessions = Session.where(range).limit(100)
 
-      # result[0] = events
-      # result[1] = searches
-      # result[2] = sessions
-      res1 = Event.select("*").joins("INNER JOIN sessions ON sessions.id=events.session_id").limit(100)
-      # res2 = Search.joins("INNER JOIN sessions ON sessions.id=searches.session_id").limit(100)
-      # res3 = Session.joins("INNER JOIN events ON events.session_id=sessions.id").limit(100)
-      # res4 = Session.joins("INNER JOIN searches ON searches.session_id=sessions.id").limit(100)
-      result[0] = res1
-      # result[1] = res2
-      # result[2] = res3
-      # result[3] = res4
+      res0 = Event.select("*").order("id ASC").joins("INNER JOIN sessions ON sessions.id=events.session_id")
+      res1 = Search.select("*").order("id ASC").joins("INNER JOIN sessions ON sessions.id=searches.session_id")
+      result[0] = res0[0..99]
+      result[1] = res1[0..99]
 
       respond_to do |format|
         format.json {
@@ -271,6 +261,57 @@ module QuickSearch
         }
       end
     end
+
+    def data_sessions
+      range = date_range(params[:start_date], params[:end_date])
+      onCampus = params[:onCampus] ? params[:onCampus].to_i : 0
+      offCampus = params[:offCampus] ? params[:offCampus].to_i : 0
+      isMobile = params[:isMobile] ? params[:isMobile].to_i : 0
+      notMobile = params[:notMobile] ? params[:notMobile].to_i : 0
+      filterCase = (2**3)*onCampus + (2**2)*offCampus + (2**1)*isMobile + notMobile
+      puts('\n\n\n\n')
+      puts(onCampus)
+      puts(offCampus)
+      puts(isMobile)
+      puts(notMobile)
+      puts('\n\n\n\n')
+      result = []
+
+      case filterCase
+      when 1 #mobile=false
+        sessions = Session.where(range).where(:is_mobile => 'false').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      when 2 #mobile=true
+        sessions = Session.where(range).where(:is_mobile => 'true').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      when 4 #campus=false
+        sessions = Session.where(range).where(:on_campus => 'false').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      when 5 #campus=false, mobile=false
+        sessions = Session.where(range).where(:on_campus => 'false', :is_mobile => 'false').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      when 6 #campus=false, mobile=true
+        sessions = Session.where(range).where(:on_campus => 'false', :is_mobile => 'true').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      when 8 #campus=true
+        sessions = Session.where(range).where(:on_campus => 'true').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      when 9 #campus=true, mobile=false
+        sessions = Session.where(range).where(:on_campus => 'true', :is_mobile => 'false').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      when 10 #campus=true, mobile=true
+        sessions = Session.where(range).where(:on_campus => 'true', :is_mobile => 'true').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      else
+        sessions = Session.where(range).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      end
+
+      sessionsSub = []
+      sessions.each do |date , count|
+        row = { "date" => date ,
+                "count" => count}
+        sessionsSub << row
+      end
+      result << sessionsSub
+
+      respond_to do |format|
+        format.json {
+          render :json => result
+        }
+      end
+    end
     ##############################################################
 
     def index
@@ -287,6 +328,10 @@ module QuickSearch
 
     def top_spot
       @page_title = params[:ga_top_spot_module]
+    end
+
+    def sessions
+      @page_title = 'Sessions Overview'
     end
 
     def date_range(start, stop)

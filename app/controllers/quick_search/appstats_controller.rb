@@ -262,38 +262,32 @@ module QuickSearch
       end
     end
 
-    def data_sessions
+    def data_sessions_overview
       range = date_range(params[:start_date], params[:end_date])
       onCampus = params[:onCampus] ? params[:onCampus].to_i : 0
       offCampus = params[:offCampus] ? params[:offCampus].to_i : 0
       isMobile = params[:isMobile] ? params[:isMobile].to_i : 0
       notMobile = params[:notMobile] ? params[:notMobile].to_i : 0
       filterCase = (2**3)*onCampus + (2**2)*offCampus + (2**1)*isMobile + notMobile
-      puts('\n\n\n\n')
-      puts(onCampus)
-      puts(offCampus)
-      puts(isMobile)
-      puts(notMobile)
-      puts('\n\n\n\n')
       result = []
 
       case filterCase
-      when 1 #mobile=false
-        sessions = Session.where(range).where(:is_mobile => 'false').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
-      when 2 #mobile=true
-        sessions = Session.where(range).where(:is_mobile => 'true').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
-      when 4 #campus=false
-        sessions = Session.where(range).where(:on_campus => 'false').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
-      when 5 #campus=false, mobile=false
-        sessions = Session.where(range).where(:on_campus => 'false', :is_mobile => 'false').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
-      when 6 #campus=false, mobile=true
-        sessions = Session.where(range).where(:on_campus => 'false', :is_mobile => 'true').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
-      when 8 #campus=true
-        sessions = Session.where(range).where(:on_campus => 'true').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
-      when 9 #campus=true, mobile=false
-        sessions = Session.where(range).where(:on_campus => 'true', :is_mobile => 'false').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
-      when 10 #campus=true, mobile=true
-        sessions = Session.where(range).where(:on_campus => 'true', :is_mobile => 'true').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      when 1 #mobile=f
+        sessions = Session.where(range).where(:is_mobile => 'f').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      when 2 #mobile=t
+        sessions = Session.where(range).where(:is_mobile => 't').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      when 4 #campus=f
+        sessions = Session.where(range).where(:on_campus => 'f').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      when 5 #campus=f, mobile=f
+        sessions = Session.where(range).where(:on_campus => 'f', :is_mobile => 'f').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      when 6 #campus=f, mobile=t
+        sessions = Session.where(range).where(:on_campus => 'f', :is_mobile => 't').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      when 8 #campus=t
+        sessions = Session.where(range).where(:on_campus => 't').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      when 9 #campus=t, mobile=f
+        sessions = Session.where(range).where(:on_campus => 't', :is_mobile => 'f').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      when 10 #campus=t, mobile=t
+        sessions = Session.where(range).where(:on_campus => 't', :is_mobile => 't').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       else
         sessions = Session.where(range).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       end
@@ -330,7 +324,7 @@ module QuickSearch
       @page_title = params[:ga_top_spot_module]
     end
 
-    def sessions
+    def sessions_overview
       @page_title = 'Sessions Overview'
     end
 

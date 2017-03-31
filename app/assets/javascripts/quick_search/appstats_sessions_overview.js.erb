@@ -3,16 +3,16 @@
 
 
     $(document).on("turbolinks:load", function() {
-        if ($("#graph_sessions").length) {
+        if ($("#graph_sessions_overview").length) {
             $.ajax({
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
-                url: "data_sessions",
+                url: "data_sessions_overview",
                 dataType: "json",
                 success: function(sessionsDataSet) {
                     var dataMain = _.cloneDeep(sessionsDataSet);
 
-                    draw_graph_sessions(dataMain, false, 0, false);
+                    draw_graph_sessions_overview(dataMain, false, 0, false);
 
                     document.getElementById("onCampus").addEventListener("click", process_filters);
                     document.getElementById("offCampus").addEventListener("click", process_filters);
@@ -30,7 +30,7 @@
                 $.ajax({
                     type: "GET",
                     contentType: "application/json; charset=utf-8",
-                    url: "data_sessions",
+                    url: "data_sessions_overview",
                     dataType: "json",
                     data: {
                         "start_date": from,
@@ -41,7 +41,7 @@
                         var dataMini = _.cloneDeep(sessionsDataSet);
 
                         console.log("About to render date change...");
-                        draw_graph_sessions(dataMain, false, Globals.Index, true);
+                        draw_graph_sessions_overview(dataMain, false, Globals.Index, true);
                     },
                     error: function(result) {
                         error();
@@ -55,11 +55,11 @@
         console.log("Error retrieving data");
     }
 
-    function draw_graph_sessions(dataShared, transitioning, index, dateUpdated) {
+    function draw_graph_sessions_overview(dataShared, transitioning, index, dateUpdated) {
         console.log("Rendering...");
         Globals.Index = index;
         var transitioning = transitioning;
-        var svg = d3.select("#graph_sessions"),
+        var svg = d3.select("#graph_sessions_overview"),
             dataInt = dataShared[index],
             margin = {
                 top: 40,
@@ -420,7 +420,7 @@
         $.ajax({
             type: "GET",
             contentType: "application/json; charset=utf-8",
-            url: "data_sessions",
+            url: "data_sessions_overview",
             dataType: "json",
             data: {
                 "start_date": from,
@@ -428,7 +428,7 @@
             },
             success: function(updateDataSet) {
                 var updateData = _.cloneDeep(updateDataSet);
-                draw_graph_sessions(updateData, true, index, false);
+                draw_graph_sessions_overview(updateData, true, index, false);
             },
             error: function(result) {
                 error();
@@ -453,7 +453,7 @@
         $.ajax({
             type: "GET",
             contentType: "application/json; charset=utf-8",
-            url: "data_sessions",
+            url: "data_sessions_overview",
             dataType: "json",
             data: {
                 "start_date": from,
@@ -468,7 +468,7 @@
                 var dataMini = _.cloneDeep(sessionsDataSet);
 
                 console.log("About to render date change...");
-                draw_graph_sessions(dataMain, true, Globals.Index, false);
+                draw_graph_sessions_overview(dataMain, true, Globals.Index, false);
             },
             error: function(result) {
                 error();

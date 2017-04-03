@@ -1,10 +1,10 @@
 <aside id="subnav" role="complementary" class="medium-3 columns sidebar">
     <section class="block block-menu">
-        <h3>External Services</h2>
+        <h3>External Services</h3>
         <ul class="side-nav">
             <li><%= link_to "Google Analytics", "https://www.google.com/analytics/web/", :target => "_blank" %></li>
         </ul>
-        <h3>Internal Reports</h2>
+        <h3>Internal Reports</h3>
         <ul class="side-nav">
             <li><%= link_to "General Statistics", appstats_path(:start_date => params[:start_date], :end_date => params[:end_date]) %></li>
             <li><%= link_to "Clicks Overview", clicks_overview_path(:start_date => params[:start_date], :end_date => params[:end_date]) %></li>
@@ -16,6 +16,9 @@
         </ul>
         <% if @page_title=='Sessions Overview' %> 
             <%= render partial: 'sessions_overview_graph_filters' %>
+        <% end %>
+        <% if @page_title=='Sessions Details' %> 
+            <%= render partial: 'sessions_details_graph_filters' %>
         <% end %>
     </section>
 </aside>

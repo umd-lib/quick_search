@@ -53,9 +53,7 @@
                         var dataMain = _.cloneDeep(generalStatisticsDataSet);
                         var dataMini = _.cloneDeep(generalStatisticsDataSet);
 
-                        console.log("About to render date change...");
                         draw_graph_general_statistics(dataMain, false, Globals.Index, true);
-
 
                         draw_graph_mini(dataMini[0], "#mini0");
                         draw_graph_mini(dataMini[1], "#mini1");
@@ -75,7 +73,6 @@
     }
 
     function draw_graph_general_statistics(dataShared, transitioning, index, dateUpdated) {
-        console.log("Rendering...");
         Globals.Index = index;
         var transitioning = transitioning;
         var svg = d3.select("#graph_general_statistics"),
@@ -140,7 +137,6 @@
             x.domain(d3.extent(dataInt, function(d) {
                 return d.date;
             }));
-            console.log("In if!");
         } else {
             var lb, ub;
             var range = d3.extent(dataInt, function(d) {
@@ -156,16 +152,12 @@
             } else {
                 ub = Globals.Domain[1];
             }
-            console.log(x2.domain());
-            console.log(lb + ", " + ub);
             x.domain([lb, ub]);
         }
         y.domain([0, d3.max(dataInt, function(d) {
             return d.count;
         })]);
         y2.domain(y.domain());
-        console.log(x.domain());
-        console.log(Globals.Domain);
 
         // Make axes
         var xAxis = d3.axisBottom(x),
@@ -424,12 +416,6 @@
                 focus.select(".xAxis").call(xAxis);
                 context.select(".brush").call(brush.move, x.range().map(t.invertX, t));
             }
-        }
-
-        function type(d) {
-            d.date = parseDate(d.date);
-            d.count = +d.count;
-            return d;
         }
     }
 

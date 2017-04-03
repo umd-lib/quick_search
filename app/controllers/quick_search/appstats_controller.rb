@@ -4,8 +4,6 @@ module QuickSearch
 
     before_action :auth #, :start_date, :end_date, :days_in_sample
 
-
-    ########################## ADDED #############################
     def data_sample
       range = date_range(params[:start_date], params[:end_date])
       result = []
@@ -269,7 +267,6 @@ module QuickSearch
       isMobile = params[:isMobile] ? params[:isMobile].to_i : 0
       notMobile = params[:notMobile] ? params[:notMobile].to_i : 0
       filterCase = (2**3)*onCampus + (2**2)*offCampus + (2**1)*isMobile + notMobile
-      result = []
 
       case filterCase
       when 1 #mobile=f
@@ -292,13 +289,12 @@ module QuickSearch
         sessions = Session.where(range).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       end
 
-      sessionsSub = []
+      result = []
       sessions.each do |date , count|
         row = { "date" => date ,
                 "count" => count}
-        sessionsSub << row
+        result << row
       end
-      result << sessionsSub
 
       respond_to do |format|
         format.json {
@@ -311,18 +307,16 @@ module QuickSearch
       range = date_range(params[:start_date], params[:end_date])
       sessions_on = Session.where(range).where(:on_campus => 't').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       sessions_off = Session.where(range).where(:on_campus => 'f').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
-      result = []
 
-      sessionsSub = []
+      result = []
       i = 0
       sessions_on.each do |date , count|
         row = { "date" => date ,
                 "on" => count,
                 "off" => sessions_off[date] ? sessions_off[date] : 0 }
         i+=1
-        sessionsSub << row
+        result << row
       end
-      result << sessionsSub
       
       respond_to do |format|
         format.json {
@@ -330,7 +324,6 @@ module QuickSearch
         }
       end
     end
-    ##############################################################
 
     def index
       @page_title = 'Search Statistics'

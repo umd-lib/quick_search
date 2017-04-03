@@ -12,7 +12,7 @@
                 success: function(sessionsDataSet) {
                     var dataMain = _.cloneDeep(sessionsDataSet);
 
-                    draw_graph_sessions_overview(dataMain, false, 0, false);
+                    draw_graph_sessions_overview(dataMain, false, false);
 
                     document.getElementById("onCampus").addEventListener("click", process_filters);
                     document.getElementById("offCampus").addEventListener("click", process_filters);
@@ -38,10 +38,7 @@
                     },
                     success: function(sessionsDataSet) {
                         var dataMain = _.cloneDeep(sessionsDataSet);
-                        var dataMini = _.cloneDeep(sessionsDataSet);
-
-                        console.log("About to render date change...");
-                        draw_graph_sessions_overview(dataMain, false, Globals.Index, true);
+                        draw_graph_sessions_overview(dataMain, false, true);
                     },
                     error: function(result) {
                         error();
@@ -55,12 +52,10 @@
         console.log("Error retrieving data");
     }
 
-    function draw_graph_sessions_overview(dataShared, transitioning, index, dateUpdated) {
-        console.log("Rendering...");
-        Globals.Index = index;
+    function draw_graph_sessions_overview(dataShared, transitioning, dateUpdated) {
         var transitioning = transitioning;
         var svg = d3.select("#graph_sessions_overview"),
-            dataInt = dataShared[index],
+            dataInt = dataShared,
             margin = {
                 top: 40,
                 right: 20,
@@ -76,8 +71,7 @@
             width = +svg.attr("width") - margin.left - margin.right,
             height = +svg.attr("height") - margin.top - margin.bottom,
             height2 = +svg.attr("height") - margin2.top - margin2.bottom,
-            titles = ["Sessions", "Sessions", "Sessions", "Sessions"],
-            title = titles[index];
+            title = "Sessions Overview";
 
 
         // Parse dates into proper format
@@ -121,7 +115,6 @@
             x.domain(d3.extent(dataInt, function(d) {
                 return d.date;
             }));
-            console.log("In if!");
         } else {
             var lb, ub;
             var range = d3.extent(dataInt, function(d) {
@@ -137,16 +130,12 @@
             } else {
                 ub = Globals.Domain[1];
             }
-            console.log(x2.domain());
-            console.log(lb + ", " + ub);
             x.domain([lb, ub]);
         }
         y.domain([0, d3.max(dataInt, function(d) {
             return d.count;
         })]);
         y2.domain(y.domain());
-        console.log(x.domain());
-        console.log(Globals.Domain);
 
         // Make axes
         var xAxis = d3.axisBottom(x),
@@ -257,12 +246,6 @@
         // Make chart title
         var titleSelection = svg.selectAll(".chartTitle").data([dataInt]);
 
-        titleSelection.transition().duration(325)
-            .style("opacity", .00001)
-            .transition()
-            .text(title)
-            .transition().duration(325)
-            .style("opacity", 1);
         titleSelection.exit().transition().duration(500)
             .style("opacity", .000001)
             .remove();
@@ -406,38 +389,9 @@
                 context.select(".brush").call(brush.move, x.range().map(t.invertX, t));
             }
         }
-
-        function type(d) {
-            d.date = parseDate(d.date);
-            d.count = +d.count;
-            return d;
-        }
-    }
-
-    function load_new_data(index) {
-        var from = $("#from").datepicker("getDate");
-        var to = $("#to").datepicker("getDate");
-        $.ajax({
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            url: "data_sessions_overview",
-            dataType: "json",
-            data: {
-                "start_date": from,
-                "end_date": to
-            },
-            success: function(updateDataSet) {
-                var updateData = _.cloneDeep(updateDataSet);
-                draw_graph_sessions_overview(updateData, true, index, false);
-            },
-            error: function(result) {
-                error();
-            }
-        });
     }
 
     function process_filters() {
-        console.log("Processing filters...");
         var onCampus = document.getElementById("onCampus"),
             offCampus = document.getElementById("offCampus"),
             isMobile = document.getElementById("isMobile"),
@@ -465,10 +419,7 @@
             },
             success: function(sessionsDataSet) {
                 var dataMain = _.cloneDeep(sessionsDataSet);
-                var dataMini = _.cloneDeep(sessionsDataSet);
-
-                console.log("About to render date change...");
-                draw_graph_sessions_overview(dataMain, true, Globals.Index, false);
+                draw_graph_sessions_overview(dataMain, true, false);
             },
             error: function(result) {
                 error();

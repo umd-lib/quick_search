@@ -36,6 +36,19 @@
                     error();
                 }
             });
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: "appstats/data_general_table",
+                dataType: "json",
+                success: function(tableDataSet) {
+                    var dataTable = _.cloneDeep(tableDataSet);
+                    draw_table(dataTable);
+                },
+                error: function(result) {
+                    error();
+                }
+            });
             // Redraw graph if the date range is changed
             document.getElementById("dateButton").addEventListener("click", function() {
                 var from = $("#from").datepicker("getDate");
@@ -59,6 +72,23 @@
                         draw_graph_mini(dataMini[1], "#mini1");
                         draw_graph_mini(dataMini[2], "#mini2");
                         draw_graph_mini(dataMini[3], "#mini3");
+                    },
+                    error: function(result) {
+                        error();
+                    }
+                });
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: "appstats/data_general_table",
+                    dataType: "json",
+                    data: {
+                        "start_date": from,
+                        "end_date": to
+                    },
+                    success: function(tableDataSet) {
+                        var dataTable = _.cloneDeep(tableDataSet);
+                        draw_table(dataTable);
                     },
                     error: function(result) {
                         error();
@@ -574,4 +604,105 @@
             .style("opacity", 1);
     }
 
+    function draw_table(dataShared) {
+        var svg = d3.select("#graph_general_table"),
+            dataInt = dataShared,
+            margin = {
+                top: 20,
+                right: 20,
+                bottom: 20,
+                left: 20
+            },
+            width = +svg.attr("width") - margin.left - margin.right,
+            height = +svg.attr("height") - margin.top - margin.bottom,
+            horizontalTextOffset = 10, 
+            verticalTextOffset = 30,
+            textPadding = 5;
+        console.log(dataInt);
+
+        var groupEnter = svg.selectAll("g").data([dataInt]).enter();
+
+        groupEnter.append("g")
+            .attr("class", "gAll");
+
+        var gAll = svg.select(".gAll")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var x = d3.scaleLinear().rangeRound([0, width]);
+ 
+        x.domain([0, 100]);
+
+        var y = d3.scaleLinear().rangeRound([0, height]);
+ 
+        y.domain([0, 100]);
+
+        // Add Lines For Grid
+        var lineData = [ {x1: x(0  ), y1: y(20 ), x2: x(100), y2: y(20 )}
+                        ,{x1: x(16 ), y1: y(0  ), x2: x(16 ), y2: y(100)}
+                        ,{x1: x(30 ), y1: y(0  ), x2: x(30 ), y2: y(100)}
+                        ,{x1: x(44 ), y1: y(0  ), x2: x(44 ), y2: y(100)}
+                        ,{x1: x(58 ), y1: y(0  ), x2: x(58 ), y2: y(100)}
+                        ,{x1: x(72 ), y1: y(0  ), x2: x(72 ), y2: y(100)}
+                        ,{x1: x(86 ), y1: y(0  ), x2: x(86 ), y2: y(100)}];
+
+        gAll.selectAll(".lineGroup").data([dataInt]).enter().append("g")
+            .attr("class", "lineGroup");
+
+        var lineGroup = gAll.select(".lineGroup")
+            .attr("transform", "translate(0,0)");
+
+        lineGroup.selectAll(".gridLine").data(lineData).enter().append("line")
+            .style("opacity", .000001)
+            .attr("class", "gridLine")
+            .attr("x1", function(d) { return d.x1; })
+            .attr("x2", function(d) { return d.x2; })
+            .attr("y1", function(d) { return d.y1; })
+            .attr("y2", function(d) { return d.y2; })
+            .transition().duration(500)
+            .style("opacity", 1);;
+
+        // Add row/column headings headings
+        var headingData = [  {txt: "Clicks",      x1: x(2 ), y1: y(30)}
+                            ,{txt: "Serves",      x1: x(2 ), y1: y(50)}
+                            ,{txt: "Searches",    x1: x(2 ), y1: y(70)}
+                            ,{txt: "Sessions",    x1: x(2 ), y1: y(90)}
+                            ,{txt: "Total",       x1: x(18), y1: y(10)}
+                            ,{txt: "Per Day",     x1: x(32), y1: y(10)}
+                            ,{txt: "Per Click",   x1: x(46), y1: y(10)}
+                            ,{txt: "Per Serve",   x1: x(60), y1: y(10)}
+                            ,{txt: "Per Search",  x1: x(74), y1: y(10)}
+                            ,{txt: "Per Session", x1: x(88), y1: y(10)}]; 
+
+        gAll.selectAll(".headingGroup").data([dataInt]).enter().append("g")
+            .attr("class", "headingGroup");
+
+        var headingGroup = gAll.select(".headingGroup")
+            .attr("transform", "translate(0,0)");
+
+        headingGroup.selectAll(".headText").data(headingData).enter().append("text")
+            .style("opacity", .000001)
+            .attr("class", "headText")
+            .text(function (d) { return d.txt; })
+            .attr("transform", function(d) { return "translate(" + d.x1 + "," + d.y1 + ")"; })
+            .transition().duration(500)
+            .style("opacity", 1);;
+
+        // Add data text
+    }
+
 })();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

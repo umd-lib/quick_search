@@ -29,10 +29,21 @@
     float: left;
 }
 
-.clearfix{
+.clearfix {
     clear:both
 }
 
+.gridLine {
+    stroke: #333;
+    stroke-width: 1px;
+}
+
+.headText {
+    text-anchor: start;
+    fill:   #000000;
+    font-size: 13px;
+    font-family: "Lucida Console";
+}
 </style>
 
 <svg id="graph_general_statistics" width="960" height="500"></svg>
@@ -44,3 +55,5 @@
     <svg class="graph_mini" id="mini3" width="240" height="200" onmouseover="lighten()" onmouseout="darken()"></svg>
     <div class="clearfix"></div>
 </div>
+
+<svg id="graph_general_table" width="960" height="300"></svg>

@@ -2,7 +2,7 @@ module QuickSearch
   class AppstatsController < ApplicationController
     include Auth
 
-    before_action :auth #, :start_date, :end_date, :days_in_sample
+    before_action :auth, :get_dates, :days_in_sample
 
     def data_sample
       range = date_range(params[:start_date], params[:end_date])
@@ -26,10 +26,15 @@ module QuickSearch
       range = date_range(params[:start_date], params[:end_date])
       result = []
 
-      res0 = Event.select("*").order("id ASC").joins("INNER JOIN sessions ON sessions.id=events.session_id")
-      res1 = Search.select("*").order("id ASC").joins("INNER JOIN sessions ON sessions.id=searches.session_id")
+      res0 = Event.select("*").order("id ASC").joins("INNER JOIN sessions ON sessions.id=events.session_id").where(range)
+      res1 = Search.select("*").order("id ASC").joins("INNER JOIN sessions ON sessions.id=searches.session_id").where(range)
+      res2 = Session.where(range).order("id ASC")
       result[0] = res0[0..99]
       result[1] = res1[0..99]
+      result[2] = res2[0..99]
+
+
+
 
       respond_to do |format|
         format.json {
@@ -77,6 +82,30 @@ module QuickSearch
         searchesSub << row
       end
       result << searchesSub
+
+      respond_to do |format|
+        format.json {
+          render :json => result
+        }
+      end
+    end
+
+    def data_general_table
+      range = date_range(params[:start_date], params[:end_date])
+      result = []
+
+      clicks = Event.where(range).where(:action => 'click').count
+      serves = Event.where(range).where(:action => 'serve').count
+      sessions = Session.where(range).count
+      searches = Search.where(range).count
+
+      row = { "clicks" => clicks,
+              "serves" => serves,
+              "sessions" => sessions,
+              "searches" => searches,
+              "days" => @days_in_sample}
+
+      result << row
 
       respond_to do |format|
         format.json {
@@ -212,10 +241,11 @@ module QuickSearch
         if i>num_results then
           break
         end
+        click_count = clicks[item] ? clicks[item] : 0
         row = {"rank" => i,
                "label" => item,
                "serves" => count,
-               "clicks" =>  clicks[item] ? clicks[item] : 0,
+               "clicks" =>  click_count,
                "ratio" => (100.0*click_count/count).round(2),
                "key" => "spelling_suggestion" + item}
         result << row
@@ -385,9 +415,6 @@ module QuickSearch
       else
         ed = Time.current
       end
-      puts(sd)
-      puts(ed)
-      puts(sd..ed)
       return { :created_at => sd..ed }
     end
 
@@ -399,6 +426,21 @@ module QuickSearch
       @days_in_sample = ((@end_date - @start_date) / (24*60*60)).round
       if @days_in_sample < 1
         @days_in_sample = 1
+      end
+    end
+
+    def get_dates
+      start = params[:start_date]
+      stop = params[:end_date]
+      if (start!="" && start!=nil)
+        @start_date = convert_to_time(start)
+      else
+        @start_date = Time.current - 180.days
+      end
+      if (stop!="" && stop!=nil)
+        @end_date = convert_to_time(stop)
+      else
+        @end_date = Time.current
       end
     end
 

@@ -1,17 +1,21 @@
 (function() {
     var Globals = {};
-
+    Globals["#graph_sessions_location"] = {};
+    Globals["#graph_sessions_device"] = {};
 
     $(document).on("turbolinks:load", function() {
-        if ($("#graph_sessions_campus").length) {
+        if ($("#graph_sessions_location").length) {
             $.ajax({
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
-                url: "data_sessions_campus",
+                url: "data_sessions_location",
                 dataType: "json",
                 success: function(sessionsDataSet) {
                     var dataMain = _.cloneDeep(sessionsDataSet);
-                    draw_graph_sessions_campus(dataMain, false, false);
+                    draw_graph_sessions_details("#graph_sessions_location", dataMain, false, false, false);
+
+                    document.getElementsByClassName("session_location_filter")[0].addEventListener("click", process_filters);
+                    document.getElementsByClassName("session_location_filter")[1].addEventListener("click", process_filters);
                 },
                 error: function(result) {
                     error();
@@ -21,18 +25,62 @@
             document.getElementById("dateButton").addEventListener("click", function() {
                 var from = $("#from").datepicker("getDate");
                 var to = $("#to").datepicker("getDate");
+                var usePerc = Globals["#graph_sessions_location"].UsePerc
                 $.ajax({
                     type: "GET",
                     contentType: "application/json; charset=utf-8",
-                    url: "data_sessions_campus",
+                    url: "data_sessions_location",
                     dataType: "json",
                     data: {
                         "start_date": from,
-                        "end_date": to
+                        "end_date": to,
+                        "use_perc": usePerc
                     },
                     success: function(sessionsDataSet) {
                         var dataMain = _.cloneDeep(sessionsDataSet);
-                        draw_graph_sessions_campus(dataMain, false, true);
+                        draw_graph_sessions_details("#graph_sessions_location", dataMain, false, true, usePerc);
+                    },
+                    error: function(result) {
+                        error();
+                    }
+                });
+            });
+        }
+        if ($("#graph_sessions_device").length) {
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: "data_sessions_device",
+                dataType: "json",
+                success: function(sessionsDataSet) {
+                    var dataMain = _.cloneDeep(sessionsDataSet);
+                    draw_graph_sessions_details("#graph_sessions_device", dataMain, false, false, false);
+
+                    document.getElementsByClassName("session_device_filter")[0].addEventListener("click", process_filters);
+                    document.getElementsByClassName("session_device_filter")[1].addEventListener("click", process_filters);
+                },
+                error: function(result) {
+                    error();
+                }
+            });
+            // Redraw graph if the date range is changed
+            document.getElementById("dateButton").addEventListener("click", function() {
+                var from = $("#from").datepicker("getDate");
+                var to = $("#to").datepicker("getDate");
+                var usePerc = Globals["#graph_sessions_device"].UsePerc;
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: "data_sessions_location",
+                    dataType: "json",
+                    data: {
+                        "start_date": from,
+                        "end_date": to,
+                        "use_perc": usePerc
+                    },
+                    success: function(sessionsDataSet) {
+                        var dataMain = _.cloneDeep(sessionsDataSet);
+                        draw_graph_sessions_details("#graph_sessions_device", dataMain, false, true, usePerc);
                     },
                     error: function(result) {
                         error();
@@ -46,9 +94,10 @@
         console.log("Error retrieving data");
     }
 
-    function draw_graph_sessions_campus(dataShared, transitioning, dateUpdated) {
+    function draw_graph_sessions_details(id, dataShared, transitioning, dateUpdated, usePerc) {
+        Globals[id].UsePerc = usePerc;
         var transitioning = transitioning;
-        var svg = d3.select("#graph_sessions_campus"),
+        var svg = d3.select(id),
             dataInt = dataShared,
             margin = {
                 top: 40,
@@ -64,8 +113,7 @@
             },
             width = +svg.attr("width") - margin.left - margin.right,
             height = +svg.attr("height") - margin.top - margin.bottom,
-            height2 = +svg.attr("height") - margin2.top - margin2.bottom,
-            title = "Sessions Details";
+            height2 = +svg.attr("height") - margin2.top - margin2.bottom;
 
 
         // Parse dates into proper format
@@ -105,7 +153,7 @@
         x2.domain(d3.extent(dataInt, function(d) {
             return d.date;
         }));
-        if (_.isEqual(undefined, Globals.Domain)) {
+        if (_.isEqual(undefined, Globals[id].Domain)) {
             x.domain(d3.extent(dataInt, function(d) {
                 return d.date;
             }));
@@ -114,15 +162,15 @@
             var range = d3.extent(dataInt, function(d) {
                 return d.date;
             });
-            if (Globals.Domain[0] < x2.domain()[0]) {
+            if (Globals[id].Domain[0] < x2.domain()[0]) {
                 lb = x2.domain()[0];
             } else {
-                lb = Globals.Domain[0];
+                lb = Globals[id].Domain[0];
             }
-            if (Globals.Domain[1] > x2.domain()[1]) {
+            if (Globals[id].Domain[1] > x2.domain()[1]) {
                 ub = x2.domain()[1];
             } else {
-                ub = Globals.Domain[1];
+                ub = Globals[id].Domain[1];
             }
             x.domain([lb, ub]);
         }
@@ -261,26 +309,6 @@
             .transition().duration(500)
             .style("opacity", 1);
 
-        // Make chart title
-        var titleSelection = svg.selectAll(".chartTitle").data([dataInt]);
-
-        titleSelection.transition().duration(325)
-            .style("opacity", .00001)
-            .transition()
-            .text(title)
-            .transition().duration(325)
-            .style("opacity", 1);
-        titleSelection.exit().transition().duration(500)
-            .style("opacity", .000001)
-            .remove();
-        titleSelection.enter().append("text")
-            .style("opacity", .000001)
-            .text(title)
-            .attr("class", "chartTitle")
-            .attr("transform", "translate(" + (width / 2) + "," + 30 + ")")
-            .transition().duration(500)
-            .style("opacity", 1);
-
         // Make focus path
         var focusPathSelection = focus.selectAll(".area").data([dataInt]);
 
@@ -387,15 +415,15 @@
         // Before updating domains, move brush to domain it was previously set to
         if (dateUpdated) {
             var lb, ub;
-            if (x2(Globals.Domain[0]) < 0) {
+            if (x2(Globals[id].Domain[0]) < 0) {
                 lb = 0;
             } else {
-                lb = x2(Globals.Domain[0]);
+                lb = x2(Globals[id].Domain[0]);
             }
-            if (x2(Globals.Domain[1]) > width) {
+            if (x2(Globals[id].Domain[1]) > width) {
                 ub = width;
             } else {
-                ub = x2(Globals.Domain[1]);
+                ub = x2(Globals[id].Domain[1]);
             }
             context.select(".brush").call(brush.move, [lb, ub]);
             context.select(".brush").transition().duration(500)
@@ -422,7 +450,7 @@
                 if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return;
                 var s = d3.event.selection || x2.range();
                 x.domain(s.map(x2.invert, x2));
-                Globals.Domain = x.domain();
+                Globals[id].Domain = x.domain();
                 focus.select(".area").attr("d", area);
                 focus.select(".areaLight").attr("d", areaTop);
                 focus.select(".xAxis").call(xAxis);
@@ -437,7 +465,7 @@
                 if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return;
                 var t = d3.event.transform;
                 x.domain(t.rescaleX(x2).domain());
-                Globals.Domain = x.domain();
+                Globals[id].Domain = x.domain();
                 focus.select(".area").attr("d", area);
                 focus.select(".areaLight").attr("d", areaTop);
                 focus.select(".xAxis").call(xAxis);
@@ -446,4 +474,49 @@
         }
     }
 
+    function process_filters() {
+        var loc = document.querySelector('input[name = "loc"]:checked').value;
+        var dev = document.querySelector('input[name = "dev"]:checked').value;
+
+        var from = $("#from").datepicker("getDate");
+        var to = $("#to").datepicker("getDate");
+        var usePercLoc = _.isEqual(loc,"perc") ? true : false;
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "data_sessions_location",
+            dataType: "json",
+            data: {
+                "start_date": from,
+                "end_date": to,
+                "use_perc": usePercLoc
+            },
+            success: function(sessionsDataSet) {
+                var dataMain = _.cloneDeep(sessionsDataSet);
+                draw_graph_sessions_details("#graph_sessions_location", dataMain, true, false, usePercLoc);
+            },
+            error: function(result) {
+                error();
+            }
+        });
+        var usePercDev = _.isEqual(dev,"perc") ? true : false;
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "data_sessions_device",
+            dataType: "json",
+            data: {
+                "start_date": from,
+                "end_date": to,
+                "use_perc": usePercDev
+            },
+            success: function(sessionsDataSet) {
+                var dataMain = _.cloneDeep(sessionsDataSet);
+                draw_graph_sessions_details("#graph_sessions_device", dataMain, true, false, usePercDev);
+            },
+            error: function(result) {
+                error();
+            }
+        });
+    }
 })();

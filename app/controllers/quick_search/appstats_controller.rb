@@ -212,11 +212,10 @@ module QuickSearch
         if i>num_results then
           break
         end
-        click_count = clicks[item] ? clicks[item] : 0
         row = {"rank" => i,
                "label" => item,
                "serves" => count,
-               "clicks" =>  click_count,
+               "clicks" =>  clicks[item] ? clicks[item] : 0,
                "ratio" => (100.0*click_count/count).round(2),
                "key" => "spelling_suggestion" + item}
         result << row
@@ -303,17 +302,43 @@ module QuickSearch
       end
     end
 
-    def data_sessions_campus
+    def data_sessions_location
       range = date_range(params[:start_date], params[:end_date])
+      use_perc = params[:use_perc]=="true" ? true : false
       sessions_on = Session.where(range).where(:on_campus => 't').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       sessions_off = Session.where(range).where(:on_campus => 'f').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
 
       result = []
       i = 0
       sessions_on.each do |date , count|
+        off_count = sessions_off[date] ? sessions_off[date] : 0
         row = { "date" => date ,
-                "on" => count,
-                "off" => sessions_off[date] ? sessions_off[date] : 0 }
+                "on" => use_perc ? count.to_f/(count+off_count) : count,
+                "off" => use_perc ? off_count.to_f/(count+off_count) : off_count}
+        i+=1
+        result << row
+      end
+      
+      respond_to do |format|
+        format.json {
+          render :json => result
+        }
+      end
+    end
+
+    def data_sessions_device
+      range = date_range(params[:start_date], params[:end_date])
+      use_perc = params[:use_perc]=="true" ? true : false
+      sessions_on = Session.where(range).where(:is_mobile => 't').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      sessions_off = Session.where(range).where(:is_mobile => 'f').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+
+      result = []
+      i = 0
+      sessions_on.each do |date , count|
+        off_count = sessions_off[date] ? sessions_off[date] : 0
+        row = { "date" => date ,
+                "on" => use_perc ? count.to_f/(count+off_count) : count,
+                "off" => use_perc ? off_count.to_f/(count+off_count) : off_count}
         i+=1
         result << row
       end

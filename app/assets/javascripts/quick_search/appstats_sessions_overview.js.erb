@@ -70,8 +70,7 @@
             },
             width = +svg.attr("width") - margin.left - margin.right,
             height = +svg.attr("height") - margin.top - margin.bottom,
-            height2 = +svg.attr("height") - margin2.top - margin2.bottom,
-            title = "Sessions Overview";
+            height2 = +svg.attr("height") - margin2.top - margin2.bottom;
 
 
         // Parse dates into proper format
@@ -240,20 +239,6 @@
             .attr("class", "yAxis")
             .attr("transform", "translate(0,0)")
             .call(yAxis)
-            .transition().duration(500)
-            .style("opacity", 1);
-
-        // Make chart title
-        var titleSelection = svg.selectAll(".chartTitle").data([dataInt]);
-
-        titleSelection.exit().transition().duration(500)
-            .style("opacity", .000001)
-            .remove();
-        titleSelection.enter().append("text")
-            .style("opacity", .000001)
-            .text(title)
-            .attr("class", "chartTitle")
-            .attr("transform", "translate(" + (width / 2) + "," + 30 + ")")
             .transition().duration(500)
             .style("opacity", 1);
 

@@ -39,7 +39,8 @@ QuickSearch::Engine.routes.draw do
   get 'appstats/data_spelling_suggestions', :defaults => { :format => 'json' }
   get 'appstats/data_best_bets', :defaults => { :format => 'json' }
   get 'appstats/data_sessions_overview', :defaults => { :format => 'json' }
-  get 'appstats/data_sessions_campus', :defaults => { :format => 'json' }
+  get 'appstats/data_sessions_location', :defaults => { :format => 'json' }
+  get 'appstats/data_sessions_device', :defaults => { :format => 'json' }
 
 
   ##############################################################

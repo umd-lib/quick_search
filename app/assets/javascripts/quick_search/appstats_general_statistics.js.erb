@@ -13,8 +13,9 @@
                 url: "appstats/data_general_statistics",
                 dataType: "json",
                 success: function(generalStatisticsDataSet) {
-                    var dataMain = _.cloneDeep(generalStatisticsDataSet);
-                    var dataMini = _.cloneDeep(generalStatisticsDataSet);
+                    Globals.Data = _.cloneDeep(generalStatisticsDataSet)
+                    var dataMain = _.cloneDeep(Globals.Data);
+                    var dataMini = _.cloneDeep(Globals.Data);
 
                     draw_graph_general_statistics(dataMain, false, 0, false);
 
@@ -29,10 +30,6 @@
                     draw_graph_mini(dataMini[2], "#mini2");
                     document.getElementById("mini2").addEventListener("click", function() {
                         load_new_data(2);
-                    })
-                    draw_graph_mini(dataMini[3], "#mini3");
-                    document.getElementById("mini3").addEventListener("click", function() {
-                        load_new_data(3);
                     })
                 },
                 error: function(result) {
@@ -76,7 +73,6 @@
                         draw_graph_mini(dataMini[0], "#mini0");
                         draw_graph_mini(dataMini[1], "#mini1");
                         draw_graph_mini(dataMini[2], "#mini2");
-                        draw_graph_mini(dataMini[3], "#mini3");
                     },
                     error: function(result) {
                         error();
@@ -127,7 +123,7 @@
             width = +svg.attr("width") - margin.left - margin.right,
             height = +svg.attr("height") - margin.top - margin.bottom,
             height2 = +svg.attr("height") - margin2.top - margin2.bottom,
-            titles = ["Clicks", "Serves", "Sessions", "Searches"],
+            titles = ["Clicks", "Sessions", "Searches"],
             title = titles[index];
 
 
@@ -137,6 +133,13 @@
         dataInt.forEach(function(d) {
             d.date = parseDate(d.date);
         });
+
+        var dateRange = d3.extent(dataInt, function(d) {
+                return d.date;
+        });
+
+        var numDays = parseInt((dateRange[1]-dateRange[0])/(1000*60*60*24));
+        console.log(width + "/" + numDays + "=" + (width/numDays));
 
         // Make scales
         var x = d3.scaleTime().range([0, width]),
@@ -153,7 +156,7 @@
             .on("brush end", brushed);
 
         var zoom = d3.zoom()
-            .scaleExtent([1, 1000])
+            .scaleExtent([1, numDays])
             .translateExtent([
                 [0, 0],
                 [width, height]
@@ -431,13 +434,16 @@
             if (!transitioning) {
                 if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return;
                 var s = d3.event.selection || x2.range();
-                x.domain(s.map(x2.invert, x2));
-                Globals.Domain = x.domain();
-                focus.select(".area").attr("d", area);
-                focus.select(".xAxis").call(xAxis);
-                svg.select(".zoom").call(zoom.transform, d3.zoomIdentity
-                    .scale(width / (s[1] - s[0]))
-                    .translate(-s[0], 0));
+                if( (s[1]-s[0])>=(width/numDays) ) {
+                    console.log(s);
+                    x.domain(s.map(x2.invert, x2));
+                    Globals.Domain = x.domain();
+                    focus.select(".area").attr("d", area);
+                    focus.select(".xAxis").call(xAxis);
+                    svg.select(".zoom").call(zoom.transform, d3.zoomIdentity
+                        .scale(width / (s[1] - s[0]))
+                        .translate(-s[0], 0));
+                }
             }
         }
 
@@ -445,6 +451,7 @@
             if (!transitioning) {
                 if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return;
                 var t = d3.event.transform;
+                console.log(t);
                 x.domain(t.rescaleX(x2).domain());
                 Globals.Domain = x.domain();
                 focus.select(".area").attr("d", area);
@@ -455,25 +462,8 @@
     }
 
     function load_new_data(index) {
-        var from = $("#from").datepicker("getDate");
-        var to = $("#to").datepicker("getDate");
-        $.ajax({
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            url: "appstats/data_general_statistics",
-            dataType: "json",
-            data: {
-                "start_date": from,
-                "end_date": to
-            },
-            success: function(updateDataSet) {
-                var updateData = _.cloneDeep(updateDataSet);
-                draw_graph_general_statistics(updateData, true, index, false);
-            },
-            error: function(result) {
-                error();
-            }
-        });
+        var updateData = _.cloneDeep(Globals.Data);
+        draw_graph_general_statistics(updateData, true, index, false);
     }
 
     function draw_graph_mini(dataShared, id) {
@@ -492,12 +482,9 @@
             title = "Clicks";
         }
         if (id == "#mini1") {
-            title = "Serves";
-        }
-        if (id == "#mini2") {
             title = "Sessions";
         }
-        if (id == "#mini3") {
+        if (id == "#mini2") {
             title = "Searches";
         }
 
@@ -624,6 +611,7 @@
             verticalTextOffset = 30,
             textPadding = 5;
 
+        console.log(width + "," + height);
         var groupEnter = svg.selectAll("g").data([dataInt]).enter();
 
         groupEnter.append("g")
@@ -641,13 +629,12 @@
         y.domain([0, 100]);
 
         // Add Lines For Grid
-        var lineData = [ {x1: x(0  ), y1: y(20 ), x2: x(100), y2: y(20 )}
-                        ,{x1: x(16 ), y1: y(0  ), x2: x(16 ), y2: y(100)}
-                        ,{x1: x(30 ), y1: y(0  ), x2: x(30 ), y2: y(100)}
-                        ,{x1: x(44 ), y1: y(0  ), x2: x(44 ), y2: y(100)}
-                        ,{x1: x(58 ), y1: y(0  ), x2: x(58 ), y2: y(100)}
-                        ,{x1: x(72 ), y1: y(0  ), x2: x(72 ), y2: y(100)}
-                        ,{x1: x(86 ), y1: y(0  ), x2: x(86 ), y2: y(100)}];
+        var lineData = [ {x1: x(0  ), y1: y(25 ), x2: x(100), y2: y(25 )}
+                        ,{x1: x(20 ), y1: y(0  ), x2: x(20 ), y2: y(100)}
+                        ,{x1: x(36 ), y1: y(0  ), x2: x(36 ), y2: y(100)}
+                        ,{x1: x(52 ), y1: y(0  ), x2: x(52 ), y2: y(100)}
+                        ,{x1: x(68 ), y1: y(0  ), x2: x(68 ), y2: y(100)}
+                        ,{x1: x(84 ), y1: y(0  ), x2: x(84 ), y2: y(100)}];
 
         gAll.selectAll(".lineGroup").data([dataInt]).enter().append("g")
             .attr("class", "lineGroup");
@@ -666,16 +653,14 @@
             .style("opacity", 1);;
 
         // Add row/column headings headings
-        var headingData = [  {txt: "Clicks",      x1: x(2 ), y1: y(30)}
-                            ,{txt: "Serves",      x1: x(2 ), y1: y(50)}
-                            ,{txt: "Searches",    x1: x(2 ), y1: y(70)}
-                            ,{txt: "Sessions",    x1: x(2 ), y1: y(90)}
-                            ,{txt: "Total",       x1: x(18), y1: y(10)}
-                            ,{txt: "Per Day",     x1: x(32), y1: y(10)}
-                            ,{txt: "Per Click",   x1: x(46), y1: y(10)}
-                            ,{txt: "Per Serve",   x1: x(60), y1: y(10)}
-                            ,{txt: "Per Search",  x1: x(74), y1: y(10)}
-                            ,{txt: "Per Session", x1: x(88), y1: y(10)}]; 
+        var headingData = [  {txt: "Clicks",      x1: x(2 ), y1: y(37.5)}
+                            ,{txt: "Searches",    x1: x(2 ), y1: y(62.5)}
+                            ,{txt: "Sessions",    x1: x(2 ), y1: y(87.5)}
+                            ,{txt: "Total",       x1: x(22), y1: y(12.5)}
+                            ,{txt: "Per Day",     x1: x(38), y1: y(12.5)}
+                            ,{txt: "Per Click",   x1: x(54), y1: y(12.5)}
+                            ,{txt: "Per Search",  x1: x(70), y1: y(12.5)}
+                            ,{txt: "Per Session", x1: x(86), y1: y(12.5)}]; 
 
         gAll.selectAll(".headingGroup").data([dataInt]).enter().append("g")
             .attr("class", "headingGroup");
@@ -692,7 +677,7 @@
             .style("opacity", 1);;
 
         // Add data text
-        var keys = ["clicks", "serves", "searches", "sessions"];
+        var keys = ["clicks", "searches", "sessions"];
 
         gAll.selectAll(".dataGroup").data([dataInt]).enter().append("g")
             .attr("class", "dataGroup");
@@ -712,7 +697,7 @@
             .style("opacity", .000001)
             .attr("class", "totalText")
             .text(function (d,i) { return d[keys[i]]; })
-            .attr("transform", function(d, i) { return "translate(" + x(18) + "," + y(30+20*i) + ")"; })
+            .attr("transform", function(d, i) { return "translate(" + x(22) + "," + y(37.5+25*i) + ")"; })
             .transition().duration(500)
             .style("opacity", 1);
 
@@ -728,7 +713,7 @@
             .style("opacity", .000001)
             .attr("class", "perDayText")
             .text(function (d,i) { return Math.round(parseInt(d[keys[i]])/Globals.Days_In_Sample * 10000)/10000; })
-            .attr("transform", function(d, i) { return "translate(" + x(32) + "," + y(30+20*i) + ")"; })
+            .attr("transform", function(d, i) { return "translate(" + x(38) + "," + y(37.5+25*i) + ")"; })
             .transition().duration(500)
             .style("opacity", 1);
 
@@ -744,23 +729,7 @@
             .style("opacity", .000001)
             .attr("class", "perClickText")
             .text(function (d,i) { return Math.round(parseInt(d[keys[i]])/parseInt(dataInt[0]["clicks"]) * 10000)/10000; })
-            .attr("transform", function(d, i) { return "translate(" + x(46) + "," + y(30+20*i) + ")"; })
-            .transition().duration(500)
-            .style("opacity", 1);
-
-        // Per Serve column
-        dataGroup.selectAll(".perServeText").data(dataInt)
-            .transition().duration(325)
-            .style("opacity", .000001)
-            .transition()
-            .text(function (d,i) { return Math.round(parseInt(d[keys[i]])/parseInt(dataInt[1]["serves"]) * 10000)/10000; })
-            .transition().duration(325)
-            .style("opacity", 1);
-        dataGroup.selectAll(".perServeText").data(dataInt).enter().append("text")
-            .style("opacity", .000001)
-            .attr("class", "perServeText")
-            .text(function (d,i) { return Math.round(parseInt(d[keys[i]])/parseInt(dataInt[1]["serves"]) * 10000)/10000; })
-            .attr("transform", function(d, i) { return "translate(" + x(60) + "," + y(30+20*i) + ")"; })
+            .attr("transform", function(d, i) { return "translate(" + x(54) + "," + y(37.5+25*i) + ")"; })
             .transition().duration(500)
             .style("opacity", 1);
 
@@ -769,14 +738,14 @@
             .transition().duration(325)
             .style("opacity", .000001)
             .transition()
-            .text(function (d,i) { return Math.round(parseInt(d[keys[i]])/parseInt(dataInt[2]["searches"]) * 10000)/10000; })
+            .text(function (d,i) { return Math.round(parseInt(d[keys[i]])/parseInt(dataInt[1]["searches"]) * 10000)/10000; })
             .transition().duration(325)
             .style("opacity", 1);
         dataGroup.selectAll(".perSearchText").data(dataInt).enter().append("text")
             .style("opacity", .000001)
             .attr("class", "perSearchText")
-            .text(function (d,i) { return Math.round(parseInt(d[keys[i]])/parseInt(dataInt[2]["searches"]) * 10000)/10000; })
-            .attr("transform", function(d, i) { return "translate(" + x(74) + "," + y(30+20*i) + ")"; })
+            .text(function (d,i) { return Math.round(parseInt(d[keys[i]])/parseInt(dataInt[1]["searches"]) * 10000)/10000; })
+            .attr("transform", function(d, i) { return "translate(" + x(70) + "," + y(37.5+25*i) + ")"; })
             .transition().duration(500)
             .style("opacity", 1);
 
@@ -785,14 +754,14 @@
             .transition().duration(325)
             .style("opacity", .000001)
             .transition()
-            .text(function (d,i) { return Math.round(parseInt(d[keys[i]])/parseInt(dataInt[3]["sessions"]) * 10000)/10000; })
+            .text(function (d,i) { return Math.round(parseInt(d[keys[i]])/parseInt(dataInt[2]["sessions"]) * 10000)/10000; })
             .transition().duration(325)
             .style("opacity", 1);
         dataGroup.selectAll(".perSessionText").data(dataInt).enter().append("text")
             .style("opacity", .000001)
             .attr("class", "perSessionText")
-            .text(function (d,i) { return Math.round(parseInt(d[keys[i]])/parseInt(dataInt[3]["sessions"]) * 10000)/10000; })
-            .attr("transform", function(d, i) { return "translate(" + x(88) + "," + y(30+20*i) + ")"; })
+            .text(function (d,i) { return Math.round(parseInt(d[keys[i]])/parseInt(dataInt[2]["sessions"]) * 10000)/10000; })
+            .attr("transform", function(d, i) { return "translate(" + x(86) + "," + y(37.5+25*i) + ")"; })
             .transition().duration(500)
             .style("opacity", 1);
     }

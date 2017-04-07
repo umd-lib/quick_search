@@ -56,15 +56,6 @@ module QuickSearch
       end
       result << clicksSub
 
-      serves = Event.where(range).where(:action => 'serve').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
-      servesSub = []
-      serves.each do |date , count|
-        row = { "date" => date ,
-                "count" => count}
-        servesSub << row
-      end
-      result << servesSub
-
       sessions = Session.where(range).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       sessionsSub = []
       sessions.each do |date , count|
@@ -83,8 +74,6 @@ module QuickSearch
       end
       result << searchesSub
 
-      result << @days_in_sample
-
       respond_to do |format|
         format.json {
           render :json => result
@@ -97,12 +86,10 @@ module QuickSearch
       result = []
 
       clicks = Event.where(range).where(:action => 'click').count
-      serves = Event.where(range).where(:action => 'serve').count
       searches = Search.where(range).count
       sessions = Session.where(range).count
 
       result << { "clicks" => clicks }
-      result << { "serves" => serves }
       result << { "searches" => searches }
       result << { "sessions" => sessions }
 

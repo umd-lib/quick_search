@@ -26,6 +26,7 @@ var temp;
             document.getElementById("dateButton").addEventListener("click", function() { 
                 var from = $( "#from" ).datepicker( "getDate" );
                 var to = $( "#to" ).datepicker( "getDate" );
+                document.getElementById("datePickerText").innerHTML = "Days in Sample: " + parseInt((to-from)/(1000*60*60*24));
                 console.log(document.getElementById("num").value);
                 $.ajax({
                     type: "GET",

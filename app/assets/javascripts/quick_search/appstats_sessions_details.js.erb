@@ -25,6 +25,7 @@
             document.getElementById("dateButton").addEventListener("click", function() {
                 var from = $("#from").datepicker("getDate");
                 var to = $("#to").datepicker("getDate");
+                document.getElementById("datePickerText").innerHTML = "Days in Sample: " + parseInt((to-from)/(1000*60*60*24));
                 var usePerc = Globals["#graph_sessions_location"].UsePerc
                 $.ajax({
                     type: "GET",

@@ -3,10 +3,10 @@
 	width: 30%;
 }
 
-.inputLabel {
+.inputLabel, #datePickerText {
 	float: left;
 	width: 60%;
-	fill: 	#333333;
+	color: 	#000;
 	font-size: 25px;
 	font-family: "Lucida Console";
 }
@@ -35,6 +35,9 @@
 	        <input  id="to"			type="text" 	name="to">
 	        <div 	class="clearfix"></div>
 	    </div>
+	    <div style="display: inline-block; width: 750px">
+	    	<p id="datePickerText"><%= "Days in Sample: #{@days_in_sample}" %></p>
+	    </div>
 	    <% if @page_title=='spelling-suggestion'||@page_title=='best-bets-regular'||@page_title=='Top Searches' %> 
 	    	<div style="display: inline-block; width: 750px">
 	            <label  for="num"		class="inputLabel"> Number of Results to Display: </label>
@@ -42,7 +45,7 @@
 	   		</div>
         <% end %>
 	    <div style="width: 750px;">
-	    	<button id="dateButton"	type="button" 	onclick="printDate()"> Update </button>
+	    	<button id="dateButton"	type="button"> Update </button>
 	    </div>
     </div>
 </div>

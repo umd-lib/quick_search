@@ -3,6 +3,9 @@
 
 
     $(document).on("turbolinks:load", function() {
+        var from = $("#from").datepicker("getDate");
+        var to = $("#to").datepicker("getDate");
+        Globals.Days_In_Sample = parseInt((to-from)/(1000*60*60*24));
         if ($("#graph_general_statistics").length) {
             $.ajax({
                 type: "GET",
@@ -53,6 +56,8 @@
             document.getElementById("dateButton").addEventListener("click", function() {
                 var from = $("#from").datepicker("getDate");
                 var to = $("#to").datepicker("getDate");
+                Globals.Days_In_Sample = parseInt((to-from)/(1000*60*60*24));
+                document.getElementById("datePickerText").innerHTML = "Days in Sample: " + Globals.Days_In_Sample; 
                 $.ajax({
                     type: "GET",
                     contentType: "application/json; charset=utf-8",
@@ -618,7 +623,6 @@
             horizontalTextOffset = 10, 
             verticalTextOffset = 30,
             textPadding = 5;
-        console.log(dataInt);
 
         var groupEnter = svg.selectAll("g").data([dataInt]).enter();
 
@@ -688,6 +692,109 @@
             .style("opacity", 1);;
 
         // Add data text
+        var keys = ["clicks", "serves", "searches", "sessions"];
+
+        gAll.selectAll(".dataGroup").data([dataInt]).enter().append("g")
+            .attr("class", "dataGroup");
+
+        var dataGroup = gAll.select(".dataGroup")
+            .attr("transform", "translate(0,0)");
+
+        // Totals column
+        dataGroup.selectAll(".totalText").data(dataInt)
+            .transition().duration(325)
+            .style("opacity", .000001)
+            .transition()
+            .text(function (d,i) { return d[keys[i]]; })
+            .transition().duration(325)
+            .style("opacity", 1);
+        dataGroup.selectAll(".totalText").data(dataInt).enter().append("text")
+            .style("opacity", .000001)
+            .attr("class", "totalText")
+            .text(function (d,i) { return d[keys[i]]; })
+            .attr("transform", function(d, i) { return "translate(" + x(18) + "," + y(30+20*i) + ")"; })
+            .transition().duration(500)
+            .style("opacity", 1);
+
+        // Per Day column
+        dataGroup.selectAll(".perDayText").data(dataInt)
+            .transition().duration(325)
+            .style("opacity", .000001)
+            .transition()
+            .text(function (d,i) { return Math.round(parseInt(d[keys[i]])/Globals.Days_In_Sample * 10000)/10000; })
+            .transition().duration(325)
+            .style("opacity", 1);
+        dataGroup.selectAll(".perDayText").data(dataInt).enter().append("text")
+            .style("opacity", .000001)
+            .attr("class", "perDayText")
+            .text(function (d,i) { return Math.round(parseInt(d[keys[i]])/Globals.Days_In_Sample * 10000)/10000; })
+            .attr("transform", function(d, i) { return "translate(" + x(32) + "," + y(30+20*i) + ")"; })
+            .transition().duration(500)
+            .style("opacity", 1);
+
+        // Per Click column
+        dataGroup.selectAll(".perClickText").data(dataInt)
+            .transition().duration(325)
+            .style("opacity", .000001)
+            .transition()
+            .text(function (d,i) { return Math.round(parseInt(d[keys[i]])/parseInt(dataInt[0]["clicks"]) * 10000)/10000; })
+            .transition().duration(325)
+            .style("opacity", 1);
+        dataGroup.selectAll(".perClickText").data(dataInt).enter().append("text")
+            .style("opacity", .000001)
+            .attr("class", "perClickText")
+            .text(function (d,i) { return Math.round(parseInt(d[keys[i]])/parseInt(dataInt[0]["clicks"]) * 10000)/10000; })
+            .attr("transform", function(d, i) { return "translate(" + x(46) + "," + y(30+20*i) + ")"; })
+            .transition().duration(500)
+            .style("opacity", 1);
+
+        // Per Serve column
+        dataGroup.selectAll(".perServeText").data(dataInt)
+            .transition().duration(325)
+            .style("opacity", .000001)
+            .transition()
+            .text(function (d,i) { return Math.round(parseInt(d[keys[i]])/parseInt(dataInt[1]["serves"]) * 10000)/10000; })
+            .transition().duration(325)
+            .style("opacity", 1);
+        dataGroup.selectAll(".perServeText").data(dataInt).enter().append("text")
+            .style("opacity", .000001)
+            .attr("class", "perServeText")
+            .text(function (d,i) { return Math.round(parseInt(d[keys[i]])/parseInt(dataInt[1]["serves"]) * 10000)/10000; })
+            .attr("transform", function(d, i) { return "translate(" + x(60) + "," + y(30+20*i) + ")"; })
+            .transition().duration(500)
+            .style("opacity", 1);
+
+        // Per Search column
+        dataGroup.selectAll(".perSearchText").data(dataInt)
+            .transition().duration(325)
+            .style("opacity", .000001)
+            .transition()
+            .text(function (d,i) { return Math.round(parseInt(d[keys[i]])/parseInt(dataInt[2]["searches"]) * 10000)/10000; })
+            .transition().duration(325)
+            .style("opacity", 1);
+        dataGroup.selectAll(".perSearchText").data(dataInt).enter().append("text")
+            .style("opacity", .000001)
+            .attr("class", "perSearchText")
+            .text(function (d,i) { return Math.round(parseInt(d[keys[i]])/parseInt(dataInt[2]["searches"]) * 10000)/10000; })
+            .attr("transform", function(d, i) { return "translate(" + x(74) + "," + y(30+20*i) + ")"; })
+            .transition().duration(500)
+            .style("opacity", 1);
+
+        // Per Session column
+        dataGroup.selectAll(".perSessionText").data(dataInt)
+            .transition().duration(325)
+            .style("opacity", .000001)
+            .transition()
+            .text(function (d,i) { return Math.round(parseInt(d[keys[i]])/parseInt(dataInt[3]["sessions"]) * 10000)/10000; })
+            .transition().duration(325)
+            .style("opacity", 1);
+        dataGroup.selectAll(".perSessionText").data(dataInt).enter().append("text")
+            .style("opacity", .000001)
+            .attr("class", "perSessionText")
+            .text(function (d,i) { return Math.round(parseInt(d[keys[i]])/parseInt(dataInt[3]["sessions"]) * 10000)/10000; })
+            .attr("transform", function(d, i) { return "translate(" + x(88) + "," + y(30+20*i) + ")"; })
+            .transition().duration(500)
+            .style("opacity", 1);
     }
 
 })();

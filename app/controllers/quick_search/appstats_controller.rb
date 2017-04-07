@@ -83,6 +83,8 @@ module QuickSearch
       end
       result << searchesSub
 
+      result << @days_in_sample
+
       respond_to do |format|
         format.json {
           render :json => result
@@ -96,16 +98,13 @@ module QuickSearch
 
       clicks = Event.where(range).where(:action => 'click').count
       serves = Event.where(range).where(:action => 'serve').count
-      sessions = Session.where(range).count
       searches = Search.where(range).count
+      sessions = Session.where(range).count
 
-      row = { "clicks" => clicks,
-              "serves" => serves,
-              "sessions" => sessions,
-              "searches" => searches,
-              "days" => @days_in_sample}
-
-      result << row
+      result << { "clicks" => clicks }
+      result << { "serves" => serves }
+      result << { "searches" => searches }
+      result << { "sessions" => sessions }
 
       respond_to do |format|
         format.json {
@@ -262,8 +261,8 @@ module QuickSearch
     def data_best_bets
       range = date_range(params[:start_date], params[:end_date])
       num_results = params[:num_results] ? params[:num_results].to_i : 20
-      serves = Event.where(range).where(:category => "best-bet", :action => 'serve').group(:item).order("count_category DESC").count(:category)
-      clicks = Event.where(range).where(:category => "best-bet", :action => 'click').group(:item).count(:category)
+      serves = Event.where(range).where(:category => "best-bets-regular", :action => 'serve').group(:item).order("count_category DESC").count(:category)
+      clicks = Event.where(range).where(:category => "best-bets-regular", :action => 'click').group(:item).count(:category)
 
       i=1
       result = []
@@ -335,8 +334,8 @@ module QuickSearch
     def data_sessions_location
       range = date_range(params[:start_date], params[:end_date])
       use_perc = params[:use_perc]=="true" ? true : false
-      sessions_on = Session.where(range).where(:on_campus => 't').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
-      sessions_off = Session.where(range).where(:on_campus => 'f').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      sessions_on = Session.where(range).where(:on_campus => true).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      sessions_off = Session.where(range).where(:on_campus => false).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
 
       result = []
       i = 0
@@ -359,8 +358,8 @@ module QuickSearch
     def data_sessions_device
       range = date_range(params[:start_date], params[:end_date])
       use_perc = params[:use_perc]=="true" ? true : false
-      sessions_on = Session.where(range).where(:is_mobile => 't').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
-      sessions_off = Session.where(range).where(:is_mobile => 'f').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      sessions_on = Session.where(range).where(:is_mobile => true).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      sessions_off = Session.where(range).where(:is_mobile => false).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
 
       result = []
       i = 0
@@ -379,6 +378,7 @@ module QuickSearch
         }
       end
     end
+
 
     def index
       @page_title = 'Search Statistics'
@@ -427,6 +427,7 @@ module QuickSearch
       if @days_in_sample < 1
         @days_in_sample = 1
       end
+
     end
 
     def get_dates

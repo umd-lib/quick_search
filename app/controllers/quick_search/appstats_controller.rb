@@ -285,21 +285,21 @@ module QuickSearch
 
       case filterCase
       when 1 #mobile=f
-        sessions = Session.where(range).where(:is_mobile => 'f').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+        sessions = Session.where(range).where(:is_mobile => false).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       when 2 #mobile=t
-        sessions = Session.where(range).where(:is_mobile => 't').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+        sessions = Session.where(range).where(:is_mobile => true).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       when 4 #campus=f
-        sessions = Session.where(range).where(:on_campus => 'f').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+        sessions = Session.where(range).where(:on_campus => false).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       when 5 #campus=f, mobile=f
-        sessions = Session.where(range).where(:on_campus => 'f', :is_mobile => 'f').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+        sessions = Session.where(range).where(:on_campus => false, :is_mobile => false).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       when 6 #campus=f, mobile=t
-        sessions = Session.where(range).where(:on_campus => 'f', :is_mobile => 't').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+        sessions = Session.where(range).where(:on_campus => false, :is_mobile => true).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       when 8 #campus=t
-        sessions = Session.where(range).where(:on_campus => 't').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+        sessions = Session.where(range).where(:on_campus => true).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       when 9 #campus=t, mobile=f
-        sessions = Session.where(range).where(:on_campus => 't', :is_mobile => 'f').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+        sessions = Session.where(range).where(:on_campus => true, :is_mobile => false).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       when 10 #campus=t, mobile=t
-        sessions = Session.where(range).where(:on_campus => 't', :is_mobile => 't').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+        sessions = Session.where(range).where(:on_campus => true, :is_mobile => true).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       else
         sessions = Session.where(range).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       end

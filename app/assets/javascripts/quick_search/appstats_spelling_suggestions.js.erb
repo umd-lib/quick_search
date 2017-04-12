@@ -31,7 +31,7 @@ var temp;
                 var from = $( "#from" ).datepicker( "getDate" );
                 var to = $( "#to" ).datepicker( "getDate" );
                 document.getElementById("datePickerText").innerHTML = "Days in Sample: " + parseInt((to-from)/(1000*60*60*24));
-                console.log(document.getElementById("num").value);
+                if (document.getElementById("num").value>200) { document.getElementById("num").value = "20"; }                
                 $.ajax({
                     type: "GET",
                     contentType: "application/json; charset=utf-8",
@@ -40,7 +40,7 @@ var temp;
                     data: {
                         "start_date": from,
                         "end_date": to,
-                        "num_results": document.getElementById("num").value
+                        "num_results": (document.getElementById("num").value>200) ? Globals.Data.length : document.getElementById("num").value
                     },
                     success: function(suggestionDataSet) {
                         var suggestionData = _.cloneDeep(suggestionDataSet);

@@ -1,58 +1,14 @@
-<style>
+<div class="graph_group">
+    <div class="icon-container" id="genTableIcon"></div>
+    <svg class="graph" id="graph_general_table" width="960" height="300"></svg>
+    </svg>
+</div>
 
-.area {
-    fill: steelblue;
-    clip-path: url(#clip);
-}
-
-.areaMini {
-    fill: steelblue;
-    clip-path: url(#clipMini);
-    pointer-events: none;
-}
-
-.chartTitle {
-	text-anchor: middle;
-	fill: 	#333333;
-	font-size: 30px;
-	font-family: "Lucida Console";
-    pointer-events: none;
-}
-
-.zoom {
-    cursor: move;
-    fill: none;
-    pointer-events: all;
-}
-
-.graph_mini {
-    float: left;
-}
-
-.clearfix {
-    clear:both
-}
-
-.gridLine {
-    stroke: #333;
-    stroke-width: 1px;
-}
-
-.headText, .totalText, .perDayText, .perClickText, .perServeText, .perSearchText, .perSessionText {
-    text-anchor: start;
-    fill:   #000000;
-    font-size: 13px;
-    font-family: "Lucida Console";
-}
-
-.headText {
-    font-size: 16px;
-}
-</style>
-
-<svg id="graph_general_table" width="960" height="300"></svg>
-
-<svg id="graph_general_statistics" width="960" height="500"></svg>
+<div class="graph_group">
+    <div class="icon-container" id="genGraphIcon"></div>
+    <svg class="graph" id="graph_general_statistics" width="960" height="500">
+    </svg>
+</div>
 
 <div style="display: inline-block; width: 1000px;">
     <svg class="graph_mini" id="mini0" width="320" height="200" onmouseover="lighten()" onmouseout="darken()"></svg>

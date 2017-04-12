@@ -5,3 +5,142 @@
 #appstats-date-filter {
   display: none;
 }
+
+// Added for appstats graph styling
+// Icon and general graph styling
+.graph_group {
+    position: relative;
+}
+
+.graph {    
+    position: relative;
+}
+
+.graph_mini {
+    float: left;
+}
+
+.icon-container {
+    position: absolute;
+    z-index: 1;
+}
+
+.big-icon {
+    font-size: 15em !important;
+}
+
+.dataLabel {
+	cursor: pointer;
+}
+
+.clearfix {
+    clear: both;
+}
+
+.zoom {
+    cursor: move;
+    fill: none;
+    pointer-events: all;
+}
+
+// Date range styling
+#dateButton {
+	width: 30%;
+}
+
+.inputLabel, #datePickerText {
+	float: left;
+	width: 60%;
+	color: 	#000;
+	font-size: 25px;
+	font-family: "Lucida Console";
+}
+
+#from, #to, #num {
+	float: left;
+	width: 25%;
+}
+
+// Text styling
+.chartTitle {
+	text-anchor: middle;
+	fill: 	#333333;
+	font-size: 30px;
+	font-family: "Lucida Console";
+    pointer-events: none;
+}
+
+.headText, .totalText, .perDayText, .perClickText, .perServeText, .perSearchText, .perSessionText, .dataRank, .dataLabel, .dataClick, .dataServe, .dataRatio,
+.percentText, .dataPercent, .dataCumPercent
+ {
+    text-anchor: start;
+    fill:   #000000;
+    font-size: 13px;
+    font-family: "Lucida Console";
+}
+
+.headText, .percentText {
+    font-size: 16px;
+}
+
+.percentText, .dataPercent {
+	text-anchor: end;
+}
+
+// Data bars and areas
+.area {
+    fill: steelblue;
+    clip-path: url(#clip);
+}
+
+.areaLight {
+    fill: lightsteelblue;
+    clip-path: url(#clip);
+}
+
+.areaMini {
+    fill: steelblue;
+    clip-path: url(#clipMini);
+    pointer-events: none;
+}
+
+.dataBar, .serveBar, .clickBar, .ratioBar, .percBar, .cumPercBar {
+	fill: steelblue;
+}
+
+.dataBar:hover, .serveBar:hover,  .clickBar:hover, .ratioBar:hover, .percBar:hover,  .cumPercBar:hover{
+	fill: lightsteelblue;
+}
+
+// Background rects, borders, and lines
+.sortRect {
+	cursor: pointer;
+	opacity: 0.000001;
+}
+
+.darkBorder {
+	fill: none;
+	stroke-width: 2px;
+	stroke: #333;
+}
+
+.lightBorder {
+	fill: none;
+	stroke-width: 2px;
+	stroke: #DDD;
+}
+
+.darkBar {
+	fill: #F5F5F5;
+	stroke-width: 1px;
+	stroke: #DDD;
+}
+
+.lightBar {
+	fill: none;
+}
+
+.gridLine {
+    stroke: #333;
+    stroke-width: 1px;
+}

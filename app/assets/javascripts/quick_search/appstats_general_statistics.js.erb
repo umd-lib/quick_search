@@ -443,7 +443,6 @@
             if (!transitioning) {
                 if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return;
                 var s = d3.event.selection || x2.range();
-                //console.log(s);
                 x.domain(s.map(x2.invert, x2));
                 Globals.Domain = x.domain();
                 focus.select(".area").attr("d", area);
@@ -451,6 +450,9 @@
                 svg.select(".zoom").call(zoom.transform, d3.zoomIdentity
                     .scale(width / (s[1] - s[0]))
                     .translate(-s[0], 0));
+                if ((s[1]-s[0]) < width/numDays) { 
+                    d3.select(this).call(d3.event.target.move, [s[0], s[0]+(width/numDays)]);
+                }
             }
         }
 

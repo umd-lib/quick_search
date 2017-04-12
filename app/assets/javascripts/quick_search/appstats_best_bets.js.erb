@@ -3,12 +3,16 @@
 
     $(document).on("turbolinks:load", function() {
         if ($("#graph_best_bets").length) {
+            d3.select("#bbIconContainer").append("i")
+                .attr("class", "fa fa-spinner fa-spin fa-5x fa-fw big-icon")
+                .attr("id", "bbIcon");
             $.ajax({
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 url: "data_best_bets",
                 dataType: "json",
                 success: function(bestBetDataSet) {
+                    d3.select("#bbIcon").remove();
                     var bestBetData = _.cloneDeep(bestBetDataSet);
                     Globals.OriginalData = bestBetData;
                     Globals.Data = bestBetData;

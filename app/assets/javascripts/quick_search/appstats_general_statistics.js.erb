@@ -7,14 +7,18 @@
         var to = $("#to").datepicker("getDate");
         Globals.Days_In_Sample = parseInt((to-from)/(1000*60*60*24));
         if ($("#graph_general_statistics").length) {
-            d3.select("#genGraphIcon").append("i")
-                .attr("class", "fa fa-spinner fa-spin fa-5x fa-fw big-icon");;
+            d3.select("#graphIconContainer").append("i")
+                .attr("class", "fa fa-spinner fa-spin fa-5x fa-fw big-icon")
+                .attr("id", "graphIcon");
             $.ajax({
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 url: "appstats/data_general_statistics",
                 dataType: "json",
                 success: function(generalStatisticsDataSet) {
+                    // d3.select("#graphIcon").transition().duration(250)
+                    //     .attr("opacity", .000001);
+                    d3.select("#graphIcon").remove();
                     Globals.Data = _.cloneDeep(generalStatisticsDataSet)
                     var dataMain = _.cloneDeep(Globals.Data);
                     var dataMini = _.cloneDeep(Globals.Data);
@@ -38,12 +42,16 @@
                     error();
                 }
             });
+            d3.select("#tableIconContainer").append("i")
+                .attr("class", "fa fa-spinner fa-spin fa-5x fa-fw big-icon")
+                .attr("id", "tableIcon");
             $.ajax({
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 url: "appstats/data_general_table",
                 dataType: "json",
                 success: function(tableDataSet) {
+                    d3.select("#tableIcon").remove();
                     var dataTable = _.cloneDeep(tableDataSet);
                     draw_table(dataTable);
                 },

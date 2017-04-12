@@ -6,12 +6,16 @@
 
     $(document).on("turbolinks:load", function() {
         if ($("#graph_module_clicks").length) {
+            d3.select("#moduleIconContainer").append("i")
+                .attr("class", "fa fa-spinner fa-spin fa-5x fa-fw big-icon")
+                .attr("id", "moduleIcon");
             $.ajax({
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 url: "data_module_clicks",
                 dataType: "json",
                 success: function(moduleDataSet) {
+                    d3.select("#moduleIcon").remove();
                     var moduleData = _.cloneDeep(moduleDataSet);
                     AppStatsGlobals["#graph_module_clicks"].OriginalData = moduleData;
                     AppStatsGlobals["#graph_module_clicks"].Data = moduleData;
@@ -50,12 +54,16 @@
             });
         }
         if ($("#graph_result_clicks").length) {
+            d3.select("#resultIconContainer").append("i")
+                .attr("class", "fa fa-spinner fa-spin fa-5x fa-fw big-icon")
+                .attr("id", "resultIcon");
             $.ajax({
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 url: "data_result_clicks",
                 dataType: "json",
                 success: function(resultDataSet) {
+                    d3.select("#resultIcon").remove();
                     var resultData = _.cloneDeep(resultDataSet);
                     AppStatsGlobals["#graph_result_clicks"].OriginalData = resultData;
                     AppStatsGlobals["#graph_result_clicks"].Data = resultData;

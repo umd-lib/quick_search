@@ -3,12 +3,16 @@
 
     $(document).on("turbolinks:load", function() {
         if ($("#graph_top_searches").length) {
+            d3.select("#tsIconContainer").append("i")
+                .attr("class", "fa fa-spinner fa-spin fa-5x fa-fw big-icon")
+                .attr("id", "tsIcon");
             $.ajax({
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 url: "data_top_searches",
                 dataType: "json",
                 success: function(searchDataSet) {
+                    d3.select("#tsIcon").remove();
                     var searchData = _.cloneDeep(searchDataSet);
                     Globals.OriginalData = searchData;
                     Globals.Data = searchData;

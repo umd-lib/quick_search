@@ -5,12 +5,16 @@ var temp;
 
     $(document).on("turbolinks:load", function() {
         if ($("#graph_spelling_suggestions").length) {
+            d3.select("#spIconContainer").append("i")
+                .attr("class", "fa fa-spinner fa-spin fa-5x fa-fw big-icon")
+                .attr("id", "spIcon");
             $.ajax({
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 url: "data_spelling_suggestions",
                 dataType: "json",
                 success: function(suggestionDataSet) {
+                    d3.select("#spIcon").remove();
                     var suggestionData = _.cloneDeep(suggestionDataSet);
                     Globals.OriginalData = suggestionData;
                     Globals.Data = suggestionData;

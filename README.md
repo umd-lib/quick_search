@@ -98,7 +98,7 @@ far. Feel free to submit a pull request to add to this list.
 |wikipedia               |gem 'quick_search-wikipedia_searcher'          |[quick_search-wikipedia_searcher](https://www.github.com/ncsu-libraries/quick_search-wikipedia_searcher)       |
 |OpenLibrary             |gem 'quick_search-open_library_searcher'       |[quick_search-open_library_searcher](https://www.github.com/ncsu-libraries/quick_search-open_library_searcher) |
 |Placeholder           |gem 'quick_search-placeholder_searcher'       |[quick_search-placeholder_searcher](https://www.github.com/ncsu-libraries/quick_search-placeholder_searcher) |
-|Summon                  |Coming soon                                    |                                   |
+|Summon                  |gem 'quick_search-summon_searcher'               |[quick_search-summon_searcher](https://www.github.com/ncsu-libraries/quick_search-summon_searcher) |
 |NCSU Libraries' Catalog |Coming soon                                    |                                   |
 |ContentDM               |gem 'quick_search-contentdm'                   | [quick_search-contentdm](https://github.com/tulibraries/quick_search-contentdm)                       |
 

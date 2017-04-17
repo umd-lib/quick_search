@@ -4,7 +4,7 @@
     max-width: 100% !important;
 }
 
-.medium-7, .columns {
+.medium-8, .columns {
     float: left !important;
 }
 
@@ -30,11 +30,5 @@
             <li><%= link_to "Sessions Overview", sessions_overview_path(:start_date => params[:start_date], :end_date => params[:end_date]) %></li>
             <li><%= link_to "Sessions Details", sessions_details_path(:start_date => params[:start_date], :end_date => params[:end_date]) %></li>
         </ul>
-        <% if @page_title=='Sessions Overview' %> 
-            <%= render partial: 'sessions_overview_graph_filters' %>
-        <% end %>
-        <% if @page_title=='Sessions Details' %> 
-            <%= render partial: 'sessions_details_graph_filters' %>
-        <% end %>
     </section>
 </aside>

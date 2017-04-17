@@ -2,5 +2,8 @@
 <h2>Sessions Overview</h2>
 <div class="graphGroup">
     <div class="iconContainer" id="sessIconContainer"></div>
-    <svg id="graph_sessions_overview" width="840" height="473"></svg>
+    <div style="float: left; display: inline-block;">
+    	<svg id="graph_sessions_overview" width="840" height="473"></svg>
+    </div>
+	<%= render partial: 'sessions_overview_graph_filters' %>
 </div>

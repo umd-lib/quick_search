@@ -29,8 +29,8 @@
     font-size: 15em !important;
 }
 
-.dataLabel {
-	cursor: pointer;
+.big-icon::before {
+	opacity: .5;
 }
 
 .clearfix {
@@ -108,6 +108,7 @@
 	fill: steelblue;
 }
 
+.lightDataBar, .lightServeBar, .lightClickBar, .lightRatioBar, .lightPercBar, .lightCumPercBar
 .dataBar:hover, .serveBar:hover,  .clickBar:hover, .ratioBar:hover, .percBar:hover,  .cumPercBar:hover{
 	fill: lightsteelblue;
 }

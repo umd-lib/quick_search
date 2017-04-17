@@ -109,7 +109,7 @@
     function draw_graph_clicks_overview(id) {
         var Globals = AppStatsGlobals[id],
             sortStates = [0, 0, 0, 0]
-        dataInt = Globals.Data,
+            dataInt = Globals.Data,
             oldHeight = Globals.Height;
 
         sortStates[Globals.Sort] = 1;
@@ -626,45 +626,30 @@
     function sort_clicks_overview(id, sort) {
         if (AppStatsGlobals[id].Data.length != AppStatsGlobals[id].OriginalData.length) { // If details are present, those must be removed before resort
             // Go back to original data set (no details)
-            AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
-                switch(AppStatsGlobals[id].Sort) {
-                    case 0: return d3.ascending(a.rank,b.rank);
-                    case 1: return d3.ascending(b.rank,a.rank);
-
-                    case 2: return d3.ascending(a.label,b.label);
-                    case 3: return d3.ascending(b.label,a.label);
-                }
-            });
+            AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a,b) { return determine_sort(AppStatsGlobals[id].Sort, a, b) });
 
             // Resort data after delay
             setTimeout(function() {
-                AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
-                    switch(sort) {
-                        case 0: return d3.ascending(a.rank,b.rank);
-                        case 1: return d3.ascending(b.rank,a.rank);
-
-                        case 2: return d3.ascending(a.label,b.label);
-                        case 3: return d3.ascending(b.label,a.label);
-                    }
-                });
+                AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a,b) { return determine_sort(sort, a, b) });
                 draw_graph_clicks_overview(id);
             }, 750);
         } else { // Otherwise, you can just resort the data
-            AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
-                switch(sort) {
-                    case 0: return d3.ascending(a.rank,b.rank);
-                    case 1: return d3.ascending(b.rank,a.rank);
-
-                    case 2: return d3.ascending(a.label,b.label);
-                    case 3: return d3.ascending(b.label,a.label);
-                }
-            });
-
+            AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a,b) { return determine_sort(sort, a, b) });
         }
 
         // Update global sort
         AppStatsGlobals[id].Sort = sort;
         draw_graph_clicks_overview(id);
+    }
+
+    function determine_sort(sort, a, b) {
+        switch(sort) {
+            case 0: return d3.ascending(a.rank,b.rank);
+            case 1: return d3.ascending(b.rank,a.rank);
+
+            case 2: return d3.ascending(a.label,b.label);
+            case 3: return d3.ascending(b.label,a.label);
+        }
     }
 
 })();

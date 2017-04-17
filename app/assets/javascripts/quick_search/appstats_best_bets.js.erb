@@ -1,5 +1,6 @@
 (function() {
     var Globals = {};
+    Globals.ExpandedCategories = [];
 
     $(document).on("turbolinks:load", function() {
         if ($("#graph_best_bets").length) {
@@ -81,13 +82,14 @@
             serveWidth = 4 * width / 20,
             clickWidth = 4 * width / 20,
             ratioWidth = 5 * width / 20,
-            serveBarStart = rankWidth + categoryWidth + 3 * textPadding + 13 * d3.max(dataInt, function(d) {
+            childOffset = 20,
+            serveBarStart = rankWidth + categoryWidth + 4 * textPadding + 13 * d3.max(dataInt, function(d) {
                 return d.serves.toString().length;
             }),
-            clickBarStart = rankWidth + categoryWidth + serveWidth + 3 * textPadding + 13 * d3.max(dataInt, function(d) {
+            clickBarStart = rankWidth + categoryWidth + serveWidth + 4 * textPadding + 13 * d3.max(dataInt, function(d) {
                 return d.clicks.toString().length;
             }),
-            ratioBarStart = rankWidth + categoryWidth + serveWidth + clickWidth + 3 * textPadding + 13 * d3.max(dataInt, function(d) {
+            ratioBarStart = rankWidth + categoryWidth + serveWidth + clickWidth + 4 * textPadding + 13 * d3.max(dataInt, function(d) {
                 return d.ratio.toString().length;
             }),
             height = (dataInt.length + 1) * rowHeight,
@@ -321,7 +323,13 @@
         dataRects.exit().remove();
         dataRects.enter().append("rect")
             .style("opacity", .000001)
-            .attr("class", function(d, i) { return "darkBar"; })
+            .attr("class", function(d, i) {
+                if (d.parent) {
+                    return "lightBar";
+                } else {
+                    return "darkBar";
+                }
+            })
             .attr("x", 0)
             .attr("y", function(d, i) {
                 return (i + 1) * rowHeight;
@@ -355,7 +363,11 @@
             })
             .attr("class", "dataRank")
             .attr("transform", function(d, i) {
-                return "translate(" + textPadding + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                if (!d.parent) {
+                    return "translate(" + textPadding + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                } else {
+                    return "translate(" + (textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")"; 
+                }
             })
             .transition().delay(750).duration(500)
             .style("opacity", 1);
@@ -372,7 +384,11 @@
             })
             .duration(750)
             .attr("transform", function(d, i) {
-                return "translate(" + (rankWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                if (!d.parent) {
+                    return "translate(" + (rankWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                } else {
+                    return "translate(" + (rankWidth + textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                }
             })
             .text(function(d) {
                 if (d.label.length > 25) {
@@ -395,7 +411,11 @@
             })
             .attr("class", "dataLabel")
             .attr("transform", function(d, i) {
-                return "translate(" + (rankWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                if (!d.parent) {
+                    return "translate(" + (rankWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                } else {
+                    return "translate(" + (rankWidth + textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                }
             })
             .transition().delay(750).duration(500)
             .style("opacity", 1);
@@ -412,7 +432,11 @@
             })
             .duration(750)
             .attr("transform", function(d, i) {
-                return "translate(" + (rankWidth + categoryWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                if (!d.parent) {
+                    return "translate(" + (rankWidth + categoryWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                } else {
+                    return "translate(" + (rankWidth + categoryWidth + textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                }
             })
             .text(function(d) {
                 return d.serves;
@@ -427,7 +451,11 @@
             })
             .attr("class", "dataServe")
             .attr("transform", function(d, i) {
-                return "translate(" + (rankWidth + categoryWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                if (!d.parent) {
+                    return "translate(" + (rankWidth + categoryWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                } else {
+                    return "translate(" + (rankWidth + categoryWidth + textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                }
             })
             .transition().delay(750).duration(500)
             .style("opacity", 1);
@@ -444,7 +472,11 @@
             })
             .duration(750)
             .attr("transform", function(d, i) {
-                return "translate(" + (rankWidth + categoryWidth + serveWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                if (!d.parent) {
+                    return "translate(" + (rankWidth + categoryWidth + serveWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                } else {
+                    return "translate(" + (rankWidth + categoryWidth + serveWidth + textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                }
             })
             .text(function(d) {
                 return d.clicks;
@@ -459,7 +491,11 @@
             })
             .attr("class", "dataClick")
             .attr("transform", function(d, i) {
-                return "translate(" + (rankWidth + categoryWidth + serveWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                if (!d.parent) {
+                    return "translate(" + (rankWidth + categoryWidth + serveWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                } else {
+                    return "translate(" + (rankWidth + categoryWidth + serveWidth + textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                }
             })
             .transition().delay(750).duration(500)
             .style("opacity", 1);
@@ -476,7 +512,11 @@
             })
             .duration(750)
             .attr("transform", function(d, i) {
-                return "translate(" + (rankWidth + categoryWidth + serveWidth + clickWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                if (!d.parent) {
+                    return "translate(" + (rankWidth + categoryWidth + serveWidth + clickWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                } else {
+                    return "translate(" + (rankWidth + categoryWidth + serveWidth + clickWidth + textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                }
             })
             .text(function(d) {
                 return d.ratio + "%";
@@ -491,13 +531,17 @@
             })
             .attr("class", "dataRatio")
             .attr("transform", function(d, i) {
-                return "translate(" + (rankWidth + categoryWidth + serveWidth + clickWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                if (!d.parent) {
+                    return "translate(" + (rankWidth + categoryWidth + serveWidth + clickWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                } else {
+                    return "translate(" + (rankWidth + categoryWidth + serveWidth + clickWidth + textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                }
             })
             .transition().delay(750).duration(500)
             .style("opacity", 1);
 
         // Make serve bars
-        var serveBar = dataRows.selectAll(".serveBar").data(dataInt, key);
+        var serveBar = dataRows.selectAll(".serveBar, .lightServeBar").data(dataInt, key);
 
         serveBar.transition().delay(function(d) {
                 if (oldHeight > height) {
@@ -520,7 +564,20 @@
             .attr("width", 0)
             .remove();
         serveBar.enter().append("rect")
-            .attr("class", "serveBar")
+            .attr("class", function(d) {
+                if (!d.parent) {
+                    return "serveBar";
+                } else {
+                    return "lightServeBar";
+                }
+            })
+            .style("cursor", function(d) {
+                if (!d.parent) {
+                    return "pointer";
+                } else {
+                    return "auto";
+                }
+            })
             .attr("x", function(d) {
                 return serveBarStart;
             })
@@ -531,13 +588,14 @@
                 return 0;
             })
             .attr("height", barHeight)
+            .on("click", function(d) { expand(d) })
             .transition().delay(750).duration(500)
             .attr("width", function(d) {
                 return serveScale(d.serves);
             });
 
         // Make click bars
-        var clickBar = dataRows.selectAll(".clickBar").data(dataInt, key);
+        var clickBar = dataRows.selectAll(".clickBar, .lightClickBar").data(dataInt, key);
 
         clickBar.transition().delay(function(d) {
                 if (oldHeight > height) {
@@ -560,7 +618,20 @@
             .attr("width", 0)
             .remove();
         clickBar.enter().append("rect")
-            .attr("class", "clickBar")
+            .attr("class", function(d) {
+                if (!d.parent) {
+                    return "clickBar";
+                } else {
+                    return "lightClickBar";
+                }
+            })
+            .style("cursor", function(d) {
+                if (!d.parent) {
+                    return "pointer";
+                } else {
+                    return "auto";
+                }
+            })
             .attr("x", function(d) {
                 return clickBarStart;
             })
@@ -571,13 +642,14 @@
                 return 0;
             })
             .attr("height", barHeight)
+            .on("click", function(d) { expand(d) })
             .transition().delay(750).duration(500)
             .attr("width", function(d) {
                 return clickScale(d.clicks);
             });
 
         // Make ratio bars
-        var ratioBar = dataRows.selectAll(".ratioBar").data(dataInt, key);
+        var ratioBar = dataRows.selectAll(".ratioBar , .lightRatioBar").data(dataInt, key);
 
         ratioBar.transition().delay(function(d) {
                 if (oldHeight > height) {
@@ -600,7 +672,20 @@
             .attr("width", 0)
             .remove();
         ratioBar.enter().append("rect")
-            .attr("class", "ratioBar")
+            .attr("class", function(d) {
+                if (!d.parent) {
+                    return "ratioBar";
+                } else {
+                    return "lightRatioBar";
+                }
+            })
+            .style("cursor", function(d) {
+                if (!d.parent) {
+                    return "pointer";
+                } else {
+                    return "auto";
+                }
+            })
             .attr("x", function(d) {
                 return ratioBarStart;
             })
@@ -611,6 +696,7 @@
                 return 0;
             })
             .attr("height", barHeight)
+            .on("click", function(d) { expand(d) })
             .transition().delay(750).duration(500)
             .attr("width", function(d) {
                 return ratioScale(d.ratio);
@@ -656,11 +742,44 @@
             .attr("height", height - rowHeight);
     }
 
-    function sort_search_data(sort) {
-        var id = "#graph_best_bets";
+    function expand(d) {
+        if (!d.expanded && !d.parent) {
+            d.expanded = 1;
+            load_details(d.label);
+            Globals.ExpandedCategories.push(d.label);
+        } else if (d.expanded && !d.parent) {
+            d.expanded = 0;
+            remove_details(d.label);
+            _.remove(Globals.ExpandedCategories, function(n) {
+                return _.isEqual(n, d.label);
+            });
+        }
+        console.log(Globals.ExpandedCategories);
+    }
 
-        Globals.Data = Globals.OriginalData.sort(function(a, b) {
-            switch(sort) {
+    function sort_search_data(sort) {
+        if (Globals.Data.length != Globals.OriginalData.length) { // If details are present, those must be removed before resort
+            // Go back to original data set (no details)
+            Globals.Data = Globals.OriginalData.sort(function(a,b) { return determine_sort(Globals.Sort, a, b) });
+
+            // Resort data after delay
+            setTimeout(function() {
+                Globals.Data = Globals.OriginalData.sort(function(a,b) { return determine_sort(sort, a, b) });
+                draw_graph_best_bets();
+            }, 750);
+        } else { // Otherwise, you can just resort the data
+            Globals.Data = Globals.OriginalData.sort(function(a,b) { return determine_sort(sort, a, b) });
+        }
+
+        // Update global sort
+        Globals.ExpandedCategories = [];
+        console.log(Globals.ExpandedCategories)
+        Globals.Sort = sort;
+        draw_graph_best_bets();
+    }
+
+    function determine_sort(sort, a, b) {
+        switch(sort) {
                 case 0: return d3.ascending(a.rank,b.rank);
                 case 1: return d3.ascending(b.rank,a.rank);
 
@@ -676,10 +795,53 @@
                 case 8: return d3.ascending(a.ratio,b.ratio);
                 case 9: return d3.ascending(b.ratio,a.ratio);
             }
-        });
+    }
 
-        // Update global sort
-        Globals.Sort = sort;
+    function load_details(item) {
+        var updateData = _.cloneDeep(Globals.Data);
+        var from = $( "#from" ).datepicker( "getDate" );
+        var to = $( "#to" ).datepicker( "getDate" );
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "data_best_bets_details",
+            dataType: "json",
+            data: {
+                "item": item,
+                "start_date": from,
+                "end_date": to
+            },
+            success: function(detailSet) {
+                var detailData = _.cloneDeep(detailSet);
+                var index = _.findIndex(updateData, {
+                    "label": item
+                });
+                updateData = _.concat(_.slice(updateData, 0, index + 1), detailData, _.slice(updateData, index + 1, updateData.length));
+
+                Globals.Data = updateData;
+                draw_graph_best_bets();
+            },
+            error: function(result) {
+                error();
+            }
+        });
+    }
+
+    function remove_details(item) {
+        var updateData = _.cloneDeep(Globals.Data);
+        console.log(updateData);
+        var startIndex = _.findIndex(updateData, {
+            "label": item
+        });
+        var endIndex = startIndex + 1;
+        while (endIndex < updateData.length && updateData[endIndex].parent) {
+            endIndex++;
+        }
+        console.log("start=" + startIndex + ", end=" + endIndex);
+        updateData = _.concat(_.slice(updateData, 0, startIndex + 1), _.slice(updateData, endIndex, updateData.length));
+        console.log(updateData);
+
+        Globals.Data = updateData;
         draw_graph_best_bets();
     }
 

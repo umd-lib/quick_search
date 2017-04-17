@@ -7,13 +7,13 @@ module QuickSearch
     def data_sample
       range = date_range(params[:start_date], params[:end_date])
       result = []
-      events = Event.order("session_id ASC")
+      events = Event.where(range).where(:category => "best-bets-regular").group(:query).order("count_query DESC").count(:query)
       searches = Search.order("session_id ASC")
       sessions = Session.order("id ASC")
 
-      result[0] = events[0..99]
-      result[1] = searches[0..99]
-      result[2] = sessions[0..99]
+      result[0] = events
+      # result[1] = searches[0..99]
+      # result[2] = sessions[0..99]
 
       respond_to do |format|
         format.json {
@@ -233,7 +233,37 @@ module QuickSearch
                "serves" => count,
                "clicks" =>  click_count,
                "ratio" => (100.0*click_count/count).round(2),
+               "parent" => 0,
+               "expanded" => 0,
                "key" => "spelling_suggestion" + item}
+        result << row
+        i+=1
+      end
+
+      respond_to do |format|
+        format.json {
+          render :json => result
+        }
+      end
+    end
+
+    def data_spelling_details
+      range = date_range(params[:start_date], params[:end_date])
+      item = params[:item]
+      serves = Event.where(range).where(:category => "spelling-suggestion", :action => 'serve', :item => item).group(:query).order("count_query DESC").count(:query)
+      clicks = Event.where(range).where(:category => "spelling-suggestion", :action => 'click', :item => item).group(:query).count(:query)
+
+      i=1
+      result = []
+      serves.each do |query , count|
+        click_count = clicks[query] ? clicks[query] : 0
+        row = {"rank" => i,
+               "label" => query,
+               "serves" => count,
+               "clicks" =>  click_count,
+               "ratio" => (100.0*click_count/count).round(2),
+               "parent" => item,
+               "key" => "spelling_suggestion" + item + "given_by" + query}
         result << row
         i+=1
       end
@@ -263,7 +293,37 @@ module QuickSearch
                "serves" => count,
                "clicks" =>  click_count,
                "ratio" => (100.0*click_count/count).round(2),
+               "parent" => 0,
+               "expanded" => 0,
                "key" => "best_bet" + item}
+        result << row
+        i+=1
+      end
+
+      respond_to do |format|
+        format.json {
+          render :json => result
+        }
+      end
+    end
+
+    def data_best_bets_details
+      range = date_range(params[:start_date], params[:end_date])
+      item = params[:item]
+      serves = Event.where(range).where(:category => "best-bets-regular", :action => 'serve', :item => item).group(:query).order("count_query DESC").count(:query)
+      clicks = Event.where(range).where(:category => "best-bets-regular", :action => 'click', :item => item).group(:query).count(:query)
+
+      i=1
+      result = []
+      serves.each do |query , count|
+        click_count = clicks[query] ? clicks[query] : 0
+        row = {"rank" => i,
+               "label" => query,
+               "serves" => count,
+               "clicks" =>  click_count,
+               "ratio" => (100.0*click_count/count).round(2),
+               "parent" => item,
+               "key" => "best_bet" + item + "given_by" + query}
         result << row
         i+=1
       end

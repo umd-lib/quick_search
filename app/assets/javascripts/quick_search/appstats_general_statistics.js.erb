@@ -16,10 +16,10 @@
                 url: "appstats/data_general_statistics",
                 dataType: "json",
                 success: function(generalStatisticsDataSet) {
-                    d3.select("#graphIcon").transition().duration(5000)
-                        .style("opacity", .000001)
-                        .remove();
-                    //d3.select("#graphIcon").remove();
+                    // d3.select("#graphIcon").transition().duration(5000)
+                    //     .style("opacity", .000001)
+                    //     .remove();
+                    d3.select("#graphIcon").remove();
                     Globals.Data = _.cloneDeep(generalStatisticsDataSet)
                     var dataMain = _.cloneDeep(Globals.Data);
                     var dataMini = _.cloneDeep(Globals.Data);
@@ -584,7 +584,7 @@
             .style("opacity", .000001)
             .text(title)
             .attr("class", "chartTitle")
-            .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
+            .attr("transform", "translate(" + (width / 2) + "," + (height - margin.bottom) + ")")
             .transition().duration(500)
             .style("opacity", 1);
 

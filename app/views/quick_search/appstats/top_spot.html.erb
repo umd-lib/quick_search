@@ -2,10 +2,7 @@
 <%= render partial: 'datatables' %>
 <div class="row">
     <%= render partial: "menu" %>
-    <div class="large-9 columns">
-        <%= render partial: "date_range" %>
-    </div>
-    <div class="large-9 columns">
+    <div class="medium-7 columns">
         <% if @page_title=='spelling-suggestion' %> 
             <%= render partial: 'graph_spelling_suggestions' %>
         <% end %>
@@ -13,4 +10,5 @@
             <%= render partial: 'graph_best_bets' %>
         <% end %>
     </div>
+    <%= render partial: "date_range" %>
 </div>

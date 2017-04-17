@@ -1,28 +1,16 @@
 <% title('Foo') %>
-<div class="row">
-    <div class="small-12 columns">
-        <h1><%= @page_title %></h1>
-
-       	<div style="display: inline-block; width: 750px">
-       	 	<label  for="from" 		class="inputLabel"> From: </label>
-	        <input  id="from"		type="text" 	name="from">
-	    </div>
-	    <div style="display: inline-block; width: 750px">
-	    	<label  for="to" 		class="inputLabel"> To: </label>
-	        <input  id="to"			type="text" 	name="to">
-	        <div 	class="clearfix"></div>
-	    </div>
-	    <div style="display: inline-block; width: 750px">
-	    	<p id="datePickerText"><%= "Days in Sample: #{@days_in_sample}" %></p>
-	    </div>
-	    <% if @page_title=='spelling-suggestion'||@page_title=='best-bets-regular'||@page_title=='Top Searches' %> 
-	    	<div style="display: inline-block; width: 750px">
-	            <label  for="num"		class="inputLabel"> Number of Results to Display: </label>
-	   			<input  id="num"		type="number" 	name="num" min="0" max="200">
-	   		</div>
-        <% end %>
-	    <div style="width: 750px;">
-	    	<button id="dateButton"	type="button"> Update </button>
-	    </div>
-    </div>
+<div class="medium-2 columns" style="position: fixed; right: 0;">
+	<div style="">
+	<label  for="from" 		class="inputLabel"> From: </label>
+    <input  id="from"		type="text" 	name="from">
+	<label  for="to" 		class="inputLabel"> To: </label>
+    <input  id="to"			type="text" 	name="to">
+	<p id="datePickerText"> Days in Sample: </p> 
+	<p id="numDays"><%= "#{@days_in_sample}" %></p>
+    <% if @page_title=='spelling-suggestion'||@page_title=='best-bets-regular'||@page_title=='Top Searches' %> 
+        <label  for="num"		class="inputLabel"> # Results: </label>
+   		<input  id="num"		type="number" 	name="num" min="0" max="200">
+    <% end %>
+    <button id="dateButton"	type="button"> Update </button>
+    <div>
 </div>

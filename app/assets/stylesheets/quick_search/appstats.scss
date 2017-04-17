@@ -45,20 +45,28 @@
 
 // Date range styling
 #dateButton {
-	width: 30%;
+	width: 100%;
 }
 
-.inputLabel, #datePickerText {
-	float: left;
+.inputLabel, #datePickerText, #numDays {
 	width: 60%;
+	float: left;
 	color: 	#000;
-	font-size: 25px;
-	font-family: "Lucida Console";
+	font-size: 20px;
+}
+
+#datePickerText {
+	width: 70%;
+}
+
+#numDays {
+	width: 30%;
+	text-align: right;
 }
 
 #from, #to, #num {
 	float: left;
-	width: 25%;
+	width: 40%;
 }
 
 // Text styling

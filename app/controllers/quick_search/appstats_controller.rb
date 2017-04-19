@@ -5,9 +5,8 @@ module QuickSearch
     before_action :auth, :get_dates, :days_in_sample
 
     def data_sample
-      range = date_range(params[:start_date], params[:end_date])
       result = []
-      events = Event.where(range).where(:category => "best-bets-regular").group(:query).order("count_query DESC").count(:query)
+      events = Event.where(@range).where(:category => "best-bets-regular").group(:query).order("count_query DESC").count(:query)
       searches = Search.order("session_id ASC")
       sessions = Session.order("id ASC")
 
@@ -23,12 +22,10 @@ module QuickSearch
     end
 
     def data_test
-      range = date_range(params[:start_date], params[:end_date])
       result = []
-
-      res0 = Event.select("*").order("id ASC").joins("INNER JOIN sessions ON sessions.id=events.session_id").where(range)
-      res1 = Search.select("*").order("id ASC").joins("INNER JOIN sessions ON sessions.id=searches.session_id").where(range)
-      res2 = Session.where(range).order("id ASC")
+      res0 = Event.select("*").order("id ASC").joins("INNER JOIN sessions ON sessions.id=events.session_id").where(@range)
+      res1 = Search.select("*").order("id ASC").joins("INNER JOIN sessions ON sessions.id=searches.session_id").where(@range)
+      res2 = Session.where(@range).order("id ASC")
       result[0] = res0[0..99]
       result[1] = res1[0..99]
       result[2] = res2[0..99]
@@ -44,10 +41,9 @@ module QuickSearch
     end
 
     def data_general_statistics
-      range = date_range(params[:start_date], params[:end_date])
       result = []
 
-      clicks = Event.where(range).where(:action => 'click').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      clicks = Event.where(@range).where(:action => 'click').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       clicksSub = []
       clicks.each do |date , count|
         row = { "date" => date ,
@@ -56,7 +52,7 @@ module QuickSearch
       end
       result << clicksSub
 
-      sessions = Session.where(range).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      sessions = Session.where(@range).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       sessionsSub = []
       sessions.each do |date , count|
         row = { "date" => date ,
@@ -65,7 +61,7 @@ module QuickSearch
       end
       result << sessionsSub
 
-      searches = Search.where(range).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      searches = Search.where(@range).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       searchesSub = []
       searches.each do |date , count|
         row = { "date" => date ,
@@ -82,12 +78,11 @@ module QuickSearch
     end
 
     def data_general_table
-      range = date_range(params[:start_date], params[:end_date])
       result = []
 
-      clicks = Event.where(range).where(:action => 'click').count
-      searches = Search.where(range).count
-      sessions = Session.where(range).count
+      clicks = Event.where(@range).where(:action => 'click').count
+      searches = Search.where(@range).count
+      sessions = Session.where(@range).count
 
       result << { "clicks" => clicks }
       result << { "searches" => searches }
@@ -101,8 +96,7 @@ module QuickSearch
     end
 
     def data_module_clicks
-      range = date_range(params[:start_date], params[:end_date])
-      clicks = Event.where(range).where(excluded_categories).where(:action => 'click').group(:category).order("count_category DESC").count(:category)
+      clicks = Event.where(@range).where(excluded_categories).where(:action => 'click').group(:category).order("count_category DESC").count(:category)
       total_clicks = clicks.values.sum
 
       i=1
@@ -127,8 +121,7 @@ module QuickSearch
     end
 
     def data_result_clicks
-      range = date_range(params[:start_date], params[:end_date])
-      clicks = Event.where(range).where(:category => "result-types").where(:action => 'click').group(:item).order("count_item DESC").count(:item)
+      clicks = Event.where(@range).where(:category => "result-types").where(:action => 'click').group(:item).order("count_item DESC").count(:item)
       total_clicks = clicks.values.sum
 
       i=1
@@ -153,9 +146,8 @@ module QuickSearch
     end
 
     def data_module_details
-      range = date_range(params[:start_date], params[:end_date])
       category = params[:category]
-      clicks = Event.where(:category => category).where(:action => 'click').where(range).group(:item).order('count_category DESC').count(:category)
+      clicks = Event.where(:category => category).where(:action => 'click').where(@range).group(:item).order('count_category DESC').count(:category)
       total_clicks = clicks.values.sum
 
       i=1
@@ -179,10 +171,9 @@ module QuickSearch
     end
 
     def data_top_searches
-      range = date_range(params[:start_date], params[:end_date])
       num_results = params[:num_results] ? params[:num_results].to_i : 20
-      searches = Search.where(:page => '/').where(range).group(:query).order('count_query DESC').count(:query)
-      total_searches = Search.where(:page => '/').where(range).group(:query).order('count_query DESC').count(:query).sum {|k,v| v}
+      searches = Search.where(:page => '/').where(@range).group(:query).order('count_query DESC').count(:query)
+      total_searches = Search.where(:page => '/').where(@range).group(:query).order('count_query DESC').count(:query).sum {|k,v| v}
 
       i=1
       result = []
@@ -216,10 +207,9 @@ module QuickSearch
     end
 
     def data_spelling_suggestions
-      range = date_range(params[:start_date], params[:end_date])
       num_results = params[:num_results] ? params[:num_results].to_i : 20
-      serves = Event.where(range).where(:category => "spelling-suggestion", :action => 'serve').group(:item).order("count_category DESC").count(:category)
-      clicks = Event.where(range).where(:category => "spelling-suggestion", :action => 'click').group(:item).count(:category)
+      serves = Event.where(@range).where(:category => "spelling-suggestion", :action => 'serve').group(:item).order("count_category DESC").count(:category)
+      clicks = Event.where(@range).where(:category => "spelling-suggestion", :action => 'click').group(:item).count(:category)
 
       i=1
       result = []
@@ -248,10 +238,9 @@ module QuickSearch
     end
 
     def data_spelling_details
-      range = date_range(params[:start_date], params[:end_date])
       item = params[:item]
-      serves = Event.where(range).where(:category => "spelling-suggestion", :action => 'serve', :item => item).group(:query).order("count_query DESC").count(:query)
-      clicks = Event.where(range).where(:category => "spelling-suggestion", :action => 'click', :item => item).group(:query).count(:query)
+      serves = Event.where(@range).where(:category => "spelling-suggestion", :action => 'serve', :item => item).group(:query).order("count_query DESC").count(:query)
+      clicks = Event.where(@range).where(:category => "spelling-suggestion", :action => 'click', :item => item).group(:query).count(:query)
 
       i=1
       result = []
@@ -276,10 +265,9 @@ module QuickSearch
     end
 
     def data_best_bets
-      range = date_range(params[:start_date], params[:end_date])
       num_results = params[:num_results] ? params[:num_results].to_i : 20
-      serves = Event.where(range).where(:category => "best-bets-regular", :action => 'serve').group(:item).order("count_category DESC").count(:category)
-      clicks = Event.where(range).where(:category => "best-bets-regular", :action => 'click').group(:item).count(:category)
+      serves = Event.where(@range).where(:category => "best-bets-regular", :action => 'serve').group(:item).order("count_category DESC").count(:category)
+      clicks = Event.where(@range).where(:category => "best-bets-regular", :action => 'click').group(:item).count(:category)
 
       i=1
       result = []
@@ -308,10 +296,9 @@ module QuickSearch
     end
 
     def data_best_bets_details
-      range = date_range(params[:start_date], params[:end_date])
       item = params[:item]
-      serves = Event.where(range).where(:category => "best-bets-regular", :action => 'serve', :item => item).group(:query).order("count_query DESC").count(:query)
-      clicks = Event.where(range).where(:category => "best-bets-regular", :action => 'click', :item => item).group(:query).count(:query)
+      serves = Event.where(@range).where(:category => "best-bets-regular", :action => 'serve', :item => item).group(:query).order("count_query DESC").count(:query)
+      clicks = Event.where(@range).where(:category => "best-bets-regular", :action => 'click', :item => item).group(:query).count(:query)
 
       i=1
       result = []
@@ -336,7 +323,6 @@ module QuickSearch
     end
 
     def data_sessions_overview
-      range = date_range(params[:start_date], params[:end_date])
       onCampus = params[:onCampus] ? params[:onCampus].to_i : 0
       offCampus = params[:offCampus] ? params[:offCampus].to_i : 0
       isMobile = params[:isMobile] ? params[:isMobile].to_i : 0
@@ -345,23 +331,23 @@ module QuickSearch
 
       case filterCase
       when 1 #mobile=f
-        sessions = Session.where(range).where(:is_mobile => false).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+        sessions = Session.where(@range).where(:is_mobile => false).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       when 2 #mobile=t
-        sessions = Session.where(range).where(:is_mobile => true).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+        sessions = Session.where(@range).where(:is_mobile => true).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       when 4 #campus=f
-        sessions = Session.where(range).where(:on_campus => false).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+        sessions = Session.where(@range).where(:on_campus => false).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       when 5 #campus=f, mobile=f
-        sessions = Session.where(range).where(:on_campus => false, :is_mobile => false).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+        sessions = Session.where(@range).where(:on_campus => false, :is_mobile => false).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       when 6 #campus=f, mobile=t
-        sessions = Session.where(range).where(:on_campus => false, :is_mobile => true).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+        sessions = Session.where(@range).where(:on_campus => false, :is_mobile => true).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       when 8 #campus=t
-        sessions = Session.where(range).where(:on_campus => true).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+        sessions = Session.where(@range).where(:on_campus => true).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       when 9 #campus=t, mobile=f
-        sessions = Session.where(range).where(:on_campus => true, :is_mobile => false).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+        sessions = Session.where(@range).where(:on_campus => true, :is_mobile => false).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       when 10 #campus=t, mobile=t
-        sessions = Session.where(range).where(:on_campus => true, :is_mobile => true).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+        sessions = Session.where(@range).where(:on_campus => true, :is_mobile => true).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       else
-        sessions = Session.where(range).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+        sessions = Session.where(@range).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       end
 
       result = []
@@ -379,10 +365,9 @@ module QuickSearch
     end
 
     def data_sessions_location
-      range = date_range(params[:start_date], params[:end_date])
       use_perc = params[:use_perc]=="true" ? true : false
-      sessions_on = Session.where(range).where(:on_campus => true).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
-      sessions_off = Session.where(range).where(:on_campus => false).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      sessions_on = Session.where(@range).where(:on_campus => true).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      sessions_off = Session.where(@range).where(:on_campus => false).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
 
       result = []
       i = 0
@@ -403,10 +388,9 @@ module QuickSearch
     end
 
     def data_sessions_device
-      range = date_range(params[:start_date], params[:end_date])
       use_perc = params[:use_perc]=="true" ? true : false
-      sessions_on = Session.where(range).where(:is_mobile => true).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
-      sessions_off = Session.where(range).where(:is_mobile => false).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      sessions_on = Session.where(@range).where(:is_mobile => true).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
+      sessions_off = Session.where(@range).where(:is_mobile => false).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
 
       result = []
       i = 0
@@ -451,20 +435,6 @@ module QuickSearch
       @page_title = 'Sessions Details'
     end
 
-    def date_range(start, stop)
-      if (start!="" && start!=nil)
-        sd = convert_to_time(start)
-      else
-        sd = Time.current - 180.days
-      end
-      if (stop!="" && stop!=nil)
-        ed = convert_to_time(stop)
-      else
-        ed = Time.current
-      end
-      return { :created_at => sd..ed }
-    end
-
     def convert_to_time(date_input)
       Time.parse(date_input)
     end
@@ -490,6 +460,7 @@ module QuickSearch
       else
         @end_date = Time.current
       end
+      @range = { :created_at => @start_date..@end_date }
     end
 
     def excluded_categories

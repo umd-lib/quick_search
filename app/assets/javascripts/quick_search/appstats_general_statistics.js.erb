@@ -65,7 +65,7 @@
                 var from = $("#from").datepicker("getDate");
                 var to = $("#to").datepicker("getDate");
                 Globals.Days_In_Sample = parseInt((to-from)/(1000*60*60*24));
-                document.getElementById("datePickerText").innerHTML = "Days in Sample: " + Globals.Days_In_Sample; 
+                document.getElementById("numDays").innerHTML = "" + Globals.Days_In_Sample; 
                 $.ajax({
                     type: "GET",
                     contentType: "application/json; charset=utf-8",

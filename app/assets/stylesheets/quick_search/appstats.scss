@@ -79,7 +79,7 @@
 }
 
 .headText, .totalText, .perDayText, .perClickText, .perServeText, .perSearchText, .perSessionText, .dataRank, .dataLabel, .dataClick, .dataServe, .dataRatio,
-.percentText, .dataPercent, .dataCumPercent
+.percentText, .dataPercent, .dataCumPercent, .legendText
  {
     text-anchor: start;
     fill:   #000000;
@@ -87,7 +87,7 @@
     font-family: "Lucida Console";
 }
 
-.headText, .percentText {
+.headText, .percentText, .legendText {
     font-size: 16px;
 }
 
@@ -112,12 +112,12 @@
     pointer-events: none;
 }
 
-.dataBar, .serveBar, .clickBar, .ratioBar, .percBar, .cumPercBar {
+.dataBar, .serveBar, .clickBar, .ratioBar, .percBar, .cumPercBar, .legendRect {
 	fill: steelblue;
 }
 
-.lightDataBar, .lightServeBar, .lightClickBar, .lightRatioBar, .lightPercBar, .lightCumPercBar
-.dataBar:hover, .serveBar:hover,  .clickBar:hover, .ratioBar:hover, .percBar:hover,  .cumPercBar:hover{
+.lightLegendRect, .lightDataBar, .lightServeBar, .lightClickBar, .lightRatioBar, .lightPercBar, .lightCumPercBar,
+.dataBar:hover, .serveBar:hover,  .clickBar:hover, .ratioBar:hover, .percBar:hover,  .cumPercBar:hover {
 	fill: lightsteelblue;
 }
 

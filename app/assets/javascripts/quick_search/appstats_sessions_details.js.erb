@@ -109,7 +109,7 @@
         var svg = d3.select(id),
             dataInt = dataShared,
             margin = {
-                top: 40,
+                top: 50,
                 right: 20,
                 bottom: 110,
                 left: 40
@@ -285,6 +285,61 @@
             .append("rect")
             .attr("width", width)
             .attr("height", height);
+
+        // Make legendGroup
+        var legendGroupSelection = svg.selectAll(".legend").data([dataInt]);
+
+        legendGroupSelection.exit().transition().duration(500)
+            .style("opacity", .000001)
+            .remove();
+        legendGroupSelection.enter().append("g")
+            .attr("class", "legend")
+            .attr("transform", "translate(" + margin.left + "," + 0 + ")");
+
+        var legendGroup = svg.select(".legend");
+
+        // Make legendRects and legendText
+        var legendData = [{areaClass: "legendRect",         locationText: "On Campus",  deviceText: "On Mobile Device"},
+                          {areaClass: "lightLegendRect",    locationText: "Off Campus", deviceText: "On Non-Mobile Device"}];
+
+        var legendRectSelection = legendGroup.selectAll(".legendRect, .lightLegendRect").data(legendData);
+
+        legendRectSelection.exit().transition().duration(500)
+            .style("opacity", .000001)
+            .remove();
+        legendRectSelection.enter().append("rect")
+            .style("opacity", .000001)
+            .attr("class", function(d, i) {
+                return d.areaClass;
+            })
+            .attr("width", width/32)
+            .attr("height", width/32)
+            .attr("transform", function (d,i) { 
+                return "translate(" + (width/5 + i*2*width/5) + "," + 5 + ")";
+            })
+            .transition().duration(500)
+            .style("opacity", 1);
+
+        var legendTextSelection = legendGroup.selectAll(".legendText").data(legendData);
+
+        legendTextSelection.exit().transition().duration(500)
+            .style("opacity", .000001)
+            .remove();
+        legendTextSelection.enter().append("text")
+            .style("opacity", .000001)
+            .attr("class", "legendText")
+            .text(function(d) {
+                if (id=="#graph_sessions_location") {
+                    return d.locationText;
+                } else {
+                    return d.deviceText;
+                }
+            })
+            .attr("transform", function(d, i) {
+                return "translate(" + (width/5 + i*2*width/5 + width/32 + 5) + "," + (5 + 3*width/128) + ")";
+            })
+            .transition().duration(500)
+            .style("opacity", 1);
 
         // Make focus x axis
         var xAxisSelection = focus.selectAll(".xAxis").data([dataInt]);

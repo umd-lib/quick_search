@@ -168,7 +168,7 @@
             .on("brush end", brushed);
 
         var zoom = d3.zoom()
-            .scaleExtent([1, numDays])
+            .scaleExtent([1, 1000])
             .translateExtent([
                 [0, 0],
                 [width, height]
@@ -188,9 +188,6 @@
                 return d.date;
             }));
         } else {
-            console.log(Globals.Domain[0]);
-            console.log(x2.domain()[0]);
-            console.log(dateRange[0]);
             var lb, ub;
             if (Globals.Domain[0] < x2.domain()[0]) {
                 lb = x2.domain()[0];
@@ -461,9 +458,9 @@
                 svg.select(".zoom").call(zoom.transform, d3.zoomIdentity
                     .scale(width / (s[1] - s[0]))
                     .translate(-s[0], 0));
-                if ((s[1]-s[0]) < width/numDays) { 
-                    d3.select(this).call(d3.event.target.move, [s[0], s[0]+(width/numDays)]);
-                }
+                // if ((s[1]-s[0]) < width/numDays) { 
+                //     d3.select(this).call(d3.event.target.move, [s[0], s[0]+(width/numDays)]);
+                // }
             }
         }
 

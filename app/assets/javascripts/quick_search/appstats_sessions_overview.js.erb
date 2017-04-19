@@ -121,9 +121,6 @@
             }));
         } else {
             var lb, ub;
-            var range = d3.extent(dataInt, function(d) {
-                return d.date;
-            });
             if (Globals.Domain[0] < x2.domain()[0]) {
                 lb = x2.domain()[0];
             } else {
@@ -133,6 +130,10 @@
                 ub = x2.domain()[1];
             } else {
                 ub = Globals.Domain[1];
+            }
+            if(Globals.Domain[0]>x2.domain()[1] || Globals.Domain[1]<x2.domain()[0]) {
+                lb = x2.domain()[0];
+                ub = x2.domain()[1];
             }
             x.domain([lb, ub]);
         }
@@ -333,6 +334,10 @@
                 ub = width;
             } else {
                 ub = x2(Globals.Domain[1]);
+            }
+            if(Globals.Domain[0]>x2.domain()[1] || Globals.Domain[1]<x2.domain()[0]) {
+                lb = 0;
+                ub = width;
             }
             context.select(".brush").call(brush.move, [lb, ub]);
             context.select(".brush").transition().duration(500)

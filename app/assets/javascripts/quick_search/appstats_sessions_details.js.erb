@@ -191,7 +191,10 @@
         // Make axes
         var xAxis = d3.axisBottom(x),
             xAxis2 = d3.axisBottom(x2),
-            yAxis = d3.axisLeft(y);
+            yAxis = d3.axisLeft(y),
+            yAxisFormat = usePerc ? d3.format(".0%") : null;
+
+        yAxis.tickFormat(yAxisFormat);
 
         // Make areas
         var area = d3.area()

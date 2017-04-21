@@ -142,16 +142,13 @@ module QuickSearch
     def data_top_searches
       num_results = params[:num_results] ? params[:num_results].to_i : 20
       searches = Search.where(:page => '/').where(@range).group(:query).order('count_query DESC').count(:query)
-      total_searches = Search.where(:page => '/').where(@range).group(:query).order('count_query DESC').count(:query).sum {|k,v| v}
+      total_searches = searches.sum {|k,v| v}
 
       @result = []
       last_row = {}
-      searches.each_with_index do |d, i|
+      searches.to_a[0..num_results-1].each_with_index do |d, i|
         query = d[0]
         count = d[1]
-        if i>num_results then
-          break
-        end
         if (last_row=={}) 
           last_cum_percentage = 0
         else 
@@ -177,12 +174,9 @@ module QuickSearch
       clicks = Event.where(@range).where(:category => "spelling-suggestion", :action => 'click').group(:item).count(:category)
 
       @result = []
-      serves.each_with_index do |d , i|
+      serves.to_a[0..num_results-1].each_with_index do |d , i|
         item = d[0]
         count = d[1]
-        if i>num_results then
-          break
-        end
         click_count = clicks[item] ? clicks[item] : 0
         row = {"rank" => i+1,
                "label" => item,
@@ -227,12 +221,9 @@ module QuickSearch
       clicks = Event.where(@range).where(:category => "best-bets-regular", :action => 'click').group(:item).count(:category)
 
       @result = []
-      serves.each_with_index do |d , i|
+      serves.to_a[0..num_results-1].each_with_index do |d , i|
         item = d[0]
         count = d[1]
-        if i>num_results then
-          break
-        end
         click_count = clicks[item] ? clicks[item] : 0
         row = {"rank" => i+1,
                "label" => item,

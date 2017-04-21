@@ -33,31 +33,13 @@ module QuickSearch
       @result = []
 
       clicks = Event.where(@range).where(:action => 'click').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
-      clicksSub = []
-      clicks.each do |date , count|
-        row = { "date" => date ,
-                "count" => count}
-        clicksSub << row
-      end
-      @result << clicksSub
+      @result << process_time_query(clicks)
 
       sessions = Session.where(@range).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
-      sessionsSub = []
-      sessions.each do |date , count|
-        row = { "date" => date ,
-                "count" => count}
-        sessionsSub << row
-      end
-      @result << sessionsSub
+      @result << process_time_query(sessions)
 
       searches = Search.where(@range).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
-      searchesSub = []
-      searches.each do |date , count|
-        row = { "date" => date ,
-                "count" => count}
-        searchesSub << row
-      end
-      @result << searchesSub
+      @result << process_time_query(searches)
 
       render_data
     end
@@ -313,12 +295,7 @@ module QuickSearch
         sessions = Session.where(@range).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       end
 
-      @result = []
-      sessions.each do |date , count|
-        row = { "date" => date ,
-                "count" => count}
-        @result << row
-      end
+      @result = process_time_query(sessions)
 
       render_data
     end
@@ -355,6 +332,16 @@ module QuickSearch
       end
       
       render_data
+    end
+
+    def process_time_query(query)
+      sub = []
+      query.each do |date , count|
+        row = { "date" => date ,
+                "count" => count}
+        sub << row
+      end
+      return sub
     end
 
     def render_data

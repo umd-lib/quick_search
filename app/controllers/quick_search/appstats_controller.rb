@@ -5,43 +5,32 @@ module QuickSearch
     before_action :auth, :get_dates, :days_in_sample
 
     def data_sample
-      result = []
-      events = Event.where(@range).where(:category => "best-bets-regular").group(:query).order("count_query DESC").count(:query)
-      searches = Search.order("session_id ASC")
-      sessions = Session.order("id ASC")
+      @result = []
+      events = Event.order("id ASC").limit(100)
+      searches = Search.order("session_id ASC").limit(100)
+      sessions = Session.order("id ASC").limit(100)
 
-      result[0] = events
-      # result[1] = searches[0..99]
-      # result[2] = sessions[0..99]
+      @result[0] = events
+      @result[1] = searches
+      @result[2] = sessions
 
-      respond_to do |format|
-        format.json {
-          render :json => result
-        }
-      end
+      render_data
     end
 
     def data_test
-      result = []
+      @result = []
       res0 = Event.select("*").order("id ASC").joins("INNER JOIN sessions ON sessions.id=events.session_id").where(@range)
       res1 = Search.select("*").order("id ASC").joins("INNER JOIN sessions ON sessions.id=searches.session_id").where(@range)
       res2 = Session.where(@range).order("id ASC")
-      result[0] = res0[0..99]
-      result[1] = res1[0..99]
-      result[2] = res2[0..99]
+      @result[0] = res0[0..99]
+      @result[1] = res1[0..99]
+      @result[2] = res2[0..99]
 
-
-
-
-      respond_to do |format|
-        format.json {
-          render :json => result
-        }
-      end
+      render_data
     end
 
     def data_general_statistics
-      result = []
+      @result = []
 
       clicks = Event.where(@range).where(:action => 'click').group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       clicksSub = []
@@ -50,7 +39,7 @@ module QuickSearch
                 "count" => count}
         clicksSub << row
       end
-      result << clicksSub
+      @result << clicksSub
 
       sessions = Session.where(@range).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       sessionsSub = []
@@ -59,7 +48,7 @@ module QuickSearch
                 "count" => count}
         sessionsSub << row
       end
-      result << sessionsSub
+      @result << sessionsSub
 
       searches = Search.where(@range).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       searchesSub = []
@@ -68,38 +57,30 @@ module QuickSearch
                 "count" => count}
         searchesSub << row
       end
-      result << searchesSub
+      @result << searchesSub
 
-      respond_to do |format|
-        format.json {
-          render :json => result
-        }
-      end
+      render_data
     end
 
     def data_general_table
-      result = []
+      @result = []
 
       clicks = Event.where(@range).where(:action => 'click').count
       searches = Search.where(@range).count
       sessions = Session.where(@range).count
 
-      result << { "clicks" => clicks }
-      result << { "searches" => searches }
-      result << { "sessions" => sessions }
+      @result << { "clicks" => clicks }
+      @result << { "searches" => searches }
+      @result << { "sessions" => sessions }
 
-      respond_to do |format|
-        format.json {
-          render :json => result
-        }
-      end
+      render_data
     end
 
     def data_module_clicks
       clicks = Event.where(@range).where(excluded_categories).where(:action => 'click').group(:category).order("count_category DESC").count(:category)
       total_clicks = clicks.values.sum
 
-      result = []
+      @result = []
       clicks.each_with_index do |d, i|
         category = d[0]
         count = d[1]
@@ -110,21 +91,17 @@ module QuickSearch
                "parent" => 0,
                "expanded" => 0,
                "key" => "module" + category}
-        result << row
+        @result << row
       end
 
-      respond_to do |format|
-        format.json {
-          render :json => result
-        }
-      end
+      render_data
     end
 
     def data_result_clicks
       clicks = Event.where(@range).where(:category => "result-types").where(:action => 'click').group(:item).order("count_item DESC").count(:item)
       total_clicks = clicks.values.sum
 
-      result = []
+      @result = []
       clicks.each_with_index do |d, i|
         item = d[0]
         count = d[1]
@@ -135,14 +112,10 @@ module QuickSearch
                "parent" => 0,
                "expanded" => 0,
                "key" => "result" + item}
-        result << row
+        @result << row
       end
 
-      respond_to do |format|
-        format.json {
-          render :json => result
-        }
-      end
+      render_data
     end
 
     def data_module_details
@@ -150,7 +123,7 @@ module QuickSearch
       clicks = Event.where(:category => category).where(:action => 'click').where(@range).group(:item).order('count_category DESC').count(:category)
       total_clicks = clicks.values.sum
 
-      result = []
+      @result = []
       clicks.each_with_index do |d, i|
         item = d[0]
         count = d[1]
@@ -160,14 +133,10 @@ module QuickSearch
                "percentage" => ((100.0*count)/total_clicks).round(2),
                "parent" => category,
                "key" => "module_detail" + item + category}
-        result << row
+        @result << row
       end
 
-      respond_to do |format|
-        format.json {
-          render :json => result
-        }
-      end
+      render_data
     end
 
     def data_top_searches
@@ -175,7 +144,7 @@ module QuickSearch
       searches = Search.where(:page => '/').where(@range).group(:query).order('count_query DESC').count(:query)
       total_searches = Search.where(:page => '/').where(@range).group(:query).order('count_query DESC').count(:query).sum {|k,v| v}
 
-      result = []
+      @result = []
       last_row = {}
       searches.each_with_index do |d, i|
         query = d[0]
@@ -195,15 +164,11 @@ module QuickSearch
                "cum_perc" => (last_cum_percentage + ((100.0*count)/total_searches)),
                "cum_percentage" => (last_cum_percentage + ((100.0*count)/total_searches)).round(2),
                "key" => "top_search" + query}
-        result << row
+        @result << row
         last_row = row
       end
 
-      respond_to do |format|
-        format.json {
-          render :json => result
-        }
-      end
+      render_data
     end
 
     def data_spelling_suggestions
@@ -211,7 +176,7 @@ module QuickSearch
       serves = Event.where(@range).where(:category => "spelling-suggestion", :action => 'serve').group(:item).order("count_category DESC").count(:category)
       clicks = Event.where(@range).where(:category => "spelling-suggestion", :action => 'click').group(:item).count(:category)
 
-      result = []
+      @result = []
       serves.each_with_index do |d , i|
         item = d[0]
         count = d[1]
@@ -227,14 +192,10 @@ module QuickSearch
                "parent" => 0,
                "expanded" => 0,
                "key" => "spelling_suggestion" + item}
-        result << row
+        @result << row
       end
 
-      respond_to do |format|
-        format.json {
-          render :json => result
-        }
-      end
+      render_data
     end
 
     def data_spelling_details
@@ -242,7 +203,7 @@ module QuickSearch
       serves = Event.where(@range).where(:category => "spelling-suggestion", :action => 'serve', :item => item).group(:query).order("count_query DESC").count(:query)
       clicks = Event.where(@range).where(:category => "spelling-suggestion", :action => 'click', :item => item).group(:query).count(:query)
 
-      result = []
+      @result = []
       serves.each_with_index do |d , i|
         query = d[0]
         count = d[1]
@@ -254,14 +215,10 @@ module QuickSearch
                "ratio" => (100.0*click_count/count).round(2),
                "parent" => item,
                "key" => "spelling_suggestion" + item + "given_by" + query}
-        result << row
+        @result << row
       end
 
-      respond_to do |format|
-        format.json {
-          render :json => result
-        }
-      end
+      render_data
     end
 
     def data_best_bets
@@ -269,7 +226,7 @@ module QuickSearch
       serves = Event.where(@range).where(:category => "best-bets-regular", :action => 'serve').group(:item).order("count_category DESC").count(:category)
       clicks = Event.where(@range).where(:category => "best-bets-regular", :action => 'click').group(:item).count(:category)
 
-      result = []
+      @result = []
       serves.each_with_index do |d , i|
         item = d[0]
         count = d[1]
@@ -285,14 +242,10 @@ module QuickSearch
                "parent" => 0,
                "expanded" => 0,
                "key" => "best_bet" + item}
-        result << row
+        @result << row
       end
 
-      respond_to do |format|
-        format.json {
-          render :json => result
-        }
-      end
+      render_data
     end
 
     def data_best_bets_details
@@ -300,7 +253,7 @@ module QuickSearch
       serves = Event.where(@range).where(:category => "best-bets-regular", :action => 'serve', :item => item).group(:query).order("count_query DESC").count(:query)
       clicks = Event.where(@range).where(:category => "best-bets-regular", :action => 'click', :item => item).group(:query).count(:query)
 
-      result = []
+      @result = []
       serves.each_with_index do |d , i|
         query = d[0]
         count = d[1]
@@ -312,16 +265,35 @@ module QuickSearch
                "ratio" => (100.0*click_count/count).round(2),
                "parent" => item,
                "key" => "best_bet" + item + "given_by" + query}
-        result << row
+        @result << row
       end
 
-      respond_to do |format|
-        format.json {
-          render :json => result
-        }
-      end
+      render_data
     end
 
+    # In order to obtain all filter cases, an integer corresponding to the following truth table is formed:
+    # rowNumber   onCampus   offCampus    isMobile    notMobile | filters
+    # 0           0          0            0           0         | Neither filter applied (default)
+    # 1           0          0            0           1         | where(is_mobile=>false)
+    # 2           0          0            1           0         | where(is_mobile=>true)
+    # 3           0          0            1           1         | INVALID (isMobile & notMobile asserted)
+    # 4           0          1            0           0         | where(on_campus=>false)
+    # 5           0          1            0           1         | where(on_campus=>false, is_mobile=>false)
+    # 6           0          1            1           0         | where(on_campus=>false, is_mobile=>true)
+    # 7           0          1            1           1         | INVALID (isMobile & notMobile asserted)
+    # 8           1          0            0           0         | where(on_campus=>true)
+    # 9           1          0            0           1         | where(on_campus=>true, is_mobile=>false)
+    # 10          1          0            1           0         | where(on_campus=>true, is_mobile=>true)
+    # 11          1          0            1           1         | INVALID (isMobile & notMobile asserted)
+    # 12          1          1            0           0         | INVALID (onCampus & offCampus asserted)
+    # 13          1          1            0           1         | INVALID (onCampus & offCampus asserted)
+    # 14          1          1            1           0         | INVALID (onCampus & offCampus asserted)
+    # 15          1          1            1           1         | INVALID (onCampus & offCampus asserted)
+    # Thus, the integer filterCase, which corresponds to the rowNumber, can be formed by converting 4 bit
+    # binary term formed by the concatenation {onCampus, offCampus, isMobile, notMobile} into an integer.
+    # Note: This filtering cannot be obtained by passing two boolean values (one for on_campus and one for is_mobile)
+    # as this would fail to account for cases where no filter is applied to one variable (ie. where we don't care
+    # either location or device)
     def data_sessions_overview
       onCampus = params[:onCampus] ? params[:onCampus].to_i : 0
       offCampus = params[:offCampus] ? params[:offCampus].to_i : 0
@@ -350,18 +322,14 @@ module QuickSearch
         sessions = Session.where(@range).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       end
 
-      result = []
+      @result = []
       sessions.each do |date , count|
         row = { "date" => date ,
                 "count" => count}
-        result << row
+        @result << row
       end
 
-      respond_to do |format|
-        format.json {
-          render :json => result
-        }
-      end
+      render_data
     end
 
     def data_sessions_location
@@ -369,20 +337,16 @@ module QuickSearch
       sessions_on = Session.where(@range).where(:on_campus => true).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       sessions_off = Session.where(@range).where(:on_campus => false).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
 
-      result = []
+      @result = []
       sessions_on.each do |date , count|
         off_count = sessions_off[date] ? sessions_off[date] : 0
         row = { "date" => date ,
                 "on" => use_perc ? count.to_f/(count+off_count) : count,
                 "off" => use_perc ? off_count.to_f/(count+off_count) : off_count}
-        result << row
+        @result << row
       end
       
-      respond_to do |format|
-        format.json {
-          render :json => result
-        }
-      end
+      render_data
     end
 
     def data_sessions_device
@@ -390,18 +354,22 @@ module QuickSearch
       sessions_on = Session.where(@range).where(:is_mobile => true).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       sessions_off = Session.where(@range).where(:is_mobile => false).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
 
-      result = []
+      @result = []
       sessions_on.each do |date , count|
         off_count = sessions_off[date] ? sessions_off[date] : 0
         row = { "date" => date ,
                 "on" => use_perc ? count.to_f/(count+off_count) : count,
                 "off" => use_perc ? off_count.to_f/(count+off_count) : off_count}
-        result << row
+        @result << row
       end
       
+      render_data
+    end
+
+    def render_data
       respond_to do |format|
         format.json {
-          render :json => result
+          render :json => @result
         }
       end
     end
@@ -446,9 +414,6 @@ module QuickSearch
       start = params[:start_date]
       stop = params[:end_date]
       if (!start.blank?)
-        puts("\n\n\n\n\n")
-        puts("HERE WHEN I SHOULDN'T BE")
-        puts("\n\n\n\n\n")
         @start_date = convert_to_time(start)
       else
         @start_date = Time.current - 180.days

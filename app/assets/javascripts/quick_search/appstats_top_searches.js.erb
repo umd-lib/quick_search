@@ -26,8 +26,8 @@
             });
             // Redraw graph if the date range is changed
             document.getElementById("dateButton").addEventListener("click", function() { 
-                var from = $( "#from" ).datepicker( "getDate" );
-                var to = $( "#to" ).datepicker( "getDate" );
+                var from = $("#from").datepicker("getDate");
+                var to = new Date($("#to").datepicker("getDate").getTime() + 1000*60*60*24);
                 document.getElementById("numDays").innerHTML = "" + parseInt((to-from)/(1000*60*60*24));
                 console.log(document.getElementById("num").value);
                 $.ajax({

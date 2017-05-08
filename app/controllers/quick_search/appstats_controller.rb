@@ -22,6 +22,7 @@ module QuickSearch
       res0 = Event.select("*").order("id ASC").joins("INNER JOIN sessions ON sessions.id=events.session_id").where(@range)
       res1 = Search.select("*").order("id ASC").joins("INNER JOIN sessions ON sessions.id=searches.session_id").where(@range)
       res2 = Session.where(@range).order("id ASC")
+      
       @result[0] = res0[0..99]
       @result[1] = res1[0..99]
       @result[2] = res2[0..99]
@@ -47,13 +48,9 @@ module QuickSearch
     def data_general_table
       @result = []
 
-      clicks = Event.where(@range).where(:action => 'click').count
-      searches = Search.where(@range).count
-      sessions = Session.where(@range).count
-
-      @result << { "clicks" => clicks }
-      @result << { "searches" => searches }
-      @result << { "sessions" => sessions }
+      @result << { "clicks" => Event.where(@range).where(:action => 'click').count }
+      @result << { "searches" => Search.where(@range).count }
+      @result << { "sessions" => Session.where(@range).count }
 
       render_data
     end

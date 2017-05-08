@@ -1,7 +1,6 @@
 (function() {
     var AppStatsGlobals = {};
     AppStatsGlobals["#graph_module_clicks"] = {};
-    AppStatsGlobals["#graph_module_clicks"].ExpandedCategories = [];
     AppStatsGlobals["#graph_result_clicks"] = {};
 
     $(document).on("turbolinks:load", function() {
@@ -21,17 +20,17 @@
                     AppStatsGlobals["#graph_module_clicks"].Data = moduleData;
                     AppStatsGlobals["#graph_module_clicks"].Height = 450;
                     AppStatsGlobals["#graph_module_clicks"].Sort = 0;
-                    draw_graph_clicks_overview("#graph_module_clicks");
+                    draw_graph_clicks_overview("#graph_module_clicks", false);
                 },
                 error: function(result) {
                     error();
                 }
             });
             // Redraw graph if the date range is changed
-            document.getElementById("dateButton").addEventListener("click", function() { 
+            document.getElementById("dateButton").addEventListener("click", function() {
                 var from = $("#from").datepicker("getDate");
-                var to = new Date($("#to").datepicker("getDate").getTime() + 1000*60*60*24);
-                document.getElementById("numDays").innerHTML = "" + parseInt((to-from)/(1000*60*60*24));
+                var to = new Date($("#to").datepicker("getDate").getTime() + 1000 * 60 * 60 * 24);
+                document.getElementById("numDays").innerHTML = "" + parseInt((to - from) / (1000 * 60 * 60 * 24));
                 $.ajax({
                     type: "GET",
                     contentType: "application/json; charset=utf-8",
@@ -69,16 +68,16 @@
                     AppStatsGlobals["#graph_result_clicks"].Data = resultData;
                     AppStatsGlobals["#graph_result_clicks"].Sort = 0;
                     AppStatsGlobals["#graph_result_clicks"].Height = 450;
-                    draw_graph_clicks_overview("#graph_result_clicks");
+                    draw_graph_clicks_overview("#graph_result_clicks", false);
                 },
                 error: function(result) {
                     error();
                 }
             });
             // Redraw graph if the date range is changed
-            document.getElementById("dateButton").addEventListener("click", function() { 
+            document.getElementById("dateButton").addEventListener("click", function() {
                 var from = $("#from").datepicker("getDate");
-                var to = new Date($("#to").datepicker("getDate").getTime() + 1000*60*60*24);
+                var to = new Date($("#to").datepicker("getDate").getTime() + 1000 * 60 * 60 * 24);
                 $.ajax({
                     type: "GET",
                     contentType: "application/json; charset=utf-8",
@@ -106,13 +105,19 @@
         console.log("Error retrieving data");
     }
 
-    function draw_graph_clicks_overview(id) {
+    function draw_graph_clicks_overview(id, resetExpanded) {
         var Globals = AppStatsGlobals[id],
             sortStates = [0, 0, 0, 0]
-            dataInt = Globals.Data,
+        dataInt = Globals.Data,
             oldHeight = Globals.Height;
 
         sortStates[Globals.Sort] = 1;
+
+        if (resetExpanded) {
+            dataInt.forEach(function(d) {
+                d.expanded = 0;
+            });
+        }
 
         var svg = d3.select(id),
             margin = {
@@ -321,8 +326,8 @@
                     return "translate(" + (textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
                 }
             })
-            .text(function(d) { 
-                return d.rank; 
+            .text(function(d) {
+                return d.rank;
             });
         dataRanks.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -402,8 +407,8 @@
                     return "translate(" + (rankWidth + categoryWidth + textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
                 }
             })
-            .text(function(d) { 
-                return d.clickcount; 
+            .text(function(d) {
+                return d.clickcount;
             });
         dataClicks.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -442,8 +447,8 @@
                     return "translate(" + (rankWidth + categoryWidth + countWidth + percentWidth - textPadding - childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
                 }
             })
-            .text(function(d) { 
-                return d.percentage + "%"; 
+            .text(function(d) {
+                return d.percentage + "%";
             });
         dataPercents.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -517,15 +522,10 @@
                 if (id == "#graph_module_clicks" && !d.expanded && !d.parent) {
                     d.expanded = 1;
                     load_details(d.label, id);
-                    Globals.ExpandedCategories.push(d.label);
                 } else if (id == "#graph_module_clicks" && d.expanded && !d.parent) {
                     d.expanded = 0;
                     remove_details(d.label, id);
-                    _.remove(Globals.ExpandedCategories, function(n) {
-                        return _.isEqual(n, d.label);
-                    });
                 }
-                console.log(Globals.ExpandedCategories);
             })
             .transition().delay(750).duration(500)
             .attr("x", function(d) {
@@ -578,7 +578,7 @@
     function load_details(category, id) {
         var updateData = _.cloneDeep(AppStatsGlobals[id].Data);
         var from = $("#from").datepicker("getDate");
-        var to = new Date($("#to").datepicker("getDate").getTime() + 1000*60*60*24);
+        var to = new Date($("#to").datepicker("getDate").getTime() + 1000 * 60 * 60 * 24);
         $.ajax({
             type: "GET",
             contentType: "application/json; charset=utf-8",
@@ -597,7 +597,7 @@
                 updateData = _.concat(_.slice(updateData, 0, index + 1), detailData, _.slice(updateData, index + 1, updateData.length));
 
                 AppStatsGlobals[id].Data = updateData;
-                draw_graph_clicks_overview(id);
+                draw_graph_clicks_overview(id, false);
             },
             error: function(result) {
                 error();
@@ -620,35 +620,45 @@
         console.log(updateData);
 
         AppStatsGlobals[id].Data = updateData;
-        draw_graph_clicks_overview(id);
+        draw_graph_clicks_overview(id, false);
     }
 
     function sort_clicks_overview(id, sort) {
         if (AppStatsGlobals[id].Data.length != AppStatsGlobals[id].OriginalData.length) { // If details are present, those must be removed before resort
             // Go back to original data set (no details)
-            AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a,b) { return determine_sort(AppStatsGlobals[id].Sort, a, b) });
+            AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
+                return determine_sort(AppStatsGlobals[id].Sort, a, b)
+            });
 
             // Resort data after delay
             setTimeout(function() {
-                AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a,b) { return determine_sort(sort, a, b) });
-                draw_graph_clicks_overview(id);
+                AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
+                    return determine_sort(sort, a, b)
+                });
+                draw_graph_clicks_overview(id, true);
             }, 750);
         } else { // Otherwise, you can just resort the data
-            AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a,b) { return determine_sort(sort, a, b) });
+            AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
+                return determine_sort(sort, a, b)
+            });
         }
 
         // Update global sort
         AppStatsGlobals[id].Sort = sort;
-        draw_graph_clicks_overview(id);
+        draw_graph_clicks_overview(id, true);
     }
 
     function determine_sort(sort, a, b) {
-        switch(sort) {
-            case 0: return d3.ascending(a.rank,b.rank);
-            case 1: return d3.ascending(b.rank,a.rank);
+        switch (sort) {
+            case 0:
+                return d3.ascending(a.rank, b.rank);
+            case 1:
+                return d3.ascending(b.rank, a.rank);
 
-            case 2: return d3.ascending(a.label,b.label);
-            case 3: return d3.ascending(b.label,a.label);
+            case 2:
+                return d3.ascending(a.label, b.label);
+            case 3:
+                return d3.ascending(b.label, a.label);
         }
     }
 

@@ -1,6 +1,5 @@
 (function() {
     var Globals = {};
-    Globals.ExpandedCategories = [];
 
     $(document).on("turbolinks:load", function() {
         if ($("#graph_best_bets").length) {
@@ -19,7 +18,7 @@
                     Globals.Data = bestBetData;
                     Globals.Sort = 0;
                     Globals.Height = 450;
-                    draw_graph_best_bets();
+                    draw_graph_best_bets(false);
                 },
                 error: function(result) {
                     error();
@@ -59,12 +58,18 @@
         console.log("Error retrieving data");
     }
 
-    function draw_graph_best_bets() {
+    function draw_graph_best_bets(resetExpanded) {
         var sortStates = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             dataInt = Globals.Data,
             oldHeight = Globals.Height;
 
         sortStates[Globals.Sort] = 1;
+
+        if (resetExpanded) {
+            dataInt.forEach(function(d) {
+                d.expanded = 0;
+            });
+        }
 
         var svg = d3.select("#graph_best_bets"),
             margin = {
@@ -351,7 +356,11 @@
             })
             .duration(750)
             .attr("transform", function(d, i) {
-                return "translate(" + textPadding + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                if (!d.parent) {
+                    return "translate(" + textPadding + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                } else {
+                    return "translate(" + (textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")"; 
+                }
             });
         dataRanks.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -746,15 +755,10 @@
         if (!d.expanded && !d.parent) {
             d.expanded = 1;
             load_details(d.label);
-            Globals.ExpandedCategories.push(d.label);
         } else if (d.expanded && !d.parent) {
             d.expanded = 0;
             remove_details(d.label);
-            _.remove(Globals.ExpandedCategories, function(n) {
-                return _.isEqual(n, d.label);
-            });
         }
-        console.log(Globals.ExpandedCategories);
     }
 
     function sort_search_data(sort) {
@@ -765,17 +769,15 @@
             // Resort data after delay
             setTimeout(function() {
                 Globals.Data = Globals.OriginalData.sort(function(a,b) { return determine_sort(sort, a, b) });
-                draw_graph_best_bets();
+                draw_graph_best_bets(true);
             }, 750);
         } else { // Otherwise, you can just resort the data
             Globals.Data = Globals.OriginalData.sort(function(a,b) { return determine_sort(sort, a, b) });
         }
 
         // Update global sort
-        Globals.ExpandedCategories = [];
-        console.log(Globals.ExpandedCategories)
         Globals.Sort = sort;
-        draw_graph_best_bets();
+        draw_graph_best_bets(true);
     }
 
     function determine_sort(sort, a, b) {
@@ -819,7 +821,7 @@
                 updateData = _.concat(_.slice(updateData, 0, index + 1), detailData, _.slice(updateData, index + 1, updateData.length));
 
                 Globals.Data = updateData;
-                draw_graph_best_bets();
+                draw_graph_best_bets(false);
             },
             error: function(result) {
                 error();
@@ -842,7 +844,7 @@
         console.log(updateData);
 
         Globals.Data = updateData;
-        draw_graph_best_bets();
+        draw_graph_best_bets(false);
     }
 
 })();

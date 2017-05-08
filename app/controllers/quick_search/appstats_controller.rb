@@ -4,6 +4,7 @@ module QuickSearch
 
     before_action :auth, :get_dates, :days_in_sample
 
+    # Remove before finalizing
     def data_sample
       @result = []
       events = Event.order("id ASC").limit(100)
@@ -29,6 +30,7 @@ module QuickSearch
 
       render_data
     end
+    ##########################################
 
     def data_general_statistics
       @result = []
@@ -59,19 +61,7 @@ module QuickSearch
       clicks = Event.where(@range).where(excluded_categories).where(:action => 'click').group(:category).order("count_category DESC").count(:category)
       total_clicks = clicks.values.sum
 
-      @result = []
-      clicks.each_with_index do |d, i|
-        category = d[0]
-        count = d[1]
-        row = {"rank" => i+1,
-               "label" => category,
-               "clickcount" => count,
-               "percentage" => ((100.0*count)/total_clicks).round(2),
-               "parent" => 0,
-               "expanded" => 0,
-               "key" => "module" + category}
-        @result << row
-      end
+      @result = process_module_result_query(clicks, "module", 0, total_clicks)
 
       render_data
     end
@@ -80,19 +70,7 @@ module QuickSearch
       clicks = Event.where(@range).where(:category => "result-types").where(:action => 'click').group(:item).order("count_item DESC").count(:item)
       total_clicks = clicks.values.sum
 
-      @result = []
-      clicks.each_with_index do |d, i|
-        item = d[0]
-        count = d[1]
-        row = {"rank" => i+1,
-               "label" => item,
-               "clickcount" => count,
-               "percentage" => ((100.0*count)/total_clicks).round(2),
-               "parent" => 0,
-               "expanded" => 0,
-               "key" => "result" + item}
-        @result << row
-      end
+      @result = process_module_result_query(clicks, "result", 0, total_clicks)
 
       render_data
     end
@@ -102,18 +80,7 @@ module QuickSearch
       clicks = Event.where(:category => category).where(:action => 'click').where(@range).group(:item).order('count_category DESC').count(:category)
       total_clicks = clicks.values.sum
 
-      @result = []
-      clicks.each_with_index do |d, i|
-        item = d[0]
-        count = d[1]
-        row = {"rank" => i+1,
-               "label" => item,
-               "clickcount" => count,
-               "percentage" => ((100.0*count)/total_clicks).round(2),
-               "parent" => category,
-               "key" => "module_detail" + item + category}
-        @result << row
-      end
+      @result = process_module_result_query(clicks, "module_details", category, total_clicks)
 
       render_data
     end
@@ -123,26 +90,7 @@ module QuickSearch
       searches = Search.where(:page => '/').where(@range).group(:query).order('count_query DESC').count(:query)
       total_searches = searches.sum {|k,v| v}
 
-      @result = []
-      last_row = {}
-      searches.to_a[0..num_results-1].each_with_index do |d, i|
-        query = d[0]
-        count = d[1]
-        if (last_row=={}) 
-          last_cum_percentage = 0
-        else 
-          last_cum_percentage = last_row["cum_perc"]
-        end
-        row = {"rank" => i+1,
-               "label" => query,
-               "count" => count,
-               "percentage" => ((100.0*count)/total_searches).round(2),
-               "cum_perc" => (last_cum_percentage + ((100.0*count)/total_searches)),
-               "cum_percentage" => (last_cum_percentage + ((100.0*count)/total_searches)).round(2),
-               "key" => "top_search" + query}
-        @result << row
-        last_row = row
-      end
+      @result = process_searches_query(searches, num_results, total_searches)
 
       render_data
     end
@@ -152,21 +100,7 @@ module QuickSearch
       serves = Event.where(@range).where(:category => "spelling-suggestion", :action => 'serve').group(:item).order("count_category DESC").count(:category)
       clicks = Event.where(@range).where(:category => "spelling-suggestion", :action => 'click').group(:item).count(:category)
 
-      @result = []
-      serves.to_a[0..num_results-1].each_with_index do |d , i|
-        item = d[0]
-        count = d[1]
-        click_count = clicks[item] ? clicks[item] : 0
-        row = {"rank" => i+1,
-               "label" => item,
-               "serves" => count,
-               "clicks" =>  click_count,
-               "ratio" => (100.0*click_count/count).round(2),
-               "parent" => 0,
-               "expanded" => 0,
-               "key" => "spelling_suggestion" + item}
-        @result << row
-      end
+      @result = process_spelling_best_bets_query(serves, clicks, "spelling_suggestion", 0, num_results)
 
       render_data
     end
@@ -176,20 +110,7 @@ module QuickSearch
       serves = Event.where(@range).where(:category => "spelling-suggestion", :action => 'serve', :item => item).group(:query).order("count_query DESC").count(:query)
       clicks = Event.where(@range).where(:category => "spelling-suggestion", :action => 'click', :item => item).group(:query).count(:query)
 
-      @result = []
-      serves.each_with_index do |d , i|
-        query = d[0]
-        count = d[1]
-        click_count = clicks[query] ? clicks[query] : 0
-        row = {"rank" => i+1,
-               "label" => query,
-               "serves" => count,
-               "clicks" =>  click_count,
-               "ratio" => (100.0*click_count/count).round(2),
-               "parent" => item,
-               "key" => "spelling_suggestion" + item + "given_by" + query}
-        @result << row
-      end
+      @result = process_spelling_best_bets_query(serves, clicks, "spelling_details", item, 10)
 
       render_data
     end
@@ -199,21 +120,7 @@ module QuickSearch
       serves = Event.where(@range).where(:category => "best-bets-regular", :action => 'serve').group(:item).order("count_category DESC").count(:category)
       clicks = Event.where(@range).where(:category => "best-bets-regular", :action => 'click').group(:item).count(:category)
 
-      @result = []
-      serves.to_a[0..num_results-1].each_with_index do |d , i|
-        item = d[0]
-        count = d[1]
-        click_count = clicks[item] ? clicks[item] : 0
-        row = {"rank" => i+1,
-               "label" => item,
-               "serves" => count,
-               "clicks" =>  click_count,
-               "ratio" => (100.0*click_count/count).round(2),
-               "parent" => 0,
-               "expanded" => 0,
-               "key" => "best_bet" + item}
-        @result << row
-      end
+      @result = process_spelling_best_bets_query(serves, clicks, "best_bet", 0, num_results)
 
       render_data
     end
@@ -223,20 +130,7 @@ module QuickSearch
       serves = Event.where(@range).where(:category => "best-bets-regular", :action => 'serve', :item => item).group(:query).order("count_query DESC").count(:query)
       clicks = Event.where(@range).where(:category => "best-bets-regular", :action => 'click', :item => item).group(:query).count(:query)
 
-      @result = []
-      serves.each_with_index do |d , i|
-        query = d[0]
-        count = d[1]
-        click_count = clicks[query] ? clicks[query] : 0
-        row = {"rank" => i+1,
-               "label" => query,
-               "serves" => count,
-               "clicks" =>  click_count,
-               "ratio" => (100.0*click_count/count).round(2),
-               "parent" => item,
-               "key" => "best_bet" + item + "given_by" + query}
-        @result << row
-      end
+      @result = process_spelling_best_bets_query(serves, clicks, "best_bet_details", item, 10)
 
       render_data
     end
@@ -302,14 +196,7 @@ module QuickSearch
       sessions_on = Session.where(@range).where(:on_campus => true).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       sessions_off = Session.where(@range).where(:on_campus => false).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
 
-      @result = []
-      sessions_on.each do |date , count|
-        off_count = sessions_off[date] ? sessions_off[date] : 0
-        row = { "date" => date ,
-                "on" => use_perc ? count.to_f/(count+off_count) : count,
-                "off" => use_perc ? off_count.to_f/(count+off_count) : off_count}
-        @result << row
-      end
+      @result = process_stacked_time_query(sessions_on, sessions_off, use_perc)
       
       render_data
     end
@@ -319,14 +206,7 @@ module QuickSearch
       sessions_on = Session.where(@range).where(:is_mobile => true).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
       sessions_off = Session.where(@range).where(:is_mobile => false).group(:created_at_string).order("created_at_string ASC").count(:created_at_string)
 
-      @result = []
-      sessions_on.each do |date , count|
-        off_count = sessions_off[date] ? sessions_off[date] : 0
-        row = { "date" => date ,
-                "on" => use_perc ? count.to_f/(count+off_count) : count,
-                "off" => use_perc ? off_count.to_f/(count+off_count) : off_count}
-        @result << row
-      end
+      @result = process_stacked_time_query(sessions_on, sessions_off, use_perc)
       
       render_data
     end
@@ -337,6 +217,78 @@ module QuickSearch
         row = { "date" => date ,
                 "count" => count}
         sub << row
+      end
+      return sub
+    end
+
+    def process_stacked_time_query(query1, query2, use_perc)
+      sub = []
+      query1.each do |date , count1|
+        count2 = query2[date] ? query2[date] : 0
+        row = { "date" => date ,
+                "on" => use_perc ? count1.to_f/(count1+count2) : count1,
+                "off" => use_perc ? count2.to_f/(count1+count2) : count2}
+        sub << row
+      end
+      return sub
+    end
+
+    def process_module_result_query(query, keyHeading, parent, total_clicks)
+      sub = []
+      query.each_with_index do |d, i|
+        label = d[0]
+        count = d[1]
+        row = {"rank" => i+1,
+               "label" => (label.blank? ? "(blank)"  : label),
+               "clickcount" => count,
+               "percentage" => ((100.0*count)/total_clicks).round(2),
+               "parent" => parent,
+               "expanded" => 0,
+               "key" => keyHeading + (label.blank? ? "(blank)"  : label) + parent.to_s}
+        sub << row
+      end
+      return sub
+    end
+
+    def process_spelling_best_bets_query(serves, clicks, keyHeading, parent, num_results)
+      sub = []
+      serves.to_a[0..num_results-1].each_with_index do |d , i|
+        label = d[0]
+        serve_count = d[1]
+        click_count = clicks[label] ? clicks[label] : 0
+        row = {"rank" => i+1,
+               "label" => label,
+               "serves" => serve_count,
+               "clicks" =>  click_count,
+               "ratio" => (100.0*click_count/serve_count).round(2),
+               "parent" => parent,
+               "expanded" => 0,
+               "key" => keyHeading + label + parent.to_s}
+        sub << row
+      end
+      return sub
+    end
+
+    def process_searches_query(searches, num_results, total_searches)
+      sub = []
+      last_row = {}
+      searches.to_a[0..num_results-1].each_with_index do |d, i|
+        query = d[0]
+        count = d[1]
+        if (last_row=={}) 
+          last_cum_percentage = 0
+        else 
+          last_cum_percentage = last_row["cum_perc"]
+        end
+        row = {"rank" => i+1,
+               "label" => query,
+               "count" => count,
+               "percentage" => ((100.0*count)/total_searches).round(2),
+               "cum_perc" => (last_cum_percentage + ((100.0*count)/total_searches)),
+               "cum_percentage" => (last_cum_percentage + ((100.0*count)/total_searches)).round(2),
+               "key" => "top_search" + query}
+        sub << row
+        last_row = row
       end
       return sub
     end

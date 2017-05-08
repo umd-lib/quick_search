@@ -61,7 +61,7 @@ module QuickSearch
       clicks = Event.where(@range).where(excluded_categories).where(:action => 'click').group(:category).order("count_category DESC").count(:category)
       total_clicks = clicks.values.sum
 
-      @result = process_module_result_query(clicks, "module", 0, total_clicks)
+      @result = process_module_result_query(clicks, "module", 0, 100, total_clicks)
 
       render_data
     end
@@ -70,7 +70,7 @@ module QuickSearch
       clicks = Event.where(@range).where(:category => "result-types").where(:action => 'click').group(:item).order("count_item DESC").count(:item)
       total_clicks = clicks.values.sum
 
-      @result = process_module_result_query(clicks, "result", 0, total_clicks)
+      @result = process_module_result_query(clicks, "result", 0, 100, total_clicks)
 
       render_data
     end
@@ -80,7 +80,7 @@ module QuickSearch
       clicks = Event.where(:category => category).where(:action => 'click').where(@range).group(:item).order('count_category DESC').count(:category)
       total_clicks = clicks.values.sum
 
-      @result = process_module_result_query(clicks, "module_details", category, total_clicks)
+      @result = process_module_result_query(clicks, "module_details", category, 15, total_clicks)
 
       render_data
     end
@@ -110,7 +110,7 @@ module QuickSearch
       serves = Event.where(@range).where(:category => "spelling-suggestion", :action => 'serve', :item => item).group(:query).order("count_query DESC").count(:query)
       clicks = Event.where(@range).where(:category => "spelling-suggestion", :action => 'click', :item => item).group(:query).count(:query)
 
-      @result = process_spelling_best_bets_query(serves, clicks, "spelling_details", item, 10)
+      @result = process_spelling_best_bets_query(serves, clicks, "spelling_details", item, 15)
 
       render_data
     end
@@ -130,7 +130,7 @@ module QuickSearch
       serves = Event.where(@range).where(:category => "best-bets-regular", :action => 'serve', :item => item).group(:query).order("count_query DESC").count(:query)
       clicks = Event.where(@range).where(:category => "best-bets-regular", :action => 'click', :item => item).group(:query).count(:query)
 
-      @result = process_spelling_best_bets_query(serves, clicks, "best_bet_details", item, 10)
+      @result = process_spelling_best_bets_query(serves, clicks, "best_bet_details", item, 15)
 
       render_data
     end
@@ -233,9 +233,9 @@ module QuickSearch
       return sub
     end
 
-    def process_module_result_query(query, keyHeading, parent, total_clicks)
+    def process_module_result_query(query, keyHeading, parent, num_results, total_clicks)
       sub = []
-      query.each_with_index do |d, i|
+      query.to_a[0..num_results-1].each_with_index do |d, i|
         label = d[0]
         count = d[1]
         row = {"rank" => i+1,

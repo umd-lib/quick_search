@@ -607,7 +607,6 @@
 
     function remove_details(category, id) {
         var updateData = _.cloneDeep(AppStatsGlobals[id].Data);
-        console.log(updateData);
         var startIndex = _.findIndex(updateData, {
             "label": category
         });
@@ -615,9 +614,7 @@
         while (endIndex < updateData.length && updateData[endIndex].parent) {
             endIndex++;
         }
-        console.log("start=" + startIndex + ", end=" + endIndex);
         updateData = _.concat(_.slice(updateData, 0, startIndex + 1), _.slice(updateData, endIndex, updateData.length));
-        console.log(updateData);
 
         AppStatsGlobals[id].Data = updateData;
         draw_graph_clicks_overview(id, false);

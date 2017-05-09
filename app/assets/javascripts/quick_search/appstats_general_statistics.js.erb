@@ -151,7 +151,6 @@
         });
 
         var numDays = parseInt((dateRange[1]-dateRange[0])/(1000*60*60*24));
-        console.log(width + "/" + numDays + "=" + (width/numDays));
 
         // Make scales
         var x = d3.scaleTime().range([0, width]),
@@ -468,7 +467,6 @@
             if (!transitioning) {
                 if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return;
                 var t = d3.event.transform;
-                //console.log(t);
                 x.domain(t.rescaleX(x2).domain());
                 Globals.Domain = x.domain();
                 focus.select(".area").attr("d", area);
@@ -628,7 +626,6 @@
             verticalTextOffset = 30,
             textPadding = 5;
 
-        console.log(width + "," + height);
         var groupEnter = svg.selectAll("g").data([dataInt]).enter();
 
         groupEnter.append("g")

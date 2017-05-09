@@ -825,7 +825,6 @@
 
     function remove_details(item) {
         var updateData = _.cloneDeep(Globals.Data);
-        console.log(updateData);
         var startIndex = _.findIndex(updateData, {
             "label": item
         });
@@ -833,9 +832,7 @@
         while (endIndex < updateData.length && updateData[endIndex].parent) {
             endIndex++;
         }
-        console.log("start=" + startIndex + ", end=" + endIndex);
         updateData = _.concat(_.slice(updateData, 0, startIndex + 1), _.slice(updateData, endIndex, updateData.length));
-        console.log(updateData);
 
         Globals.Data = updateData;
         draw_graph_spelling_suggestions(false);

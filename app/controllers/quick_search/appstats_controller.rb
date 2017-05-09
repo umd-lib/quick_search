@@ -4,34 +4,6 @@ module QuickSearch
 
     before_action :auth, :get_dates, :days_in_sample
 
-    # Remove before finalizing
-    def data_sample
-      @result = []
-      events = Event.order("id ASC").limit(100)
-      searches = Search.order("session_id ASC").limit(100)
-      sessions = Session.order("id ASC").limit(100)
-
-      @result[0] = events
-      @result[1] = searches
-      @result[2] = sessions
-
-      render_data
-    end
-
-    def data_test
-      @result = []
-      res0 = Event.select("*").order("id ASC").joins("INNER JOIN sessions ON sessions.id=events.session_id").where(@range)
-      res1 = Search.select("*").order("id ASC").joins("INNER JOIN sessions ON sessions.id=searches.session_id").where(@range)
-      res2 = Session.where(@range).order("id ASC")
-      
-      @result[0] = res0[0..99]
-      @result[1] = res1[0..99]
-      @result[2] = res2[0..99]
-
-      render_data
-    end
-    ##########################################
-
     def data_general_statistics
       @result = []
 

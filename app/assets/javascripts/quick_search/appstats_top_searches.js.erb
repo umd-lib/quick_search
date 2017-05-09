@@ -29,7 +29,6 @@
                 var from = $("#from").datepicker("getDate");
                 var to = new Date($("#to").datepicker("getDate").getTime() + 1000*60*60*24);
                 document.getElementById("numDays").innerHTML = "" + parseInt((to-from)/(1000*60*60*24));
-                console.log(document.getElementById("num").value);
                 $.ajax({
                     type: "GET",
                     contentType: "application/json; charset=utf-8",

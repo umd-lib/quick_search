@@ -106,42 +106,94 @@
     }
 
     function draw_graph_clicks_overview(id, resetExpanded) {
-        var Globals = AppStatsGlobals[id],
-            sortStates = [0, 0, 0, 0]
-        dataInt = Globals.Data,
-            oldHeight = Globals.Height;
+        // General Variables
+        var svg;            // SVG to contain graph
+        var Globals;        // Shortened reference to graphs globals (depends on id)
+        var dataInt;        // Internal reference to graph dataset
+        var sortStates;     // Array indicating the currently selected sort state
+        var key;            // Key function to maintain object constancy
+        var triangle;       // Triangle object for sort buttons
+        // Dimension Variables
+        var margin;         // Blank space around edge of SVG left as margin
+        var rowHeight;      // Height of each row of data
+        var width;          // Drawable width of SVG (not including margins)
+        var height;         // Drawable height of SVG (not including margins)
+        var oldHeight;      // Previous height of SVG
+        var textPadding;    // Padding around text elements
+        var barHeight;      // Height of data bars
+        var rankWidth;      // Width of rank column
+        var categoryWidth;  // Width of category column
+        var countWidth;     // Width of count column
+        var percentWidth;   // Width of percent column
+        var childOffset;    // Horizontal offset for child elements drawn on element expansion
+        var barCenter;      // Center x for data bar
+        var triangleSpacing;// Space around triangular sort buttons
+        // Scale Variables
+        var x;              // Scale for data bar
+        // Selection Variables
+        var groupEnter;     // Entry selection for gAll
+        var gAll;           // Group containing all elements
+        var headGroupEnter; // Entry selection for headRow
+        var headRow;        // Group containing all head elements
+        var headEnter;      // Entry selection for all head elements
+        var triangles;      // Sort triangles
+        var dataGroupEnter; // Entry selection for dataRows
+        var dataRows;       // Group containing all data elements
+        var dataRects;      // Background rectangles
+        var dataRanks;      // Rank text
+        var dataLabels;     // Label text
+        var dataClicks;     // Click text
+        var dataPercents;   // Percent text
+        var dataBars;       // Data bar
+        var lightBorder;    // Light border (surrounds all elements)
+        var darkBorder;     // Dark border (surrounds data elements)
 
+        // Initialize General variables ///////////////////////////////////////////////////////////
+        svg = d3.select(id);
+
+        Globals = AppStatsGlobals[id];
+
+        dataInt = Globals.Data;
+
+        sortStates = [0, 0, 0, 0];
         sortStates[Globals.Sort] = 1;
 
-        if (resetExpanded) {
-            dataInt.forEach(function(d) {
-                d.expanded = 0;
-            });
-        }
+        key = function(d) {
+            return d.key;
+        };
 
-        var svg = d3.select(id),
-            margin = {
-                top: 20,
-                right: 20,
-                bottom: 20,
-                left: 20
-            },
-            width = +svg.attr("width") - margin.left - margin.right,
-            textPadding = 5,
-            rowHeight = 35,
-            barHeight = 25,
-            rankWidth = width / 8,
-            categoryWidth = width / 4,
-            countWidth = 5 * width / 16,
-            percentWidth = 5 * width / 16,
-            barCenter = rankWidth + categoryWidth + countWidth,
-            height = (dataInt.length + 1) * rowHeight,
-            childOffset = 25,
-            triangleSpacing = 15,
-            key = function(d) {
-                return d.key;
-            };
+        triangle = d3.symbol().type(d3.symbolTriangle).size(20);
 
+        // Initialize dimension variables /////////////////////////////////////////////////////////
+        margin = {
+            top: 20,
+            right: 20,
+            bottom: 20,
+            left: 20
+        };
+        rowHeight = 35;
+        width = +svg.attr("width") - margin.left - margin.right;
+        height = (dataInt.length + 1) * rowHeight;
+        oldHeight = Globals.Height;
+        textPadding = 5;
+        barHeight = 25;
+        rankWidth = width / 8;
+        categoryWidth = width / 4;
+        countWidth = 5 * width / 16;
+        percentWidth = 5 * width / 16;
+        childOffset = 25;
+        barCenter = rankWidth + categoryWidth + countWidth;
+        triangleSpacing = 15;
+
+        // Initialize Scale variables /////////////////////////////////////////////////////////////
+        var x = d3.scaleLinear().rangeRound([0, countWidth + percentWidth - 200]);
+
+        x.domain([0, d3.max(dataInt, function(d) {
+            return d.clickcount
+        })]);
+
+        // Misc ///////////////////////////////////////////////////////////////////////////////////
+        // Transition the svg height depending on previous height
         svg.transition().delay(function(d) {
                 if (oldHeight > height) {
                     return 500;
@@ -149,39 +201,40 @@
                     return 0;
                 }
             })
-            .duration(500)
+            .duration(750)
             .attr("height", height + margin.top + margin.bottom)
             .on("end", function(d) {
                 Globals.Height = height;
             });
 
-        var groupEnter = svg.selectAll("g").data([dataInt]).enter();
+        // Reset expanded categories when after a resort
+        if (resetExpanded) {
+            dataInt.forEach(function(d) {
+                d.expanded = 0;
+            });
+        }
+
+        // Make overarching group /////////////////////////////////////////////////////////////////
+        groupEnter = svg.selectAll("g").data([dataInt]).enter();
 
         groupEnter.append("g")
             .attr("class", "gAll");
 
-        var gAll = svg.select(".gAll")
+        gAll = svg.select(".gAll")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        var x = d3.scaleLinear().rangeRound([0, countWidth + percentWidth - 200]);
-
-        x.domain([0, d3.max(dataInt, function(d) {
-            return d.clickcount
-        })]);
-
-        var triangle = d3.symbol().type(d3.symbolTriangle).size(20);
-
-        // Make header row //////////////////////////////////////////////////////////////////////////////
-        var headGroupEnter = gAll.selectAll(".headRow").data([dataInt]).enter();
+        // Make header row ////////////////////////////////////////////////////////////////////////
+        headGroupEnter = gAll.selectAll(".headRow").data([dataInt]).enter();
 
         headGroupEnter.append("g")
             .attr("class", "headRow");
 
-        var gHead = gAll.select(".headRow")
+        headRow = gAll.select(".headRow")
             .attr("transform", "translate(0,0)");
 
-        var headEnter = gHead.selectAll("rect").data([dataInt]).enter();
+        headEnter = headRow.selectAll("rect").data([dataInt]).enter();
 
+        // Make background rect
         headEnter.append("rect")
             .attr("class", "darkBar")
             .attr("x", 0)
@@ -189,6 +242,7 @@
             .attr("width", width)
             .attr("height", rowHeight);
 
+        // Make rank text & sort rect
         headEnter.append("text")
             .text("Rank")
             .attr("class", "headText")
@@ -208,6 +262,7 @@
                 }
             });
 
+        // Make category text & sort rect
         headEnter.append("text")
             .text(function(d) {
                 if (id == "#graph_module_clicks") {
@@ -233,17 +288,20 @@
                 }
             });
 
+        // Make count text
         headEnter.append("text")
             .text("Count")
             .attr("class", "headText")
             .attr("transform", "translate(" + (rankWidth + categoryWidth + textPadding) + "," + (rowHeight / 2 + textPadding) + ")");
 
+        // Make percent text
         headEnter.append("text")
             .text("Percent")
             .attr("class", "percentText")
             .attr("transform", "translate(" + (rankWidth + categoryWidth + countWidth + percentWidth - textPadding) + "," + (rowHeight / 2 + textPadding) + ")");
 
-        var triangles = gHead.selectAll("path").data(sortStates);
+        // Make sort triangles
+        triangles = headRow.selectAll("path").data(sortStates);
 
         triangles.enter().append("path")
             .attr("d", triangle)
@@ -269,17 +327,17 @@
                 }
             });
 
-        // Make data rows ////////////////////////////////////////////////////////////////////////////////
-        var dataGroup = gAll.selectAll(".dataRow").data([dataInt]);
+        // Make data rows /////////////////////////////////////////////////////////////////////////
+        dataGroupEnter = gAll.selectAll(".dataRow").data([dataInt]).enter();
 
-        dataGroup.enter().append("g")
+        dataGroupEnter.append("g")
             .attr("class", "dataRow");
 
-        var dataRows = gAll.select(".dataRow")
+        dataRows = gAll.select(".dataRows")
             .attr("transform", "translate(0,0)");
 
         // Make background rects
-        var dataRects = dataRows.selectAll(".darkBar, .lightBar").data(dataInt, key);
+        dataRects = dataRows.selectAll(".darkBar, .lightBar").data(dataInt, key);
 
         dataRects.transition().delay(function(d) {
                 if (oldHeight > height) {
@@ -309,7 +367,7 @@
             .attr("height", rowHeight);
 
         // Make rank text
-        var dataRanks = dataRows.selectAll(".dataRank").data(dataInt, key);
+        dataRanks = dataRows.selectAll(".dataRank").data(dataInt, key);
 
         dataRanks.transition().delay(function(d) {
                 if (oldHeight > height) {
@@ -349,7 +407,7 @@
             .style("opacity", 1);
 
         // Make label text
-        var dataLabels = dataRows.selectAll(".dataLabel").data(dataInt, key);
+        dataLabels = dataRows.selectAll(".dataLabel").data(dataInt, key);
 
         dataLabels.transition().delay(function(d) {
                 if (oldHeight > height) {
@@ -390,7 +448,7 @@
             .style("opacity", 1);
 
         // Make click text
-        var dataClicks = dataRows.selectAll(".dataClick").data(dataInt, key);
+        dataClicks = dataRows.selectAll(".dataClick").data(dataInt, key);
 
         dataClicks.transition().delay(function(d) {
                 if (oldHeight > height) {
@@ -430,7 +488,7 @@
             .style("opacity", 1);
 
         // Make percent text
-        var dataPercents = dataRows.selectAll(".dataPercent").data(dataInt, key);
+        dataPercents = dataRows.selectAll(".dataPercent").data(dataInt, key);
 
         dataPercents.transition().delay(function(d) {
                 if (oldHeight > height) {
@@ -470,7 +528,7 @@
             .style("opacity", 1);
 
         // Make data bars
-        var dataBars = dataRows.selectAll(".dataBar, .lightDataBar").data(dataInt, key);
+        dataBars = dataRows.selectAll(".dataBar, .lightDataBar").data(dataInt, key);
 
         dataBars.transition().delay(function(d) {
                 if (oldHeight > height) {
@@ -518,15 +576,7 @@
                     return "auto";
                 }
             })
-            .on("click", function(d) {
-                if (id == "#graph_module_clicks" && !d.expanded && !d.parent) {
-                    d.expanded = 1;
-                    load_details(d.label, id);
-                } else if (id == "#graph_module_clicks" && d.expanded && !d.parent) {
-                    d.expanded = 0;
-                    remove_details(d.label, id);
-                }
-            })
+            .on("click", function(d) { expand(d,id) })
             .transition().delay(750).duration(500)
             .attr("x", function(d) {
                 return barCenter - x(d.clickcount) / 2;
@@ -535,8 +585,8 @@
                 return x(d.clickcount);
             });
 
-        // Add borders ///////////////////////////////////////////////////////////////////////////////////
-        var lightBorder = gAll.selectAll(".lightBorder").data([dataInt]);
+        // Add borders ////////////////////////////////////////////////////////////////////////////
+        lightBorder = gAll.selectAll(".lightBorder").data([dataInt]);
 
         lightBorder.transition().delay(function(d) {
                 if (oldHeight > height) {
@@ -555,7 +605,7 @@
             .attr("width", width)
             .attr("height", height);;
 
-        var darkBorder = gAll.selectAll(".darkBorder").data([dataInt]);
+        darkBorder = gAll.selectAll(".darkBorder").data([dataInt]);
 
         darkBorder.transition().delay(function(d) {
                 if (oldHeight > height) {
@@ -573,6 +623,54 @@
             .attr("y", rowHeight)
             .attr("width", width)
             .attr("height", height - rowHeight);
+    }
+
+    function expand(d, id) {
+        if (id == "#graph_module_clicks" && !d.expanded && !d.parent) {
+            d.expanded = 1;
+            load_details(d.label, id);
+        } else if (id == "#graph_module_clicks" && d.expanded && !d.parent) {
+            d.expanded = 0;
+            remove_details(d.label, id);
+        }
+    }
+
+    function sort_clicks_overview(id, sort) {
+        if (AppStatsGlobals[id].Data.length != AppStatsGlobals[id].OriginalData.length) { // If details are present, those must be removed before resort
+            // Go back to original data set (no details)
+            AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
+                return determine_sort(AppStatsGlobals[id].Sort, a, b)
+            });
+
+            // Resort data after delay
+            setTimeout(function() {
+                AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
+                    return determine_sort(sort, a, b)
+                });
+                draw_graph_clicks_overview(id, true);
+            }, 750);
+        } else { // Otherwise, you can just resort the data
+            AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
+                return determine_sort(sort, a, b)
+            });
+        }
+
+        // Update global sort
+        AppStatsGlobals[id].Sort = sort;
+        draw_graph_clicks_overview(id, true);
+    }
+
+    function determine_sort(sort, a, b) {
+        switch (sort) {
+            case 0:
+                return d3.ascending(a.rank, b.rank);
+            case 1:
+                return d3.ascending(b.rank, a.rank);
+            case 2:
+                return d3.ascending(a.label, b.label);
+            case 3:
+                return d3.ascending(b.label, a.label);
+        }
     }
 
     function load_details(category, id) {
@@ -618,45 +716,6 @@
 
         AppStatsGlobals[id].Data = updateData;
         draw_graph_clicks_overview(id, false);
-    }
-
-    function sort_clicks_overview(id, sort) {
-        if (AppStatsGlobals[id].Data.length != AppStatsGlobals[id].OriginalData.length) { // If details are present, those must be removed before resort
-            // Go back to original data set (no details)
-            AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
-                return determine_sort(AppStatsGlobals[id].Sort, a, b)
-            });
-
-            // Resort data after delay
-            setTimeout(function() {
-                AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
-                    return determine_sort(sort, a, b)
-                });
-                draw_graph_clicks_overview(id, true);
-            }, 750);
-        } else { // Otherwise, you can just resort the data
-            AppStatsGlobals[id].Data = AppStatsGlobals[id].OriginalData.sort(function(a, b) {
-                return determine_sort(sort, a, b)
-            });
-        }
-
-        // Update global sort
-        AppStatsGlobals[id].Sort = sort;
-        draw_graph_clicks_overview(id, true);
-    }
-
-    function determine_sort(sort, a, b) {
-        switch (sort) {
-            case 0:
-                return d3.ascending(a.rank, b.rank);
-            case 1:
-                return d3.ascending(b.rank, a.rank);
-
-            case 2:
-                return d3.ascending(a.label, b.label);
-            case 3:
-                return d3.ascending(b.label, a.label);
-        }
     }
 
 })();

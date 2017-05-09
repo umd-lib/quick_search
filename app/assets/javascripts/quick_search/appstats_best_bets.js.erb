@@ -62,9 +62,9 @@
         // General Variables
         var svg;            // SVG to contain graph
         var dataInt;        // Internal reference to graph dataset
-        var sortStates;     // 
+        var sortStates;     // Array indicating the currently selected sort state
         var key;            // Key function to maintain object constancy
-        var triangle;       //
+        var triangle;       // Triangle object for sort buttons
         // Dimension Variables
         var margin;         // Blank space around edge of SVG left as margin
         var rowHeight;      // Height of each row of data
@@ -839,16 +839,12 @@
         switch(sort) {
                 case 0: return d3.ascending(a.rank,b.rank);
                 case 1: return d3.ascending(b.rank,a.rank);
-
                 case 2: return d3.ascending(a.label,b.label);
                 case 3: return d3.ascending(b.label,a.label);
-
                 case 4: return d3.ascending(a.serves,b.serves);
                 case 5: return d3.ascending(b.serves,a.serves);
-
                 case 6: return d3.ascending(a.clicks,b.clicks);
                 case 7: return d3.ascending(b.clicks,a.clicks);
-
                 case 8: return d3.ascending(a.ratio,b.ratio);
                 case 9: return d3.ascending(b.ratio,a.ratio);
             }

@@ -110,7 +110,7 @@
         var lightBorder;    // Light border (surrounds all elements)
         var darkBorder;     // Dark border (surrounds data elements)
 
-        // Initialize General variables ///////////////////////////////////////////////////////////
+        // Initialize General Variables ///////////////////////////////////////////////////////////
         svg = d3.select("#graph_best_bets");
 
         dataInt = Globals.Data;
@@ -124,7 +124,7 @@
 
         triangle = d3.symbol().type(d3.symbolTriangle).size(20);
 
-        // Initialize Dimension variables /////////////////////////////////////////////////////////
+        // Initialize Dimension Variables /////////////////////////////////////////////////////////
         margin = {
             top: 20,
             right: 20,
@@ -154,7 +154,7 @@
         });
         triangleSpacing = 15;
         
-        // Initialize Scale variables /////////////////////////////////////////////////////////////
+        // Initialize Scale Variables /////////////////////////////////////////////////////////////
         serveScale = d3.scaleLinear().rangeRound([0, rankWidth + categoryWidth + serveWidth - serveBarStart - triangleSpacing]);
         serveScale.domain([0, d3.max(dataInt, function(d) {
             return d.serves;

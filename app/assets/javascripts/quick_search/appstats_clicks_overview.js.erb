@@ -152,7 +152,7 @@
         var lightBorder;    // Light border (surrounds all elements)
         var darkBorder;     // Dark border (surrounds data elements)
 
-        // Initialize General variables ///////////////////////////////////////////////////////////
+        // Initialize General Variables ///////////////////////////////////////////////////////////
         svg = d3.select(id);
 
         Globals = AppStatsGlobals[id];
@@ -168,7 +168,7 @@
 
         triangle = d3.symbol().type(d3.symbolTriangle).size(20);
 
-        // Initialize dimension variables /////////////////////////////////////////////////////////
+        // Initialize Dimension Variables /////////////////////////////////////////////////////////
         margin = {
             top: 20,
             right: 20,
@@ -189,7 +189,7 @@
         barCenter = rankWidth + categoryWidth + countWidth;
         triangleSpacing = 15;
 
-        // Initialize Scale variables /////////////////////////////////////////////////////////////
+        // Initialize Scale Variables /////////////////////////////////////////////////////////////
         var x = d3.scaleLinear().rangeRound([0, countWidth + percentWidth - 200]);
 
         x.domain([0, d3.max(dataInt, function(d) {
@@ -666,14 +666,11 @@
 
     function determine_sort(sort, a, b) {
         switch (sort) {
-            case 0:
-                return d3.ascending(a.rank, b.rank);
-            case 1:
-                return d3.ascending(b.rank, a.rank);
-            case 2:
-                return d3.ascending(a.label, b.label);
-            case 3:
-                return d3.ascending(b.label, a.label);
+            case 0: return d3.ascending(a.rank, b.rank);
+            case 1: return d3.ascending(b.rank, a.rank);
+            
+            case 2: return d3.ascending(a.label, b.label);
+            case 3: return d3.ascending(b.label, a.label);
         }
     }
 

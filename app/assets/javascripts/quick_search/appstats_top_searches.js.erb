@@ -12,7 +12,9 @@
                 url: "data_top_searches",
                 dataType: "json",
                 success: function(searchDataSet) {
-                    d3.select("#tsIcon").remove();
+                    d3.select("#tsIcon").transition().duration(250)
+                        .style("opacity", .000001)
+                        .remove();
                     var searchData = _.cloneDeep(searchDataSet);
                     Globals.OriginalData = searchData;
                     Globals.Data = searchData;

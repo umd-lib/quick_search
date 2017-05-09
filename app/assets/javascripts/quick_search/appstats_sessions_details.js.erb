@@ -14,7 +14,9 @@
                 url: "data_sessions_location",
                 dataType: "json",
                 success: function(sessionsDataSet) {
-                    d3.select("#locationIcon").remove();
+                    d3.select("#locationIcon").transition().duration(250)
+                        .style("opacity", .000001)
+                        .remove();
                     var dataMain = _.cloneDeep(sessionsDataSet);
                     draw_graph_sessions_details("#graph_sessions_location", dataMain, false, false, false);
 
@@ -61,7 +63,9 @@
                 url: "data_sessions_device",
                 dataType: "json",
                 success: function(sessionsDataSet) {
-                    d3.select("#deviceIcon").remove();
+                    d3.select("#deviceIcon").transition().duration(250)
+                        .style("opacity", .000001)
+                        .remove();
                     var dataMain = _.cloneDeep(sessionsDataSet);
                     draw_graph_sessions_details("#graph_sessions_device", dataMain, false, false, false);
 

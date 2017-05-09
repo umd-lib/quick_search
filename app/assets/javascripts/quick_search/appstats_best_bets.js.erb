@@ -12,7 +12,9 @@
                 url: "data_best_bets",
                 dataType: "json",
                 success: function(bestBetDataSet) {
-                    d3.select("#bbIcon").remove();
+                    d3.select("#bbIcon").transition().duration(250)
+                        .style("opacity", .000001)
+                        .remove();
                     var bestBetData = _.cloneDeep(bestBetDataSet);
                     Globals.OriginalData = bestBetData;
                     Globals.Data = bestBetData;

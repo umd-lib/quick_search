@@ -1,7 +1,6 @@
 (function() {
     var Globals = {};
 
-
     $(document).on("turbolinks:load", function() {
         if ($("#graph_sessions_overview").length) {
             d3.select("#sessIconContainer").append("i")
@@ -13,7 +12,9 @@
                 url: "data_sessions_overview",
                 dataType: "json",
                 success: function(sessionsDataSet) {
-                    d3.select("#sessIcon").remove();
+                    d3.select("#sessIcon").transition().duration(250)
+                        .style("opacity", .000001)
+                        .remove();
                     var dataMain = _.cloneDeep(sessionsDataSet);
 
                     draw_graph_sessions_overview(dataMain, false, false);

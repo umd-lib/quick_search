@@ -1,7 +1,6 @@
 (function() {
     var Globals = {};
 
-
     $(document).on("turbolinks:load", function() {
         var from = $("#from").datepicker("getDate");
         var to = new Date($("#to").datepicker("getDate").getTime() + 1000*60*60*24);
@@ -16,10 +15,9 @@
                 url: "appstats/data_general_statistics",
                 dataType: "json",
                 success: function(generalStatisticsDataSet) {
-                    // d3.select("#graphIcon").transition().duration(5000)
-                    //     .style("opacity", .000001)
-                    //     .remove();
-                    d3.select("#graphIcon").remove();
+                    d3.select("#graphIcon").transition().duration(250)
+                        .style("opacity", .000001)
+                        .remove();
                     Globals.Data = _.cloneDeep(generalStatisticsDataSet)
                     var dataMain = _.cloneDeep(Globals.Data);
                     var dataMini = _.cloneDeep(Globals.Data);
@@ -116,27 +114,36 @@
     }
 
     function draw_graph_general_statistics(dataShared, transitioning, index, dateUpdated) {
+        // General Variables
+        var svg;            // SVG to contain graph
+        var dataInt;        // Internal reference to graph dataset
+        var titles;         // Array of possible titles for graph
+        var title;          // Title as determined by index passed in
+        // Dimension Variables
+        // Date Variables
+
+        // Initialize General variables ///////////////////////////////////////////////////////////
         Globals.Index = index;
-        var transitioning = transitioning;
-        var svg = d3.select("#graph_general_statistics"),
-            dataInt = dataShared[index],
-            margin = {
-                top: 40,
-                right: 20,
-                bottom: 110,
-                left: 40
-            },
-            margin2 = {
-                top: 430,
-                right: 20,
-                bottom: 30,
-                left: 40
-            },
-            width = +svg.attr("width") - margin.left - margin.right,
-            height = +svg.attr("height") - margin.top - margin.bottom,
-            height2 = +svg.attr("height") - margin2.top - margin2.bottom,
-            titles = ["Clicks", "Sessions", "Searches"],
-            title = titles[index];
+        //transitioning = transitioning;
+        svg = d3.select("#graph_general_statistics");
+        dataInt = dataShared[index];
+        margin = {
+            top: 40,
+            right: 20,
+            bottom: 110,
+            left: 40
+        };
+        margin2 = {
+            top: 430,
+            right: 20,
+            bottom: 30,
+            left: 40
+        };
+        width = +svg.attr("width") - margin.left - margin.right;
+        height = +svg.attr("height") - margin.top - margin.bottom;
+        height2 = +svg.attr("height") - margin2.top - margin2.bottom;
+        titles = ["Clicks", "Sessions", "Searches"];
+        title = titles[index];
 
 
         // Parse dates into proper format
@@ -781,18 +788,3 @@
     }
 
 })();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

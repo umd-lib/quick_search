@@ -108,59 +108,96 @@
     }
 
     function draw_graph_sessions_details(id, dataShared, transitioning, dateUpdated, usePerc) {
+        // General Variables
+        var svg;            // SVG to contain graph
+        var dataInt;        // Internal reference to graph dataset
+        // Dimension Variables
+        var margin;         // Blank space around top graph (focus)
+        var margin2;        // Blank space around bottom graph (context)
+        var width;          // Drawable width of focus/context (not including margins)
+        var height;         // Drawable height of focus (not including margins)
+        var height2;        // Drawable height of context (not including margins)
+        // Date Variables
+        var parseDate;      // Function to parse dates into proper format
+        // Scale Variables
+        var x;              // X-scale for focus graph 
+        var x2;             // X-scale for context graph
+        var y;              // Y-scale for focus graph
+        var y2;             // Y-scale for context graph
+        // Brush and Zoom Variables
+        var brush;          // Object that allows domain selection by brush movement
+        var zoom;           // Object that allows domain selection by zooming
+        // Axis Variables
+        var xAxis;          // X-axis for focus graph
+        var xAxis2;         // X-axis for context graph
+        var yAxis;          // Y-axis for focus graph
+        var yAxisFormat;    // Conditional format for yAxis, depending on if displaying percentages or raw values
+        // Area Variables
+        var area;           // Bottom area for focus graph
+        var areaTop;        // Top area for focus graph
+        var area2;          // Bottom area for context graph
+        var area2Top;       // Top area for context graph
+        // Additional Data Variables
+        var legendData;     // Data for legend construction (class and text fields)
+        // Selection Variables
+        var gAllSelection;          // Selection for overarching group
+        var gAll;                   // Group containing all elements
+        var focusSelection;         // Selection for focus group
+        var focus;                  // Group containing all focus elements
+        var contextSelection;       // Selection for context group
+        var context;                // Group containing all context elements
+        var clipSelection;          // Selection for clip path
+        var legendGroupSelection;   // Selection for legend group
+        var legendGroup;            // Group containing all legnend information
+        var legendRectSelection;    // Selection for legend rectangles
+        var legendTextSelection;    // Selection for legend text
+        var xAxisSelection;         // Selection for xAxis
+        var yAxisSelection;         // Selection for yAxis
+        var titleSelection;         // Selection for title
+        var focusPathSelection;     // Selection for bottom focus path (area)
+        var focusPathTopSelection;  // Selection for top focus path (area)
+        var xAxis2Selection;        // Selection for xAxis2
+        var contextPathSelection;   // Selection for bottom context path (area)
+        var contextPathTopSelection;// Selection for top context path (area)
+        var brushSelection;         // Selection for brush
+        var zoomSelection;          // Selection for zoom
+        // Update global percent flag
         Globals[id].UsePerc = usePerc;
-        var transitioning = transitioning;
-        var svg = d3.select(id),
-            dataInt = dataShared,
-            margin = {
-                top: 50,
-                right: 20,
-                bottom: 110,
-                left: 40
-            },
-            margin2 = {
-                top: 430,
-                right: 20,
-                bottom: 30,
-                left: 40
-            },
-            width = +svg.attr("width") - margin.left - margin.right,
-            height = +svg.attr("height") - margin.top - margin.bottom,
-            height2 = +svg.attr("height") - margin2.top - margin2.bottom;
 
+        // Initialize General Variables ///////////////////////////////////////////////////////////
+        svg = d3.select(id);
 
-        // Parse dates into proper format
-        var parseDate = d3.timeParse("%Y-%m-%d");
+        dataInt = dataShared;
+
+        // Initialize Dimension Variables /////////////////////////////////////////////////////////
+        margin = {
+            top: 50,
+            right: 20,
+            bottom: 110,
+            left: 40
+        };
+        margin2 = {
+            top: 430,
+            right: 20,
+            bottom: 30,
+            left: 40
+        };
+        width = +svg.attr("width") - margin.left - margin.right;
+        height = +svg.attr("height") - margin.top - margin.bottom;
+        height2 = +svg.attr("height") - margin2.top - margin2.bottom;
+        
+        // Initialize Date Variables and Parse Dates //////////////////////////////////////////////
+        parseDate = d3.timeParse("%Y-%m-%d");
 
         dataInt.forEach(function(d) {
             d.date = parseDate(d.date);
         });
 
-        // Make scales
-        var x = d3.scaleTime().range([0, width]),
-            x2 = d3.scaleTime().range([0, width]),
-            y = d3.scaleLinear().range([height, 0]),
-            y2 = d3.scaleLinear().range([height2, 0]);
-
-        // Make brush and zoom
-        var brush = d3.brushX()
-            .extent([
-                [0, 0],
-                [width, height2]
-            ])
-            .on("brush end", brushed);
-
-        var zoom = d3.zoom()
-            .scaleExtent([1, 1000])
-            .translateExtent([
-                [0, 0],
-                [width, height]
-            ])
-            .extent([
-                [0, 0],
-                [width, height]
-            ])
-            .on("zoom", zoomed);
+        // Initialize Scale Variables /////////////////////////////////////////////////////////////
+        x = d3.scaleTime().range([0, width]);
+        x2 = d3.scaleTime().range([0, width]);
+        y = d3.scaleLinear().range([height, 0]);
+        y2 = d3.scaleLinear().range([height2, 0]);
 
         // Set domains
         x2.domain(d3.extent(dataInt, function(d) {
@@ -192,17 +229,38 @@
             return d.on + d.off;
         })]);
         y2.domain(y.domain());
+        
 
-        // Make axes
-        var xAxis = d3.axisBottom(x),
-            xAxis2 = d3.axisBottom(x2),
-            yAxis = d3.axisLeft(y),
-            yAxisFormat = usePerc ? d3.format(".0%") : null;
+        // Initialize Brush and Zoom Variables ////////////////////////////////////////////////////
+        brush = d3.brushX()
+            .extent([
+                [0, 0],
+                [width, height2]
+            ])
+            .on("brush end", brushed);
+
+        zoom = d3.zoom()
+            .scaleExtent([1, 1000])
+            .translateExtent([
+                [0, 0],
+                [width, height]
+            ])
+            .extent([
+                [0, 0],
+                [width, height]
+            ])
+            .on("zoom", zoomed);
+
+        // Initialize Axis Variables //////////////////////////////////////////////////////////////
+        xAxis = d3.axisBottom(x);
+        xAxis2 = d3.axisBottom(x2);
+        yAxis = d3.axisLeft(y);
+        yAxisFormat = usePerc ? d3.format(".0%") : null;
 
         yAxis.tickFormat(yAxisFormat);
 
-        // Make areas
-        var area = d3.area()
+        // Initialize Area Variables //////////////////////////////////////////////////////////////
+        area = d3.area()
             .curve(d3.curveMonotoneX)
             .x(function(d) {
                 return x(d.date);
@@ -212,7 +270,7 @@
                 return y(d.on);
             });
 
-        var areaTop = d3.area()
+        areaTop = d3.area()
             .curve(d3.curveMonotoneX)
             .x(function(d) {
                 return x(d.date);
@@ -224,7 +282,7 @@
                 return y(d.on + d.off);
             });
 
-        var area2 = d3.area()
+        area2 = d3.area()
             .curve(d3.curveMonotoneX)
             .x(function(d) {
                 return x2(d.date);
@@ -234,7 +292,7 @@
                 return y2(d.on);
             });
 
-        var area2Top = d3.area()
+        area2Top = d3.area()
             .curve(d3.curveMonotoneX)
             .x(function(d) {
                 return x2(d.date);
@@ -246,8 +304,12 @@
                 return y2(d.on + d.off);
             });
 
-        // Make overarching group
-        var gAllSelection = svg.selectAll(".gAll").data([dataInt]);
+        // Initialize Additional Data Variables ///////////////////////////////////////////////////
+        legendData = [{areaClass: "legendRect",         locationText: "On Campus",  deviceText: "On Mobile Device"},
+                      {areaClass: "lightLegendRect",    locationText: "Off Campus", deviceText: "On Non-Mobile Device"}];
+
+        // Make overarching group /////////////////////////////////////////////////////////////////
+        gAllSelection = svg.selectAll(".gAll").data([dataInt]);
 
         gAllSelection.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -256,10 +318,10 @@
             .attr("class", "gAll")
             .attr("transform", "translate(0,0)");
 
-        var gAll = svg.select(".gAll");
+        gAll = svg.select(".gAll");
 
         // Make focus
-        var focusSelection = gAll.selectAll(".focus").data([dataInt]);
+        focusSelection = gAll.selectAll(".focus").data([dataInt]);
 
         focusSelection.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -268,10 +330,10 @@
             .attr("class", "focus")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        var focus = gAll.select(".focus");
+        focus = gAll.select(".focus");
 
         // Make context
-        var contextSelection = gAll.selectAll(".context").data([dataInt]);
+        contextSelection = gAll.selectAll(".context").data([dataInt]);
 
         contextSelection.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -280,10 +342,10 @@
             .attr("class", "context")
             .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
 
-        var context = gAll.select(".context");
+        context = gAll.select(".context");
 
         // Make clip path
-        var clipSelection = gAll.selectAll("defs").data([dataInt]);
+        clipSelection = gAll.selectAll("defs").data([dataInt]);
 
         clipSelection.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -295,7 +357,7 @@
             .attr("height", height);
 
         // Make legendGroup
-        var legendGroupSelection = gAll.selectAll(".legend").data([dataInt]);
+        legendGroupSelection = gAll.selectAll(".legend").data([dataInt]);
 
         legendGroupSelection.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -304,13 +366,10 @@
             .attr("class", "legend")
             .attr("transform", "translate(" + margin.left + "," + 0 + ")");
 
-        var legendGroup = svg.select(".legend");
+        legendGroup = svg.select(".legend");
 
         // Make legendRects and legendText
-        var legendData = [{areaClass: "legendRect",         locationText: "On Campus",  deviceText: "On Mobile Device"},
-                          {areaClass: "lightLegendRect",    locationText: "Off Campus", deviceText: "On Non-Mobile Device"}];
-
-        var legendRectSelection = legendGroup.selectAll(".legendRect, .lightLegendRect").data(legendData);
+        legendRectSelection = legendGroup.selectAll(".legendRect, .lightLegendRect").data(legendData);
 
         legendRectSelection.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -350,7 +409,7 @@
             .style("opacity", 1);
 
         // Make focus x axis
-        var xAxisSelection = focus.selectAll(".xAxis").data([dataInt]);
+        xAxisSelection = focus.selectAll(".xAxis").data([dataInt]);
 
         xAxisSelection.transition().duration(750)
             .call(xAxis);
@@ -366,7 +425,7 @@
             .style("opacity", 1);
 
         // Make focus y axis
-        var yAxisSelection = focus.selectAll(".yAxis").data([dataInt]);
+        yAxisSelection = focus.selectAll(".yAxis").data([dataInt]);
 
         yAxisSelection.transition().duration(750)
             .call(yAxis);
@@ -382,7 +441,7 @@
             .style("opacity", 1);
 
         // Make focus path
-        var focusPathSelection = focus.selectAll(".area").data([dataInt]);
+        focusPathSelection = focus.selectAll(".area").data([dataInt]);
 
         focusPathSelection.datum(dataInt).transition().duration(750)
             .attr("d", area);
@@ -396,7 +455,7 @@
             .transition().duration(500)
             .style("opacity", 1);
 
-        var focusPathTopSelection = focus.selectAll(".areaLight").data([dataInt]);
+        focusPathTopSelection = focus.selectAll(".areaLight").data([dataInt]);
 
         focusPathTopSelection.datum(dataInt).transition().duration(750)
             .attr("d", areaTop);
@@ -411,7 +470,7 @@
             .style("opacity", 1);
 
         // Make context x axis
-        var xAxis2Selection = context.selectAll(".xAxis").data([dataInt]);
+        xAxis2Selection = context.selectAll(".xAxis").data([dataInt]);
 
         xAxis2Selection.transition().duration(500)
             .call(xAxis2);
@@ -427,7 +486,7 @@
             .style("opacity", 1);
 
         // Make context path
-        var contextPathSelection = context.selectAll(".area").data([dataInt]);
+        contextPathSelection = context.selectAll(".area").data([dataInt]);
 
         contextPathSelection.datum(dataInt).transition().duration(750)
             .attr("d", area2);
@@ -442,7 +501,7 @@
             .transition().duration(500)
             .style("opacity", 1);
 
-        var contextPathTopSelection = context.selectAll(".areaLight").data([dataInt]);
+        contextPathTopSelection = context.selectAll(".areaLight").data([dataInt]);
 
         contextPathTopSelection.datum(dataInt).transition().duration(750)
             .attr("d", area2Top);
@@ -458,7 +517,7 @@
             .style("opacity", 1);
 
         // Make brush container
-        var brushSelection = context.selectAll(".brush").data([dataInt]);
+        brushSelection = context.selectAll(".brush").data([dataInt]);
 
         brushSelection.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -471,6 +530,7 @@
             .style("opacity", 1)
             .call(brush);
 
+        // Misc ///////////////////////////////////////////////////////////////////////////////////
         // Have to prevent zoom or brush temporarily for transitions to execute
         if (transitioning) {
             setTimeout(function() {
@@ -507,7 +567,7 @@
         }
 
         // Make zoom container
-        var zoomSelection = gAll.selectAll(".zoom").data([dataInt]);
+        zoomSelection = gAll.selectAll(".zoom").data([dataInt]);
 
         zoomSelection.exit().transition().duration(500)
             .style("opacity", .000001)
@@ -553,9 +613,9 @@
     function process_filters() {
         var loc = document.querySelector('input[name = "loc"]:checked').value;
         var dev = document.querySelector('input[name = "dev"]:checked').value;
-
         var from = $("#from").datepicker("getDate");
         var to = new Date($("#to").datepicker("getDate").getTime() + 1000*60*60*24);
+
         var usePercLoc = _.isEqual(loc,"perc") ? true : false;
         $.ajax({
             type: "GET",
@@ -575,6 +635,7 @@
                 error();
             }
         });
+
         var usePercDev = _.isEqual(dev,"perc") ? true : false;
         $.ajax({
             type: "GET",

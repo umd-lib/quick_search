@@ -17,6 +17,19 @@ QuickSearch::Engine.routes.draw do
 
   get 'about' => 'pages#about'
   get 'realtime' => 'pages#realtime'
+  get 'data_general_statistics' => 'appstats#data_general_statistics'
+  get 'data_general_table' => 'appstats#data_general_table' 
+  get 'data_module_clicks' => 'appstats#data_module_clicks'
+  get 'data_result_clicks' => 'appstats#data_result_clicks'
+  get 'data_module_details' => 'appstats#data_module_details'
+  get 'data_top_searches' => 'appstats#data_top_searches'
+  get 'data_spelling_suggestions' => 'appstats#data_spelling_suggestions'
+  get 'data_spelling_details' => 'appstats#data_spelling_details'
+  get 'data_best_bets' => 'appstats#data_best_bets'
+  get 'data_best_bets_details' => 'appstats#data_best_bets_details'
+  get 'data_sessions_overview' => 'appstats#data_sessions_overview'
+  get 'data_sessions_location' => 'appstats#data_sessions_location'
+  get 'data_sessions_device' => 'appstats#data_sessions_device'
 
   match 'appstats', to: 'appstats#index', via: [:get, :post]
   match 'appstats/clicks_overview', to: 'appstats#clicks_overview', as: 'clicks_overview', via: [:get, :post]

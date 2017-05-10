@@ -1,3 +1,5 @@
+<% url_helper = QuickSearch::Engine.routes.url_helpers %>
+
 (function() {
     var AppStatsGlobals = {};
     AppStatsGlobals["#graph_module_clicks"] = {};
@@ -11,7 +13,7 @@
             $.ajax({
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
-                url: "data_module_clicks",
+                url: '<%= url_helper.data_module_clicks_path %>',
                 dataType: "json",
                 success: function(moduleDataSet) {
                     d3.select("#moduleIcon").transition().duration(250)
@@ -36,7 +38,7 @@
                 $.ajax({
                     type: "GET",
                     contentType: "application/json; charset=utf-8",
-                    url: "data_module_clicks",
+                    url: '<%= url_helper.data_module_clicks_path %>',
                     dataType: "json",
                     data: {
                         "start_date": from,
@@ -61,7 +63,7 @@
             $.ajax({
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
-                url: "data_result_clicks",
+                url: '<%= url_helper.data_result_clicks_path %>',
                 dataType: "json",
                 success: function(resultDataSet) {
                     d3.select("#resultIcon").transition().duration(250)
@@ -85,7 +87,7 @@
                 $.ajax({
                     type: "GET",
                     contentType: "application/json; charset=utf-8",
-                    url: "data_result_clicks",
+                    url: '<%= url_helper.data_result_clicks_path %>',
                     dataType: "json",
                     data: {
                         "start_date": from,
@@ -681,7 +683,7 @@
         $.ajax({
             type: "GET",
             contentType: "application/json; charset=utf-8",
-            url: "data_module_details",
+            url: '<%= url_helper.data_module_details_path %>',
             dataType: "json",
             data: {
                 "category": category,

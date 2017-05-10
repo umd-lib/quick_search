@@ -128,7 +128,7 @@ module QuickSearch
     # Thus, the integer filterCase, which corresponds to the rowNumber, can be formed by converting 4 bit
     # binary term formed by the concatenation {onCampus, offCampus, isMobile, notMobile} into an integer.
     # Note: This filtering cannot be obtained by passing two boolean values (one for on_campus and one for is_mobile)
-    # as this would fail to account for cases where no filter is applied to one variable (ie. where we don't care
+    # as this would fail to account for cases where no filter is applied to one variable (ie. where we don't care about
     # either location or device)
     def data_sessions_overview
       onCampus = params[:onCampus] ? params[:onCampus].to_i : 0

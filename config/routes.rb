@@ -22,15 +22,9 @@ QuickSearch::Engine.routes.draw do
   match 'appstats/clicks_overview', to: 'appstats#clicks_overview', as: 'clicks_overview', via: [:get, :post]
   match 'appstats/top_searches', to: 'appstats#top_searches', as: 'top_searches', via: [:get, :post]
   match 'appstats/top_spot', to: 'appstats#top_spot', as: 'top_spot', via: [:get, :post]
-  match 'appstats/detail/:ga_scope', to: 'appstats#detail', via: [:get, :post]
-  get 'appstats/realtime' => 'appstats#realtime'
-
-  ########################## ADDED #############################
   match 'appstats/sessions_overview', to: 'appstats#sessions_overview', as: 'sessions_overview', via: [:get, :post]
   match 'appstats/sessions_details', to: 'appstats#sessions_details', as: 'sessions_details', via: [:get, :post]
-
-  get 'appstats/data_sample', :defaults => { :format => 'json' }
-  get 'appstats/data_test', :defaults => { :format => 'json' }
+  get 'appstats/realtime' => 'appstats#realtime'
   get 'appstats/data_general_statistics', :defaults => { :format => 'json' }
   get 'appstats/data_general_table', :defaults => { :format => 'json' }
   get 'appstats/data_module_clicks', :defaults => { :format => 'json' }
@@ -44,9 +38,6 @@ QuickSearch::Engine.routes.draw do
   get 'appstats/data_sessions_overview', :defaults => { :format => 'json' }
   get 'appstats/data_sessions_location', :defaults => { :format => 'json' }
   get 'appstats/data_sessions_device', :defaults => { :format => 'json' }
-
-
-  ##############################################################
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

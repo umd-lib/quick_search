@@ -60,40 +60,104 @@
     }
 
     function draw_graph_top_searches() {
-        var sortStates = [0, 0, 0, 0]
-            dataInt = Globals.Data,
-            oldHeight = Globals.Height;
+        // General Variables
+        var svg;            // SVG to contain graph
+        var dataInt;        // Internal reference to graph dataset
+        var sortStates;     // Array indicating the currently selected sort state
+        var key;            // Key function to maintain object constancy
+        var triangle;       // Triangle object for sort buttons
+        // Dimension Variables
+        var margin;         // Blank space around edge of SVG left as margin
+        var rowHeight;      // Height of each row of data
+        var width;          // Drawable width of SVG (not including margins)
+        var height;         // Drawable height of SVG (not including margins)
+        var oldHeight;      // Previous height of SVG
+        var textPadding;    // Padding around text elements
+        var barHeight;      // Height of data bars
+        var rankWidth;      // Width of rank column
+        var categoryWidth;  // Width of category column
+        var countWidth;     // Width of count column
+        var percentWidth;   // Width of percent column
+        var cumPercentWidth;// Width of cumulative percent column
+        var percBarCenter;  // Center x for count/percent data bar
+        var cumPercBarStart;// Beginning x for cumulative percent data bar
+        var triangleSpacing;// Space around triangular sort buttons
+        // Scale Variables
+        var percScale;      // Scale for count/percent data bar
+        var cumPercScale;   // Scale for cumulative percent data bar
+        // Selection Variables
+        var groupEnter;     // Entry selection for gAll
+        var gAll;           // Group containing all elements
+        var headGroupEnter; // Entry selection for headRow
+        var headRow;        // Group containing all head elements
+        var headEnter;      // Entry selection for all head elements
+        var triangles;      // Sort triangles
+        var dataGroupEnter; // Entry selection for dataRows
+        var dataRows;       // Group containing all data elements
+        var dataRects;      // Background rectangles
+        var dataRanks;      // Rank text
+        var dataLabels;     // Label text
+        var dataClicks;     // Click text
+        var dataPercents;   // Percent text
+        var dataCumPercents;// Cumulative percent text
+        var percBar;        // Count/percent data bar
+        var cumPercBar;     // Cumulative percent data bar
+        var lightBorder;    // Light border (surrounds all elements)
+        var darkBorder;     // Dark border (surrounds data elements)
 
+        // Initialize General Variables ///////////////////////////////////////////////////////////
+        svg = d3.select("#graph_top_searches");
+
+        dataInt = Globals.Data;
+
+        sortStates = [0, 0, 0, 0];
         sortStates[Globals.Sort] = 1;
 
-        var svg = d3.select("#graph_top_searches"),
-            margin = {
-                top: 20,
-                right: 20,
-                bottom: 20,
-                left: 20
-            },
-            width = +svg.attr("width") - margin.left - margin.right,
-            textPadding = 5,
-            rowHeight = 35,
-            barHeight = 25,
-            rankWidth = 2 * width / 16,
-            categoryWidth = 4 * width / 16,
-            countWidth = 2 * width / 16,
-            percentWidth = 3 * width / 16,
-            cumPercentWidth = 5 * width / 16,
-            percBarCenter = rankWidth + categoryWidth + countWidth + 13 * d3.max(dataInt, function(d) {
-                return d.count.toString().length;
-            }),
-            cumPercBarStart = rankWidth + categoryWidth + countWidth + percentWidth + 3 * textPadding + 13 * d3.max(dataInt, function(d) {
-                return d.cum_percentage.toString().length;
-            }),
-            height = (dataInt.length + 1) * rowHeight,
-            triangleSpacing = 15,
-            key = function(d) {
-                return d.key;
-            };
+        key = function(d) {
+            return d.key;
+        };
 
+        triangle = d3.symbol().type(d3.symbolTriangle).size(20);
+
+        // Initialize Dimension Variables /////////////////////////////////////////////////////////
+        margin = {
+            top: 20,
+            right: 20,
+            bottom: 20,
+            left: 20
+        };
+        rowHeight = 35;
+        width = +svg.attr("width") - margin.left - margin.right;
+        height = (dataInt.length + 1) * rowHeight;
+        oldHeight = Globals.Height;
+        textPadding = 5;
+        barHeight = 25;
+        rankWidth = 2 * width / 16;
+        categoryWidth = 4 * width / 16;
+        countWidth = 2 * width / 16;
+        percentWidth = 3 * width / 16;
+        cumPercentWidth = 5 * width / 16;
+        percBarCenter = rankWidth + categoryWidth + countWidth + 13 * d3.max(dataInt, function(d) {
+            return d.count.toString().length;
+        });
+        cumPercBarStart = rankWidth + categoryWidth + countWidth + percentWidth + 3 * textPadding + 13 * d3.max(dataInt, function(d) {
+            return d.cum_percentage.toString().length;
+        });
+        triangleSpacing = 15;
+
+        // Initialize Scale Variables /////////////////////////////////////////////////////////////
+        percScale = d3.scaleLinear().rangeRound([0, countWidth + percentWidth - 100]);
+        percScale.domain([0, d3.max(dataInt, function(d) {
+            return d.cum_percentage
+        })]);
+
+        cumPercScale = d3.scaleLinear().rangeRound([0, countWidth + percentWidth - 100]);
+        cumPercScale.domain([0, d3.max(dataInt, function(d) {
+            return d.cum_percentage
+        })]);
+
+        // Misc ///////////////////////////////////////////////////////////////////////////////////
+        // Transition the svg height depending on previous height
         svg.transition().delay(function(d) {
                 if (oldHeight > height) {
                     return 500;
@@ -107,39 +171,27 @@
                 Globals.Height = height;
             });
 
-        var groupEnter = svg.selectAll("g").data([dataInt]).enter();
+        // Make overarching group /////////////////////////////////////////////////////////////////
+        groupEnter = svg.selectAll("g").data([dataInt]).enter();
 
         groupEnter.append("g")
             .attr("class", "gAll");
 
-        var gAll = svg.select(".gAll")
+        gAll = svg.select(".gAll")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        var percScale = d3.scaleLinear().rangeRound([0, countWidth + percentWidth - 100]);
-
-        percScale.domain([0, d3.max(dataInt, function(d) {
-            return d.cum_percentage
-        })]);
-
-        var cumPercScale = d3.scaleLinear().rangeRound([0, countWidth + percentWidth - 100]);
-
-        cumPercScale.domain([0, d3.max(dataInt, function(d) {
-            return d.cum_percentage
-        })]);
-
-        var triangle = d3.symbol().type(d3.symbolTriangle).size(20);
-
-        // Make header row //////////////////////////////////////////////////////////////////////////////
-        var headGroupEnter = gAll.selectAll(".headRow").data([dataInt]).enter();
+        // Make header row ////////////////////////////////////////////////////////////////////////
+        headGroupEnter = gAll.selectAll(".headRow").data([dataInt]).enter();
 
         headGroupEnter.append("g")
             .attr("class", "headRow");
 
-        var gHead = gAll.select(".headRow")
+        headRow = gAll.select(".headRow")
             .attr("transform", "translate(0,0)");
 
-        var headEnter = gHead.selectAll("rect").data([dataInt]).enter();
+        headEnter = headRow.selectAll("rect").data([dataInt]).enter();
 
+        // Make background rect
         headEnter.append("rect")
             .attr("class", "darkBar")
             .attr("x", 0)
@@ -147,6 +199,7 @@
             .attr("width", width)
             .attr("height", rowHeight);
 
+        // Make rank text & sort rect
         headEnter.append("text")
             .text("Rank")
             .attr("class", "headText")
@@ -166,6 +219,7 @@
                 }
             });
 
+        // Make category text & sort rect
         headEnter.append("text")
             .text("Query")
             .attr("class", "headText")
@@ -185,6 +239,7 @@
                 }
             });
 
+        // Make count, percent, & cumulative percent text
         headEnter.append("text")
             .text("Count")
             .attr("class", "headText")
@@ -200,8 +255,8 @@
             .attr("class", "headText")
             .attr("transform", "translate(" + (rankWidth + categoryWidth + countWidth + percentWidth + 3 * textPadding) + "," + (rowHeight / 2 + textPadding) + ")");
 
-
-        var triangles = gHead.selectAll("path").data(sortStates);
+        // Make sort triangles
+        triangles = headRow.selectAll("path").data(sortStates);
 
         triangles.enter().append("path")
             .attr("d", triangle)
@@ -227,17 +282,17 @@
                 }
             });
 
-        // Make data rows ////////////////////////////////////////////////////////////////////////////////
-        var dataGroup = gAll.selectAll(".dataRow").data([dataInt]);
+        // Make data rows /////////////////////////////////////////////////////////////////////////
+        dataGroupEnter = gAll.selectAll(".dataRows").data([dataInt]).enter();
 
-        dataGroup.enter().append("g")
-            .attr("class", "dataRow");
+        dataGroupEnter.append("g")
+            .attr("class", "dataRows");
 
-        var dataRows = gAll.select(".dataRow")
+        dataRows = gAll.select(".dataRows")
             .attr("transform", "translate(0,0)");
 
         // Make background rects
-        var dataRects = dataRows.selectAll(".darkBar, .lightBar").data(dataInt, key);
+        dataRects = dataRows.selectAll(".darkBar, .lightBar").data(dataInt, key);
 
         dataRects.transition().delay(function(d) {
                 if (oldHeight > height) {
@@ -264,7 +319,7 @@
             .style("opacity", 1);
 
         // Make rank text
-        var dataRanks = dataRows.selectAll(".dataRank").data(dataInt, key);
+        dataRanks = dataRows.selectAll(".dataRank").data(dataInt, key);
 
         dataRanks.transition().delay(function(d) {
                 if (oldHeight > height) {
@@ -296,7 +351,7 @@
             .style("opacity", 1);
 
         // Make label text
-        var dataLabels = dataRows.selectAll(".dataLabel").data(dataInt, key);
+        dataLabels = dataRows.selectAll(".dataLabel").data(dataInt, key);
 
         dataLabels.transition().delay(function(d) {
                 if (oldHeight > height) {
@@ -368,7 +423,7 @@
             .style("opacity", 1);
 
         // Make percent text
-        var dataPercents = dataRows.selectAll(".dataPercent").data(dataInt, key);
+        dataPercents = dataRows.selectAll(".dataPercent").data(dataInt, key);
 
         dataPercents.transition().delay(function(d) {
                 if (oldHeight > height) {
@@ -400,7 +455,7 @@
             .style("opacity", 1);
 
         // Make click text
-        var dataCumPercents = dataRows.selectAll(".dataCumPercent").data(dataInt, key);
+        dataCumPercents = dataRows.selectAll(".dataCumPercent").data(dataInt, key);
 
         dataCumPercents.transition().delay(function(d) {
                 if (oldHeight > height) {
@@ -432,9 +487,9 @@
             .style("opacity", 1);
 
         // Make perc bars
-        var percBars = dataRows.selectAll(".percBar").data(dataInt, key);
+        percBar = dataRows.selectAll(".percBar").data(dataInt, key);
 
-        percBars.transition().delay(function(d) {
+        percBar.transition().delay(function(d) {
                 if (oldHeight > height) {
                     return 500;
                 } else {
@@ -451,11 +506,11 @@
             .attr("x", function(d) {
                 return percBarCenter - percScale(d.percentage) / 2;
             });
-        percBars.exit().transition().duration(500)
+        percBar.exit().transition().duration(500)
             .attr("x", percBarCenter)
             .attr("width", 0)
             .remove();
-        percBars.enter().append("rect")
+        percBar.enter().append("rect")
             .attr("class", "percBar")
             .attr("x", function(d) {
                 return percBarCenter;
@@ -476,7 +531,7 @@
             });
 
         // Make cumulative perc bars
-        var cumPercBar = dataRows.selectAll(".cumPercBar").data(dataInt, key);
+        cumPercBar = dataRows.selectAll(".cumPercBar").data(dataInt, key);
 
         cumPercBar.transition().delay(function(d) {
                 if (oldHeight > height) {
@@ -515,8 +570,8 @@
                 return cumPercScale(d.cum_percentage);
             });
 
-        // Add borders ///////////////////////////////////////////////////////////////////////////////////
-        var lightBorder = gAll.selectAll(".lightBorder").data([dataInt]);
+        // Add borders ////////////////////////////////////////////////////////////////////////////
+        lightBorder = gAll.selectAll(".lightBorder").data([dataInt]);
 
         lightBorder.transition().delay(function(d) {
                 if (oldHeight > height) {
@@ -535,7 +590,7 @@
             .attr("width", width)
             .attr("height", height);;
 
-        var darkBorder = gAll.selectAll(".darkBorder").data([dataInt]);
+        darkBorder = gAll.selectAll(".darkBorder").data([dataInt]);
 
         darkBorder.transition().delay(function(d) {
                 if (oldHeight > height) {

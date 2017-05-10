@@ -1,3 +1,5 @@
+<% url_helper = QuickSearch::Engine.routes.url_helpers %>
+
 (function() {
     var Globals = {};
 
@@ -9,7 +11,7 @@
             $.ajax({
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
-                url: "data_sessions_overview",
+                url: '<%= url_helper.data_sessions_overview_path %>',
                 dataType: "json",
                 success: function(sessionsDataSet) {
                     d3.select("#sessIcon").transition().duration(250)
@@ -36,7 +38,7 @@
                 $.ajax({
                     type: "GET",
                     contentType: "application/json; charset=utf-8",
-                    url: "data_sessions_overview",
+                    url: '<%= url_helper.data_sessions_overview_path %>',
                     dataType: "json",
                     data: {
                         "start_date": from,
@@ -452,7 +454,7 @@
         $.ajax({
             type: "GET",
             contentType: "application/json; charset=utf-8",
-            url: "data_sessions_overview",
+            url: '<%= url_helper.data_sessions_overview_path %>',
             dataType: "json",
             data: {
                 "start_date": from,

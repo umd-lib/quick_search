@@ -1,3 +1,5 @@
+<% url_helper = QuickSearch::Engine.routes.url_helpers %>
+
 (function() {
     var Globals = {};
 
@@ -9,7 +11,7 @@
             $.ajax({
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
-                url: "data_spelling_suggestions",
+                url: '<%= url_helper.data_spelling_suggestions_path %>',
                 dataType: "json",
                 success: function(suggestionDataSet) {
                     d3.select("#spIcon").transition().duration(250)
@@ -35,7 +37,7 @@
                 $.ajax({
                     type: "GET",
                     contentType: "application/json; charset=utf-8",
-                    url: "data_spelling_suggestions",
+                    url: '<%= url_helper.data_spelling_suggestions_path %>',
                     dataType: "json",
                     data: {
                         "start_date": from,
@@ -857,7 +859,7 @@
         $.ajax({
             type: "GET",
             contentType: "application/json; charset=utf-8",
-            url: "data_spelling_details",
+            url: '<%= url_helper.data_spelling_details_path %>',
             dataType: "json",
             data: {
                 "item": item,

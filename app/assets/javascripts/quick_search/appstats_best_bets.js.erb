@@ -1,3 +1,5 @@
+<% url_helper = QuickSearch::Engine.routes.url_helpers %>
+
 (function() {
     var Globals = {};
 
@@ -9,7 +11,7 @@
             $.ajax({
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
-                url: "data_best_bets",
+                url: '<%= url_helper.data_best_bets_path %>',
                 dataType: "json",
                 success: function(bestBetDataSet) {
                     d3.select("#bbIcon").transition().duration(250)
@@ -35,7 +37,7 @@
                 $.ajax({
                     type: "GET",
                     contentType: "application/json; charset=utf-8",
-                    url: "data_best_bets",
+                    url: '<%= url_helper.data_best_bets_path %>',
                     dataType: "json",
                     data: {
                         "start_date": from,
@@ -859,7 +861,7 @@
         $.ajax({
             type: "GET",
             contentType: "application/json; charset=utf-8",
-            url: "data_best_bets_details",
+            url: '<%= url_helper.data_best_bets_details_path %>',
             dataType: "json",
             data: {
                 "item": item,

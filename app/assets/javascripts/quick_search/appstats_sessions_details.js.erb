@@ -1,3 +1,5 @@
+<% url_helper = QuickSearch::Engine.routes.url_helpers %>
+
 (function() {
     var Globals = {};
     Globals["#graph_sessions_location"] = {};
@@ -11,7 +13,7 @@
             $.ajax({
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
-                url: "data_sessions_location",
+                url: '<%= url_helper.data_sessions_location_path %>',
                 dataType: "json",
                 success: function(sessionsDataSet) {
                     d3.select("#locationIcon").transition().duration(250)
@@ -36,7 +38,7 @@
                 $.ajax({
                     type: "GET",
                     contentType: "application/json; charset=utf-8",
-                    url: "data_sessions_location",
+                    url: '<%= url_helper.data_sessions_location_path %>',
                     dataType: "json",
                     data: {
                         "start_date": from,
@@ -60,7 +62,7 @@
             $.ajax({
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
-                url: "data_sessions_device",
+                url: '<%= url_helper.data_sessions_device_path %>',
                 dataType: "json",
                 success: function(sessionsDataSet) {
                     d3.select("#deviceIcon").transition().duration(250)
@@ -84,7 +86,7 @@
                 $.ajax({
                     type: "GET",
                     contentType: "application/json; charset=utf-8",
-                    url: "data_sessions_location",
+                    url: '<%= url_helper.data_sessions_device_path %>',
                     dataType: "json",
                     data: {
                         "start_date": from,
@@ -620,7 +622,7 @@
         $.ajax({
             type: "GET",
             contentType: "application/json; charset=utf-8",
-            url: "data_sessions_location",
+            url: '<%= url_helper.data_sessions_location_path %>',
             dataType: "json",
             data: {
                 "start_date": from,
@@ -640,7 +642,7 @@
         $.ajax({
             type: "GET",
             contentType: "application/json; charset=utf-8",
-            url: "data_sessions_device",
+            url: '<%= url_helper.data_sessions_device_path %>',
             dataType: "json",
             data: {
                 "start_date": from,

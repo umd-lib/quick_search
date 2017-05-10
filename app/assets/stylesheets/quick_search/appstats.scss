@@ -49,24 +49,24 @@
 }
 
 .inputLabel, #datePickerText, #numDays {
-	width: 60%;
+	width: 50%;
 	float: left;
 	color: 	#000;
 	font-size: 20px;
 }
 
 #datePickerText {
-	width: 70%;
+	width: 60%;
 }
 
 #numDays {
-	width: 30%;
+	width: 40%;
 	text-align: right;
 }
 
 #from, #to, #num {
 	float: left;
-	width: 40%;
+	width: 50%;
 }
 
 // Text styling

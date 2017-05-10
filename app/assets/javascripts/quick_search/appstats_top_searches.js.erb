@@ -556,7 +556,6 @@
     }
 
     function sort_search_data(sort) {
-        var id = "#graph_top_searches";
         Globals.Data = Globals.OriginalData.sort(function(a, b) {
             switch(sort) {
                 case 0: return d3.ascending(a.rank,b.rank);

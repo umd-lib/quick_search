@@ -332,10 +332,10 @@
             });
 
         // Make data rows /////////////////////////////////////////////////////////////////////////
-        dataGroupEnter = gAll.selectAll(".dataRow").data([dataInt]).enter();
+        dataGroupEnter = gAll.selectAll(".dataRows").data([dataInt]).enter();
 
         dataGroupEnter.append("g")
-            .attr("class", "dataRow");
+            .attr("class", "dataRows");
 
         dataRows = gAll.select(".dataRows")
             .attr("transform", "translate(0,0)");

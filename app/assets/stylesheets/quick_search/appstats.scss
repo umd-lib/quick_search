@@ -5,3 +5,151 @@
 #appstats-date-filter {
   display: none;
 }
+
+// Added for appstats graph styling
+// Icon and general graph styling
+.graphGroup {
+    position: relative;
+}
+
+.graph {    
+    position: relative;
+}
+
+.graph_mini {
+    float: left;
+}
+
+.iconContainer {
+    position: absolute;
+    z-index: 1;
+}
+
+.big-icon {
+    font-size: 15em !important;
+}
+
+.big-icon::before {
+	opacity: .5;
+}
+
+.clearfix {
+    clear: both;
+}
+
+.zoom {
+    cursor: move;
+    fill: none;
+    pointer-events: all;
+}
+
+// Date range styling
+#dateButton {
+	width: 100%;
+}
+
+.inputLabel, #datePickerText, #numDays {
+	width: 50%;
+	float: left;
+	color: 	#000;
+	font-size: 20px;
+}
+
+#datePickerText {
+	width: 60%;
+}
+
+#numDays {
+	width: 40%;
+	text-align: right;
+}
+
+#from, #to, #num {
+	float: left;
+	width: 50%;
+}
+
+// Text styling
+.chartTitle {
+	text-anchor: middle;
+	fill: 	#333333;
+	font-size: 30px;
+	font-family: "Lucida Console";
+    pointer-events: none;
+}
+
+.headText, .totalText, .perDayText, .perClickText, .perServeText, .perSearchText, .perSessionText, .dataRank, .dataLabel, .dataClick, .dataServe, .dataRatio,
+.percentText, .dataPercent, .dataCumPercent, .legendText
+ {
+    text-anchor: start;
+    fill:   #000000;
+    font-size: 13px;
+    font-family: "Lucida Console";
+}
+
+.headText, .percentText, .legendText {
+    font-size: 16px;
+}
+
+.percentText, .dataPercent {
+	text-anchor: end;
+}
+
+// Data bars and areas
+.area {
+    fill: steelblue;
+    clip-path: url(#clip);
+}
+
+.areaLight {
+    fill: lightsteelblue;
+    clip-path: url(#clip);
+}
+
+.areaMini {
+    fill: steelblue;
+    clip-path: url(#clipMini);
+    pointer-events: none;
+}
+
+.dataBar, .serveBar, .clickBar, .ratioBar, .percBar, .cumPercBar, .legendRect {
+	fill: steelblue;
+}
+
+.lightLegendRect, .lightDataBar, .lightServeBar, .lightClickBar, .lightRatioBar, .lightPercBar, .lightCumPercBar,
+.dataBar:hover, .serveBar:hover,  .clickBar:hover, .ratioBar:hover, .percBar:hover,  .cumPercBar:hover {
+	fill: lightsteelblue;
+}
+
+// Background rects, borders, and lines
+.sortRect {
+	cursor: pointer;
+	opacity: 0.000001;
+}
+
+.darkBorder {
+	fill: none;
+	stroke-width: 2px;
+	stroke: #333;
+}
+
+.lightBorder {
+	fill: none;
+	stroke-width: 2px;
+	stroke: #DDD;
+}
+
+.darkBar {
+	fill: #F5F5F5;
+	stroke-width: 1px;
+	stroke: #DDD;
+}
+
+.lightBar {
+	fill: none;
+}
+
+.gridLine {
+    stroke: #333;
+    stroke-width: 1px;
+}

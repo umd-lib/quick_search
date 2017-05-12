@@ -1,0 +1,902 @@
+<% url_helper = QuickSearch::Engine.routes.url_helpers %>
+
+(function() {
+    var Globals = {};
+
+    $(document).on("turbolinks:load", function() {
+        if ($("#graph_spelling_suggestions").length) {
+            d3.select("#spIconContainer").append("i")
+                .attr("class", "fa fa-spinner fa-spin fa-5x fa-fw big-icon")
+                .attr("id", "spIcon");
+            // Redraw graph if the date range is changed
+            document.getElementById("dateButton").addEventListener("click", function() { 
+                var from = $("#from").datepicker("getDate");
+                var to = new Date($("#to").datepicker("getDate").getTime() + 1000*60*60*24);
+                document.getElementById("numDays").innerHTML = "" + parseInt((to-from)/(1000*60*60*24));
+                if (document.getElementById("num").value>200) { document.getElementById("num").value = "20"; }                
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '<%= url_helper.data_spelling_suggestions_path %>',
+                    dataType: "json",
+                    data: {
+                        "start_date": from,
+                        "end_date": to,
+                        "num_results": (document.getElementById("num").value>200) ? Globals.Data.length : document.getElementById("num").value
+                    },
+                    success: function(suggestionDataSet) {
+                        var suggestionData = _.cloneDeep(suggestionDataSet);
+                        Globals.OriginalData = suggestionData;
+                        Globals.Data = suggestionData;
+                        sort_search_data(Globals.Sort);
+                    },
+                    error: function(result) {
+                        error();
+                    }
+                });
+            });
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: '<%= url_helper.data_spelling_suggestions_path %>',
+                dataType: "json",
+                success: function(suggestionDataSet) {
+                    d3.select("#spIcon").transition().duration(250)
+                        .style("opacity", .000001)
+                        .remove();
+                    var suggestionData = _.cloneDeep(suggestionDataSet);
+                    Globals.OriginalData = suggestionData;
+                    Globals.Data = suggestionData;
+                    Globals.Sort = 0;
+                    Globals.Height = 450;
+                    draw_graph_spelling_suggestions(false);
+                },
+                error: function(result) {
+                    error();
+                }
+            });
+        }
+    });
+
+    function error() {
+        console.log("Error retrieving data");
+    }
+
+    function draw_graph_spelling_suggestions(resetExpanded) {
+        if ($("#graph_spelling_suggestions").length) {
+            // General Variables
+            var svg;            // SVG to contain graph
+            var dataInt;        // Internal reference to graph dataset
+            var sortStates;     // Array indicating the currently selected sort state
+            var key;            // Key function to maintain object constancy
+            var triangle;       // Triangle object for sort buttons
+            // Dimension Variables
+            var margin;         // Blank space around edge of SVG left as margin
+            var rowHeight;      // Height of each row of data
+            var width;          // Drawable width of SVG (not including margins)
+            var height;         // Drawable height of SVG (not including margins)
+            var oldHeight;      // Previous height of SVG
+            var textPadding;    // Padding around text elements
+            var barHeight;      // Height of data bars
+            var rankWidth;      // Width of rank column
+            var categoryWidth;  // Width of category column
+            var serveWidth;     // Width of serves column
+            var clickWidth;     // Width of click column
+            var ratioWidth;     // Width of ratio column
+            var childOffset;    // Horizontal offset for child elements drawn on element expansion
+            var serveBarStart;  // Beginning x for serves data bar
+            var clickBarStart;  // Beginning x for click data bar
+            var ratioBarStart;  // Beginning x for ratio data bar
+            var triangleSpacing;// Space around triangular sort buttons
+            // Scale Variables
+            var serveScale;     // Scale for serve count data bar
+            var clickScale;     // Scale for click count data bar
+            var ratioScale;     // Scale for ratio data bar
+            // Selection Variables
+            var groupEnter;     // Entry selection for gAll
+            var gAll;           // Group containing all elements
+            var headGroupEnter; // Entry selection for headRow
+            var headRow;        // Group containing all head elements
+            var headEnter;      // Entry selection for all head elements
+            var triangles;      // Sort triangles
+            var dataGroupEnter; // Entry selection for dataRows
+            var dataRows;       // Group containing all data elements
+            var dataRects;      // Background rectangles
+            var dataRanks;      // Rank text
+            var dataLabels;     // Label text
+            var dataServes;     // Serve text
+            var dataClicks;     // Click text
+            var dataRatios;     // Ratio text
+            var serveBar;       // Serve count data bar
+            var clickBar;       // Click count data bar
+            var ratioBar;       // Ratio data bar
+            var lightBorder;    // Light border (surrounds all elements)
+            var darkBorder;     // Dark border (surrounds data elements)
+
+            // Initialize General Variables ///////////////////////////////////////////////////////////
+            svg = d3.select("#graph_spelling_suggestions");
+
+            dataInt = Globals.Data;
+
+            sortStates = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+            sortStates[Globals.Sort] = 1;
+
+            key = function(d) {
+                return d.key;
+            };
+
+            triangle = d3.symbol().type(d3.symbolTriangle).size(20);
+
+            // Initialize Dimension Variables /////////////////////////////////////////////////////////
+            margin = {
+                top: 20,
+                right: 20,
+                bottom: 20,
+                left: 20
+            };
+            rowHeight = 35;
+            width = +svg.attr("width") - margin.left - margin.right;
+            height = (dataInt.length + 1) * rowHeight;
+            oldHeight = Globals.Height;
+            textPadding = 5;
+            barHeight = 25;
+            rankWidth = 2 * width / 20;
+            categoryWidth = 5 * width / 20;
+            serveWidth = 4 * width / 20;
+            clickWidth = 4 * width / 20;
+            ratioWidth = 5 * width / 20;
+            childOffset = 20;
+            serveBarStart = rankWidth + categoryWidth + 4 * textPadding + 13 * d3.max(dataInt, function(d) {
+                return d.serves.toString().length;
+            });
+            clickBarStart = rankWidth + categoryWidth + serveWidth + 4 * textPadding + 13 * d3.max(dataInt, function(d) {
+                return d.clicks.toString().length;
+            });
+            ratioBarStart = rankWidth + categoryWidth + serveWidth + clickWidth + 4 * textPadding + 13 * d3.max(dataInt, function(d) {
+                return d.ratio.toString().length;
+            });
+            triangleSpacing = 15;
+
+            // Initialize Scale Variables /////////////////////////////////////////////////////////////
+            serveScale = d3.scaleLinear().rangeRound([0, rankWidth + categoryWidth + serveWidth - serveBarStart - triangleSpacing]);
+            serveScale.domain([0, d3.max(dataInt, function(d) {
+                return d.serves;
+            })]);
+
+            clickScale = d3.scaleLinear().rangeRound([0, rankWidth + categoryWidth + serveWidth + clickWidth - clickBarStart - triangleSpacing]);
+            clickScale.domain([0, d3.max(dataInt, function(d) {
+                return d.clicks;
+            })]);
+
+            ratioScale = d3.scaleLinear().rangeRound([0, rankWidth + categoryWidth + serveWidth + clickWidth + ratioWidth - ratioBarStart - triangleSpacing]);
+            ratioScale.domain([0, d3.max(dataInt, function(d) {
+                return d.ratio;
+            })]);
+
+            // Misc ///////////////////////////////////////////////////////////////////////////////////
+            // Transition the svg height depending on previous height
+            svg.transition().delay(function(d) {
+                    if (oldHeight > height) {
+                        return 500;
+                    } else {
+                        return 0;
+                    }
+                })
+                .duration(750)
+                .attr("height", height + margin.top + margin.bottom)
+                .on("end", function(d) {
+                    Globals.Height = height;
+                });
+
+            // Reset expanded categories when after a resort
+            if (resetExpanded) {
+                dataInt.forEach(function(d) {
+                    d.expanded = 0;
+                });
+            }
+
+            // Make overarching group /////////////////////////////////////////////////////////////////
+            groupEnter = svg.selectAll("g").data([dataInt]).enter();
+
+            groupEnter.append("g")
+                .attr("class", "gAll");
+
+            gAll = svg.select(".gAll")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            // Make header row ////////////////////////////////////////////////////////////////////////
+            headGroupEnter = gAll.selectAll(".headRow").data([dataInt]).enter();
+
+            headGroupEnter.append("g")
+                .attr("class", "headRow");
+
+            headRow = gAll.select(".headRow")
+                .attr("transform", "translate(0,0)");
+
+            headEnter = headRow.selectAll("rect").data([dataInt]).enter();
+
+            // Make background rect
+            headEnter.append("rect")
+                .attr("class", "darkBar")
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("width", width)
+                .attr("height", rowHeight);
+
+            // Make rank text & sort rect
+            headEnter.append("text")
+                .text("Rank")
+                .attr("class", "headText")
+                .attr("transform", "translate(" + textPadding + "," + (rowHeight / 2 + textPadding) + ")");
+
+            headEnter.append("rect")
+                .attr("class", "sortRect")
+                .attr("x", (rankWidth - 2 * triangleSpacing))
+                .attr("y", 0)
+                .attr("width", 2 * triangleSpacing)
+                .attr("height", rowHeight)
+                .on("click", function(d) {
+                    if (Globals.Sort == 0) {
+                        sort_search_data(1);
+                    } else {
+                        sort_search_data(0);
+                    }
+                });
+
+            // Make category text & sort rect
+            headEnter.append("text")
+                .text("Suggestion")
+                .attr("class", "headText")
+                .attr("transform", "translate(" + (rankWidth + textPadding) + "," + (rowHeight / 2 + textPadding) + ")");
+
+            headEnter.append("rect")
+                .attr("class", "sortRect")
+                .attr("x", (rankWidth + categoryWidth - 2 * triangleSpacing))
+                .attr("y", 0)
+                .attr("width", 2 * triangleSpacing)
+                .attr("height", rowHeight)
+                .on("click", function(d) {
+                    if (Globals.Sort == 2) {
+                        sort_search_data(3);
+                    } else {
+                        sort_search_data(2);
+                    }
+                });
+
+            // Make serve text & sort rect
+            headEnter.append("text")
+                .text("Serve Count")
+                .attr("class", "headText")
+                .attr("transform", "translate(" + (rankWidth + categoryWidth + textPadding) + "," + (rowHeight / 2 + textPadding) + ")");
+
+            headEnter.append("rect")
+                .attr("class", "sortRect")
+                .attr("x", (rankWidth + categoryWidth + serveWidth - 2 * triangleSpacing))
+                .attr("y", 0)
+                .attr("width", 2 * triangleSpacing)
+                .attr("height", rowHeight)
+                .on("click", function(d) {
+                    if (Globals.Sort == 4) {
+                        sort_search_data(5);
+                    } else {
+                        sort_search_data(4);
+                    }
+                });
+
+            // Make click text & sort rect
+            headEnter.append("text")
+                .text("Click Count")
+                .attr("class", "headText")
+                .attr("transform", "translate(" + (rankWidth + categoryWidth + serveWidth + textPadding) + "," + (rowHeight / 2 + textPadding) + ")");
+
+            headEnter.append("rect")
+                .attr("class", "sortRect")
+                .attr("x", (rankWidth + categoryWidth + serveWidth + clickWidth - 2 * triangleSpacing))
+                .attr("y", 0)
+                .attr("width", 2 * triangleSpacing)
+                .attr("height", rowHeight)
+                .on("click", function(d) {
+                    if (Globals.Sort == 6) {
+                        sort_search_data(7);
+                    } else {
+                        sort_search_data(6);
+                    }
+                });
+
+            // Make ratio text & sort rect
+            headEnter.append("text")
+                .text("Click/Serve")
+                .attr("class", "headText")
+                .attr("transform", "translate(" + (rankWidth + categoryWidth + serveWidth + clickWidth + textPadding) + "," + (rowHeight / 2 + textPadding) + ")");
+
+            headEnter.append("rect")
+                .attr("class", "sortRect")
+                .attr("x", (rankWidth + categoryWidth + serveWidth + clickWidth + ratioWidth - 2 * triangleSpacing))
+                .attr("y", 0)
+                .attr("width", 2 * triangleSpacing)
+                .attr("height", rowHeight)
+                .on("click", function(d) {
+                    if (Globals.Sort == 8) {
+                        sort_search_data(9);
+                    } else {
+                        sort_search_data(8);
+                    }
+                });
+
+            // Make sort triangles
+            triangles = headRow.selectAll("path").data(sortStates);
+
+            triangles.enter().append("path")
+                .attr("d", triangle)
+                .attr("pointer-events", "none")
+                .attr("transform", function(d, i) {
+                    if (i == 0) {
+                        return "translate(" + (rankWidth - triangleSpacing) + "," + (rowHeight / 2 - textPadding) + ")";
+                    } else if (i == 1) {
+                        return "translate(" + (rankWidth - triangleSpacing) + "," + (rowHeight / 2 + textPadding) + ") rotate(180)";
+                    } else if (i == 2) {
+                        return "translate(" + (rankWidth + categoryWidth - triangleSpacing) + "," + (rowHeight / 2 - textPadding) + ")";
+                    } else if (i == 3) {
+                        return "translate(" + (rankWidth + categoryWidth - triangleSpacing) + "," + (rowHeight / 2 + textPadding) + ") rotate(180)";
+                    } else if (i == 4) {
+                        return "translate(" + (rankWidth + categoryWidth + serveWidth - triangleSpacing) + "," + (rowHeight / 2 - textPadding) + ")";
+                    } else if (i == 5) {
+                        return "translate(" + (rankWidth + categoryWidth + serveWidth - triangleSpacing) + "," + (rowHeight / 2 + textPadding) + ") rotate(180)";
+                    } else if (i == 6) {
+                        return "translate(" + (rankWidth + categoryWidth + serveWidth + clickWidth - triangleSpacing) + "," + (rowHeight / 2 - textPadding) + ")";
+                    } else if (i == 7) {
+                        return "translate(" + (rankWidth + categoryWidth + serveWidth + clickWidth - triangleSpacing) + "," + (rowHeight / 2 + textPadding) + ") rotate(180)";
+                    } else if (i == 8) {
+                        return "translate(" + (rankWidth + categoryWidth + serveWidth + clickWidth + ratioWidth - triangleSpacing) + "," + (rowHeight / 2 - textPadding) + ")";
+                    } else if (i == 9) {
+                        return "translate(" + (rankWidth + categoryWidth + serveWidth + clickWidth + ratioWidth - triangleSpacing) + "," + (rowHeight / 2 + textPadding) + ") rotate(180)";
+                    }
+                })
+                .merge(triangles)
+                .transition().duration(500)
+                .attr("fill", function(d, i) {
+                    if (d) {
+                        return "steelblue";
+                    } else {
+                        return "lightsteelblue";
+                    }
+                });
+
+            // Make data rows /////////////////////////////////////////////////////////////////////////
+            dataGroupEnter = gAll.selectAll(".dataRow").data([dataInt]).enter();
+
+            dataGroupEnter.append("g")
+                .attr("class", "dataRows");
+
+            dataRows = gAll.select(".dataRows")
+                .attr("transform", "translate(0,0)");
+
+            // Make background rects
+            dataRects = dataRows.selectAll(".darkBar, .lightBar").data(dataInt, key);
+
+            dataRects.transition().delay(function(d) {
+                    if (oldHeight > height) {
+                        return 500;
+                    } else {
+                        return 0;
+                    }
+                })
+                .duration(750)
+                .attr("y", function(d, i) {
+                    return (i + 1) * rowHeight;
+                });
+            dataRects.exit().remove();
+            dataRects.enter().append("rect")
+                .style("opacity", .000001)
+                .attr("class", function(d, i) { return "darkBar"; })
+                .attr("x", 0)
+                .attr("y", function(d, i) {
+                    return (i + 1) * rowHeight;
+                })
+                .attr("width", width)
+                .attr("height", rowHeight)
+                .transition().delay(750).duration(500)
+                .style("opacity", 1);
+
+            // Make rank text
+            dataRanks = dataRows.selectAll(".dataRank").data(dataInt, key);
+
+            dataRanks.transition().delay(function(d) {
+                    if (oldHeight > height) {
+                        return 500;
+                    } else {
+                        return 0;
+                    }
+                })
+                .duration(750)
+                .attr("transform", function(d, i) {
+                    if (!d.parent) {
+                        return "translate(" + textPadding + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                    } else {
+                        return "translate(" + (textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")"; 
+                    }
+                });
+            dataRanks.exit().transition().duration(500)
+                .style("opacity", .000001)
+                .remove();
+            dataRanks.enter().append("text")
+                .style("opacity", .000001)
+                .text(function(d) {
+                    return d.rank;
+                })
+                .attr("class", "dataRank")
+                .attr("transform", function(d, i) {
+                    if (!d.parent) {
+                        return "translate(" + textPadding + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                    } else {
+                        return "translate(" + (textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")"; 
+                    }
+                })
+                .transition().delay(750).duration(500)
+                .style("opacity", 1);
+
+            // Make label text
+            dataLabels = dataRows.selectAll(".dataLabel").data(dataInt, key);
+
+            dataLabels.transition().delay(function(d) {
+                    if (oldHeight > height) {
+                        return 500;
+                    } else {
+                        return 0;
+                    }
+                })
+                .duration(750)
+                .attr("transform", function(d, i) {
+                    if (!d.parent) {
+                        return "translate(" + (rankWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                    } else {
+                        return "translate(" + (rankWidth + textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                    }
+                })
+                .text(function(d) {
+                    if (d.label.length > 25) {
+                        return d.label.slice(0, 20) + "...";
+                    } else {
+                        return d.label;
+                    }
+                });
+            dataLabels.exit().transition().duration(500)
+                .style("opacity", .000001)
+                .remove();
+            dataLabels.enter().append("text")
+                .style("opacity", .000001)
+                .text(function(d) {
+                    if (d.label.length > 25) {
+                        return d.label.slice(0, 20) + "...";
+                    } else {
+                        return d.label;
+                    }
+                })
+                .attr("class", "dataLabel")
+                .attr("transform", function(d, i) {
+                    if (!d.parent) {
+                        return "translate(" + (rankWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                    } else {
+                        return "translate(" + (rankWidth + textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                    }
+                })
+                .transition().delay(750).duration(500)
+                .style("opacity", 1);
+
+            // Make serve text
+            dataServes = dataRows.selectAll(".dataServe").data(dataInt, key);
+
+            dataServes.transition().delay(function(d) {
+                    if (oldHeight > height) {
+                        return 500;
+                    } else {
+                        return 0;
+                    }
+                })
+                .duration(750)
+                .attr("transform", function(d, i) {
+                    if (!d.parent) {
+                        return "translate(" + (rankWidth + categoryWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                    } else {
+                        return "translate(" + (rankWidth + categoryWidth + textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                    }
+                })
+                .text(function(d) {
+                    return d.serves;
+                });
+            dataServes.exit().transition().duration(500)
+                .style("opacity", .000001)
+                .remove();
+            dataServes.enter().append("text")
+                .style("opacity", .000001)
+                .text(function(d) {
+                    return d.serves;
+                })
+                .attr("class", "dataServe")
+                .attr("transform", function(d, i) {
+                    if (!d.parent) {
+                        return "translate(" + (rankWidth + categoryWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                    } else {
+                        return "translate(" + (rankWidth + categoryWidth + textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                    }
+                })
+                .transition().delay(750).duration(500)
+                .style("opacity", 1);
+
+            // Make click text
+            dataClicks = dataRows.selectAll(".dataClick").data(dataInt, key);
+
+            dataClicks.transition().delay(function(d) {
+                    if (oldHeight > height) {
+                        return 500;
+                    } else {
+                        return 0;
+                    }
+                })
+                .duration(750)
+                .attr("transform", function(d, i) {
+                    if (!d.parent) {
+                        return "translate(" + (rankWidth + categoryWidth + serveWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                    } else {
+                        return "translate(" + (rankWidth + categoryWidth + serveWidth + textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                    }
+                })
+                .text(function(d) {
+                    return d.clicks;
+                });
+            dataClicks.exit().transition().duration(500)
+                .style("opacity", .000001)
+                .remove();
+            dataClicks.enter().append("text")
+                .style("opacity", .000001)
+                .text(function(d) {
+                    return d.clicks;
+                })
+                .attr("class", "dataClick")
+                .attr("transform", function(d, i) {
+                    if (!d.parent) {
+                        return "translate(" + (rankWidth + categoryWidth + serveWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                    } else {
+                        return "translate(" + (rankWidth + categoryWidth + serveWidth + textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                    }
+                })
+                .transition().delay(750).duration(500)
+                .style("opacity", 1);
+
+            // Make ratio text
+            dataRatios = dataRows.selectAll(".dataRatio").data(dataInt, key);
+
+            dataRatios.transition().delay(function(d) {
+                    if (oldHeight > height) {
+                        return 500;
+                    } else {
+                        return 0;
+                    }
+                })
+                .duration(750)
+                .attr("transform", function(d, i) {
+                    if (!d.parent) {
+                        return "translate(" + (rankWidth + categoryWidth + serveWidth + clickWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                    } else {
+                        return "translate(" + (rankWidth + categoryWidth + serveWidth + clickWidth + textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                    }
+                })
+                .text(function(d) {
+                    return d.ratio + "%";
+                });
+            dataRatios.exit().transition().duration(500)
+                .style("opacity", .000001)
+                .remove();
+            dataRatios.enter().append("text")
+                .style("opacity", .000001)
+                .text(function(d) {
+                    return d.ratio + "%";
+                })
+                .attr("class", "dataRatio")
+                .attr("transform", function(d, i) {
+                    if (!d.parent) {
+                        return "translate(" + (rankWidth + categoryWidth + serveWidth + clickWidth + textPadding) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                    } else {
+                        return "translate(" + (rankWidth + categoryWidth + serveWidth + clickWidth + textPadding + childOffset) + "," + Math.floor((i + 1) * rowHeight + rowHeight / 2 + textPadding) + ")";
+                    }
+                })
+                .transition().delay(750).duration(500)
+                .style("opacity", 1);
+
+            // Make serve bars
+            serveBar = dataRows.selectAll(".serveBar, .lightServeBar").data(dataInt, key);
+
+            serveBar.transition().delay(function(d) {
+                    if (oldHeight > height) {
+                        return 500;
+                    } else {
+                        return 0;
+                    }
+                })
+                .duration(750)
+                .attr("y", function(d, i) {
+                    return (i + 1) * rowHeight + (rowHeight - barHeight) / 2;
+                })
+                .attr("width", function(d) {
+                    return serveScale(d.serves);
+                })
+                .attr("x", function(d) {
+                    return serveBarStart;
+                });
+            serveBar.exit().transition().duration(500)
+                .attr("width", 0)
+                .remove();
+            serveBar.enter().append("rect")
+                .attr("class", function(d) {
+                    if (!d.parent) {
+                        return "serveBar";
+                    } else {
+                        return "lightServeBar";
+                    }
+                })
+                .style("cursor", function(d) {
+                    if (!d.parent) {
+                        return "pointer";
+                    } else {
+                        return "auto";
+                    }
+                })
+                .attr("x", function(d) {
+                    return serveBarStart;
+                })
+                .attr("y", function(d, i) {
+                    return (i + 1) * rowHeight + (rowHeight - barHeight) / 2;
+                })
+                .attr("width", function(d) {
+                    return 0;
+                })
+                .attr("height", barHeight)
+                .on("click", function(d) { expand(d) })
+                .transition().delay(750).duration(500)
+                .attr("width", function(d) {
+                    return serveScale(d.serves);
+                });
+
+            // Make click bars
+            clickBar = dataRows.selectAll(".clickBar, .lightClickBar").data(dataInt, key);
+
+            clickBar.transition().delay(function(d) {
+                    if (oldHeight > height) {
+                        return 500;
+                    } else {
+                        return 0;
+                    }
+                })
+                .duration(750)
+                .attr("y", function(d, i) {
+                    return (i + 1) * rowHeight + (rowHeight - barHeight) / 2;
+                })
+                .attr("width", function(d) {
+                    return clickScale(d.clicks);
+                })
+                .attr("x", function(d) {
+                    return clickBarStart;
+                });
+            clickBar.exit().transition().duration(500)
+                .attr("width", 0)
+                .remove();
+            clickBar.enter().append("rect")
+                .attr("class", function(d) {
+                    if (!d.parent) {
+                        return "clickBar";
+                    } else {
+                        return "lightClickBar";
+                    }
+                })
+                .style("cursor", function(d) {
+                    if (!d.parent) {
+                        return "pointer";
+                    } else {
+                        return "auto";
+                    }
+                })
+                .attr("x", function(d) {
+                    return clickBarStart;
+                })
+                .attr("y", function(d, i) {
+                    return (i + 1) * rowHeight + (rowHeight - barHeight) / 2;
+                })
+                .attr("width", function(d) {
+                    return 0;
+                })
+                .attr("height", barHeight)
+                .on("click", function(d) { expand(d) })
+                .transition().delay(750).duration(500)
+                .attr("width", function(d) {
+                    return clickScale(d.clicks);
+                });
+
+            // Make ratio bars
+            ratioBar = dataRows.selectAll(".ratioBar , .lightRatioBar").data(dataInt, key);
+
+            ratioBar.transition().delay(function(d) {
+                    if (oldHeight > height) {
+                        return 500;
+                    } else {
+                        return 0;
+                    }
+                })
+                .duration(750)
+                .attr("y", function(d, i) {
+                    return (i + 1) * rowHeight + (rowHeight - barHeight) / 2;
+                })
+                .attr("width", function(d) {
+                    return ratioScale(d.ratio);
+                })
+                .attr("x", function(d) {
+                    return ratioBarStart;
+                });
+            ratioBar.exit().transition().duration(500)
+                .attr("width", 0)
+                .remove();
+            ratioBar.enter().append("rect")
+                .attr("class", function(d) {
+                    if (!d.parent) {
+                        return "ratioBar";
+                    } else {
+                        return "lightRatioBar";
+                    }
+                })
+                .style("cursor", function(d) {
+                    if (!d.parent) {
+                        return "pointer";
+                    } else {
+                        return "auto";
+                    }
+                })
+                .attr("x", function(d) {
+                    return ratioBarStart;
+                })
+                .attr("y", function(d, i) {
+                    return (i + 1) * rowHeight + (rowHeight - barHeight) / 2;
+                })
+                .attr("width", function(d) {
+                    return 0;
+                })
+                .attr("height", barHeight)
+                .on("click", function(d) { expand(d) })
+                .transition().delay(750).duration(500)
+                .attr("width", function(d) {
+                    return ratioScale(d.ratio);
+                });
+
+            // Add borders ////////////////////////////////////////////////////////////////////////////
+            lightBorder = gAll.selectAll(".lightBorder").data([dataInt]);
+
+            lightBorder.transition().delay(function(d) {
+                    if (oldHeight > height) {
+                        return 500;
+                    } else {
+                        return 0;
+                    }
+                })
+                .duration(750)
+                .attr("height", height);
+            lightBorder.exit().remove();
+            lightBorder.enter().append("rect")
+                .attr("class", "lightBorder")
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("width", width)
+                .attr("height", height);;
+
+            darkBorder = gAll.selectAll(".darkBorder").data([dataInt]);
+
+            darkBorder.transition().delay(function(d) {
+                    if (oldHeight > height) {
+                        return 500;
+                    } else {
+                        return 0;
+                    }
+                })
+                .duration(750)
+                .attr("height", height - rowHeight);
+            darkBorder.exit().remove();
+            darkBorder.enter().append("rect")
+                .attr("class", "darkBorder")
+                .attr("x", 0)
+                .attr("y", rowHeight)
+                .attr("width", width)
+                .attr("height", height - rowHeight);
+        }
+    }
+
+    function expand(d) {
+        if (!d.expanded && !d.parent) {
+            d.expanded = 1;
+            load_details(d.label);
+        } else if (d.expanded && !d.parent) {
+            d.expanded = 0;
+            remove_details(d.label);
+        }
+    }
+
+    function sort_search_data(sort) {
+        if (Globals.Data.length != Globals.OriginalData.length) { // If details are present, those must be removed before resort
+            // Go back to original data set (no details)
+            Globals.Data = Globals.OriginalData.sort(function(a,b) { return determine_sort(Globals.Sort, a, b) });
+
+            // Resort data after delay
+            setTimeout(function() {
+                Globals.Data = Globals.OriginalData.sort(function(a,b) { return determine_sort(sort, a, b) });
+                draw_graph_spelling_suggestions(true);
+            }, 750);
+        } else { // Otherwise, you can just resort the data
+            Globals.Data = Globals.OriginalData.sort(function(a,b) { return determine_sort(sort, a, b) });
+        }
+
+        // Update global sort
+        Globals.Sort = sort;
+        draw_graph_spelling_suggestions(true);
+    }
+
+    function determine_sort(sort, a, b) {
+        switch(sort) {
+                case 0: return d3.ascending(a.rank,b.rank);
+                case 1: return d3.ascending(b.rank,a.rank);
+
+                case 2: return d3.ascending(a.label,b.label);
+                case 3: return d3.ascending(b.label,a.label);
+
+                case 4: return d3.ascending(a.serves,b.serves);
+                case 5: return d3.ascending(b.serves,a.serves);
+
+                case 6: return d3.ascending(a.clicks,b.clicks);
+                case 7: return d3.ascending(b.clicks,a.clicks);
+
+                case 8: return d3.ascending(a.ratio,b.ratio);
+                case 9: return d3.ascending(b.ratio,a.ratio);
+            }
+    }
+
+    function load_details(item) {
+        var updateData = _.cloneDeep(Globals.Data);
+        var from = $("#from").datepicker("getDate");
+        var to = new Date($("#to").datepicker("getDate").getTime() + 1000*60*60*24);
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: '<%= url_helper.data_spelling_details_path %>',
+            dataType: "json",
+            data: {
+                "item": item,
+                "start_date": from,
+                "end_date": to
+            },
+            success: function(detailSet) {
+                var detailData = _.cloneDeep(detailSet);
+                var index = _.findIndex(updateData, {
+                    "label": item
+                });
+                updateData = _.concat(_.slice(updateData, 0, index + 1), detailData, _.slice(updateData, index + 1, updateData.length));
+
+                Globals.Data = updateData;
+                draw_graph_spelling_suggestions(false);
+            },
+            error: function(result) {
+                error();
+            }
+        });
+    }
+
+    function remove_details(item) {
+        var updateData = _.cloneDeep(Globals.Data);
+        var startIndex = _.findIndex(updateData, {
+            "label": item
+        });
+        var endIndex = startIndex + 1;
+        while (endIndex < updateData.length && updateData[endIndex].parent) {
+            endIndex++;
+        }
+        updateData = _.concat(_.slice(updateData, 0, startIndex + 1), _.slice(updateData, endIndex, updateData.length));
+
+        Globals.Data = updateData;
+        draw_graph_spelling_suggestions(false);
+    }
+
+})();

@@ -2,13 +2,13 @@
 <%= render partial: 'datatables' %>
 <div class="row">
     <%= render partial: "menu" %>
-    <div class="large-9 columns">
-        <%= render partial: "date_range" %>
-    </div>
-    <div class="large-9 columns">
-        <p>Displays top 100 in each category</p>
-        <% @top_spot_reporting.each do |report| %>
-            <%= render partial: 'top_spot_report_table', locals: { report: report } %>
+    <div class="medium-8 columns">
+        <% if @page_title=='spelling-suggestion' %> 
+            <%= render partial: 'graph_spelling_suggestions' %>
+        <% end %>
+        <% if @page_title=='best-bets-regular' %> 
+            <%= render partial: 'graph_best_bets' %>
         <% end %>
     </div>
+    <%= render partial: "date_range" %>
 </div>

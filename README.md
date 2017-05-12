@@ -150,6 +150,7 @@ QuickSearch (listed in alphabetical order)
 - Nushrat Khan
 - Cory Lown
 - Jason Ronallo
+- Ryan West
 
 ## License
 

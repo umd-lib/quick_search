@@ -3,11 +3,15 @@ function remove_timedout_spinners(){
   $('#no-results-trying-again').remove();
 }
 
-function add_found_item_types(endpoint) {
+function add_found_item_types(endpoint, result_count) {
+  var result_count_display = "";
+  if (result_count) {
+    result_count_display = " (" + String(result_count) + ")";
+  }
   var dasherized_endpoint = endpoint.replace("_", "-")
   $('.result-types li.' + dasherized_endpoint + " .no-results-label")
     .replaceWith('<a href="#' + dasherized_endpoint + '" data-quicksearch-ga-action="' + 
-      dasherized_endpoint + '">' + I18n["en"][endpoint + "_search"]["display_name"]);
+      dasherized_endpoint + '">' + I18n["en"][endpoint + "_search"]["display_name"] + result_count_display);
 }
 
 var xhr_searches = function(){

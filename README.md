@@ -70,7 +70,7 @@ configuring QuickSearch, see: [Configuring QuickSearch](docs/configuration.md)
 
 ##### Start the server:
 
-    bundle exec rails s
+    rails s
 
 ##### QuickSearch will be available at http://localhost:3000/
 

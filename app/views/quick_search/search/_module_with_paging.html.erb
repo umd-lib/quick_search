@@ -1,4 +1,4 @@
-<div id="<%= service_name.dasherize %>" class="module-contents">
+<div id="<%= service_name.dasherize %>" class="module-contents" data-turbolinks="false">
     <% if searcher.is_a? StandardError %>
         <%= render partial: '/quick_search/search/search_error', locals: { service_name: service_name, page: page, template: 'with_paging' } %>
     <% elsif searcher.results.blank? %>

@@ -326,7 +326,7 @@ module QuickSearch
     end
 
     def excluded_categories
-      "category <> \"common-searches\" AND category <> \"result-types\"AND category NOT LIKE \"typeahead-%\""
+      "category <> \"common-searches\" AND category <> \"result-types\"AND category <> \"typeahead\""
     end
 
   end

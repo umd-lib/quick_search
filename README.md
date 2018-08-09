@@ -1,3 +1,24 @@
+# QuickSearch UMD-Fork
+
+This repository is a forked version of the NSCU QuickSearch repository,
+incorporating UMD-specific changes.
+
+## Changes to NCSU QuickSearch functionality
+
+### config/quicksearch_config.yml now processed by ERB
+
+The "config/quicksearch_config.yml" file in the application created by the
+QuickSearch installation generator is passed through the ERB template processor.
+
+This enables properties in the file to be configured from environment variables.
+For example, given a "STATS_PASSWORD" environment variable, the "password"
+property in the "config/quicksearch_config.yml" file can be configured by using
+the following:
+
+```
+password: <%= ENV['STATS_PASSWORD'] %>
+```
+
 # QuickSearch
 
 > Note: This code has recently been converted to a Rails Gem Engine. It is encouraged that you use this version, but if you are

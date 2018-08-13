@@ -6,7 +6,7 @@ module QuickSearch::SearcherConcern
   include QuickSearch::EncodeUtf8
   include QuickSearch::SearcherConfig
   require 'benchmark_logger'
-  require 'searcher_error'
+  require_dependency 'searcher_error'
 
   private
 

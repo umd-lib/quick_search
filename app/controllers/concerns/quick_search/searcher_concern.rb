@@ -6,6 +6,7 @@ module QuickSearch::SearcherConcern
   include QuickSearch::EncodeUtf8
   include QuickSearch::SearcherConfig
   require 'benchmark_logger'
+  require_dependency 'searcher_error'
 
   private
 
@@ -60,8 +61,12 @@ module QuickSearch::SearcherConcern
               instance_variable_set "@#{sm}", searcher
             rescue StandardError => e
               # logger.info e
+
+              # Wrap e in a SearcherError, so that the searcher object is
+              # available for retrieval.
+              searcher_error = QuickSearch::SearcherError.new(e, searcher)
               logger.info "FAILED SEARCH: #{sm} | #{params_q_scrubbed}"
-              instance_variable_set :"@#{sm.to_s}", e
+              instance_variable_set :"@#{sm.to_s}", searcher_error
             end
           end
         end

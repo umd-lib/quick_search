@@ -25,6 +25,28 @@ module QuickSearch
       raise #FIXME: pick some good error
     end
 
+    # Returns a String representing the link to use when no results are
+    # found for a search.
+    #
+    # This default implementation first looks for the "i18n_key" and
+    # "default_i18n_key" in the I18N locale files. If no entry is found
+    # the "no_results_link" from the searcher configuration is returned.
+    #
+    # Using the I18N locale files is considered legacy behavior (but
+    # is preferred in this method to preserve existing functionality).
+    # Use of the searcher configuration file is preferred.
+    def no_results_link(service_name, i18n_key, default_i18n_key = nil)
+      locale_result = I18n.t(i18n_key, default: I18n.t(default_i18n_key))
+      return locale_result if locale_result
+
+      begin
+        config_class = "QuickSearch::Engine::#{service_name.upcase}_CONFIG".constantize
+        config_class['no_results_link']
+      rescue NameError
+        nil
+      end
+    end
+
     private
 
     def http_request_queries

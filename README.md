@@ -19,6 +19,28 @@ the following:
 password: <%= ENV['STATS_PASSWORD'] %>
 ```
 
+### loaded_link/no_results_link can be specified in searcher configuration YAML file
+
+The search configuration YAML files (typically stored in the "config/searchers"
+directory of the search application) now support "loaded_link" and
+"no_results_link" properties. These properties are intended to replace the
+"loaded_link" and "no_results_link" properties in the I18N locale files
+such as "config/locales/en.yml".
+
+Placing these properties in the YAML files allows them to be more easily
+customized on a per-server basis, through the use of server environment
+variables.
+
+The legacy behavior of using the I18N locale files such as the
+"config/locales/en.yml" file, is still supported, and, for backwards
+compatibility, takes priority over the properties in the YAML file. The use of
+I18N locale files should be considered deprecated.
+
+For cases where a "loaded_link" or "no_results_link" is specified in the locale
+file of the searcher gem, the search application can force the use of the
+properties in the YAML file by adding empty entries for the "loaded_link" and
+"no_results_link" in the I18N locale file of the search application.
+
 # QuickSearch
 
 > Note: This code has recently been converted to a Rails Gem Engine. It is encouraged that you use this version, but if you are

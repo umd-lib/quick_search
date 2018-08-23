@@ -1,13 +1,7 @@
 <div id="<%= service_name.dasherize %>" class="module-contents" >
     <% if searcher.is_a? StandardError %>
 
-        <% if I18n.exists?("#{service_name}_search.loaded_link") %>
-            <%# Preserve legacy behavior of using "loaded_link" from I18n locale file %>
-            <% module_link = t("#{service_name}_search.loaded_link") + url_encode("#{@query}") %>
-        <% elsif searcher.is_a? QuickSearch::SearcherError %>
-            <% searcher_obj = searcher.searcher %>
-            <% module_link = searcher_obj.loaded_link %>
-        <% end %>
+        <% module_link = QuickSearch::Searcher.module_link_on_error(service_name, searcher, @query) %>
 
         <h2 class="result-set-heading"><%= module_display_name %></h2>
         <% if params[:page].blank? %>

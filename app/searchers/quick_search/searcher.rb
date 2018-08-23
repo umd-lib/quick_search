@@ -47,6 +47,26 @@ module QuickSearch
       end
     end
 
+    # Returns the "loaded_link" when an error occurs, either from an I18N locale
+    # file, or the "loaded_link" method on the searcher.
+    #
+    # Using the I18N locale files is considered legacy behavior (but
+    # is preferred in this method to preserve existing functionality).
+    #
+    # Parameters:
+    #  - service_name: The name of the searcher as used by the I18N locale files
+    #  - error: The StandardError/SearcherError object
+    #  - query: The search term being queried
+    def self.module_link_on_error(service_name, error, query)
+      if I18n.exists?("#{service_name}_search.loaded_link")
+        # Preserve legacy behavior of using "loaded_link" from I18n locale file
+        return I18n.t("#{service_name}_search.loaded_link") + ERB::Util.url_encode("#{query}")
+      elsif error.is_a? QuickSearch::SearcherError
+        searcher_obj = error.searcher
+        return searcher_obj.loaded_link
+      end
+    end
+
     private
 
     def http_request_queries

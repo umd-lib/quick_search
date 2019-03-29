@@ -1,4 +1,5 @@
 require 'test_helper'
+require_dependency 'searcher_error'
 
 class SearcherTest < ActiveSupport::TestCase
   def setup

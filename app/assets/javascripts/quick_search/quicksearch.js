@@ -1,12 +1,5 @@
 $(document).ready(function() {
 
-    // Fade out best bet highlight after 3 seconds
-    if (window.innerWidth > 640) {
-        $('.highlight').delay( 6000 ).fadeOut( 500 );
-    } else {
-        $('.highlight').remove();
-    }
-
     // remove some generic library website template content from DOM
     $('#utility-search').remove();
     $('#search-toggle').remove();

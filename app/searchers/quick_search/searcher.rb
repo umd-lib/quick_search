@@ -36,8 +36,11 @@ module QuickSearch
     # is preferred in this method to preserve existing functionality).
     # Use of the searcher configuration file is preferred.
     def no_results_link(service_name, i18n_key, default_i18n_key = nil)
-      locale_result = I18n.t(i18n_key, default: I18n.t(default_i18n_key))
-      return locale_result if locale_result
+      if (i18n_key.present? && I18n.exists?(i18n_key)) ||
+         (default_i18n_key.present? && I18n.exists?(default_i18n_key))
+        locale_result = I18n.t(i18n_key, default: I18n.t(default_i18n_key))
+        return locale_result if locale_result
+      end
 
       begin
         config_class = "QuickSearch::Engine::#{service_name.upcase}_CONFIG".constantize

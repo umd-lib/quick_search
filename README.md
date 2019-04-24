@@ -1,5 +1,8 @@
 # QuickSearch
 
+**Note:** This is a forked version of the NCSU QuickSearch application. See
+[README-UMD.md](README-UMD.md) for changes.
+
 > Note: This code has recently been converted to a Rails Gem Engine. It is encouraged that you use this version, but if you are
 > looking for the original release of QuickSearch as a standalone Rails project, it can be found here:
 > https://github.com/NCSU-Libraries/quick_search/tree/pre-gem

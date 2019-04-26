@@ -15,8 +15,6 @@ module QuickSearch::SearcherConcern
       search_threads = []
       @found_types = [] # add the types that are found to a navigation bar
 
-      primary_searcher_config = ''
-
       if primary_searcher == 'defaults'
         searchers = QuickSearch::Engine::APP_CONFIG['searchers']
       else
@@ -45,8 +43,8 @@ module QuickSearch::SearcherConcern
               # FIXME: Probably want to set paging and offset somewhere else.
               # searcher = klass.new(http_client, params_q_scrubbed, QuickSearch::Engine::APP_CONFIG['per_page'], 0, 1, on_campus?(request.remote_ip))
               if sm == primary_searcher
-                if primary_searcher_config.has_key? 'with_paging'
-                  per_page = primary_searcher_config['with_paging']['per_page']
+                if searcher_config.has_key? 'with_paging'
+                  per_page = searcher_config['with_paging']['per_page']
                 else
                   per_page = 10
                 end

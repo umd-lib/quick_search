@@ -107,10 +107,17 @@ module QuickSearch
               result_list << result.to_h
             end
 
+            if searcher.is_a? StandardError
+              module_link = QuickSearch::Searcher.module_link_on_error(service, searcher, @query)
+            else
+              module_link = searcher.loaded_link
+            end
+
             render :json => { :endpoint => endpoint,
                               :per_page => @per_page.to_s,
                               :page => @page.to_s,
                               :total => searcher.total,
+                              :module_link => module_link,
                               :results => result_list
             }
           }

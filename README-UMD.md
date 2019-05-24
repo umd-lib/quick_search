@@ -16,3 +16,8 @@ seconds.
 Modified "app/controllers/quick_search/search_controller.rb" so that
 the link to the native search interface, including query parameters, is
 included in the JSON result.
+
+### No results link is included in JSON results
+
+Modified "app/controllers/quick_search/search_controller.rb" so that
+the "no_results_link" for the searcher is included in the JSON result.

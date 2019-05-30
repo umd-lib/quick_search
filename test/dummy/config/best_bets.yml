@@ -84,3 +84,9 @@ best_bets:
     keywords:
     - pubmed
     - pub med
+  testbestbet:
+    title: Test Best Bet Entry
+    description: This is a test Best Bet entry
+    url: http://example.org
+    keywords:
+    - 123-456

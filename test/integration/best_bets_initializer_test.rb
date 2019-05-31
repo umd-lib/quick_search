@@ -10,6 +10,6 @@ class BestBestInitializerTest < ActionDispatch::IntegrationTest
 
     json = JSON.parse(page.html)
     first_result = json['results'][0]
-    assert_equal 'testbestbet', first_result['id']
+    assert_equal 'testbestbetdash', first_result['id']
   end
 end

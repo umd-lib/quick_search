@@ -30,7 +30,12 @@ module QuickSearch
         additional_services = []
       end
       loaded_searches(additional_services)
-      @common_searches = searcher_cfg['common_searches'] || []
+
+      @common_searches = []
+      if searcher_cfg and searcher_cfg.has_key? 'common_searches'
+        @common_searches = searcher_cfg['common_searches']
+      end
+
       #TODO: maybe a default template for single-searcher searches?
       http_search(searcher_name, "quick_search/search/#{searcher_name}_search")
     end
@@ -101,11 +106,21 @@ module QuickSearch
             searcher.results.each do |result|
               result_list << result.to_h
             end
+            no_results_link = searcher.no_results_link(endpoint, nil)
+
+            if searcher.is_a? StandardError
+              module_link = QuickSearch::Searcher.module_link_on_error(endpoint, searcher, @query)
+            else
+              module_link = searcher.loaded_link
+            end
 
             render :json => { :endpoint => endpoint,
+                              :query => @query,
                               :per_page => @per_page.to_s,
                               :page => @page.to_s,
                               :total => searcher.total,
+                              :module_link => module_link,
+                              :no_results_link => no_results_link,
                               :results => result_list
             }
           }

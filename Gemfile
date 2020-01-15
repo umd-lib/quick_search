@@ -21,7 +21,7 @@ group :test do
   gem 'launchy'
   gem 'vcr'
   gem 'webmock'
-  gem 'sqlite3'
+  gem 'sqlite3', '~> 1.3.6'
   gem 'rails-controller-testing'
 
   # include a theme and some searchers for integration tests

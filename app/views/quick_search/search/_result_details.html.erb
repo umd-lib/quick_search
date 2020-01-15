@@ -25,9 +25,9 @@
 <% end %>
 <p class='format'><%= result["format"] %>
 
-<% if result['fulltext'] %>
+<% if result['fulltext'] %>&nbsp;|&nbsp;
 <%= link_to result["link"], {:class => ''} do %>
-    Full&nbsp;Text&nbsp;Online&nbsp;<i class='fa fa-cloud-download'></i>
+    Full&nbsp;Text&nbsp;Online
 <% end %>
 <% end %>
 </p>
